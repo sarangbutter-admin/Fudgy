@@ -26,7 +26,7 @@ const ART = {
   lm:{label:"Lemon sugar",        dough:"#EBCB6B", edge:"#B8922E", chips:["#FFF8E1","#F5E3A0"], salt:true},
   ub:{label:"Ube",                dough:"#8E6BB8", edge:"#5B3F82", chips:["#F3E9FF","#3B2214"]}
 };
-const PLATES = ["#000096","#D9DCFA","#2328C8","#EEF0FF"];
+const PLATES = ["#B73700","#F7D6C4","#D65A1A","#FFF1E8"];
 const STATUSES = [["awaiting","Awaiting payment"],["review","Check payment"],["new","Payment confirmed"],["baking","Baking"],["ready","Ready / Out for delivery"],["completed","Delivered / Picked up"],["cancelled","Cancelled"]];
 const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const DOW_LONG = ["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
@@ -117,23 +117,23 @@ function countItems(box){const c={};box.forEach(id=>c[id]=(c[id]||0)+1);return c
 let DB;
 function defaultAnnouncer(){return {on:true,sticky:true,size:"M",cdColor:"#C8102E",cdBg:"#FFFFFF",cdFx:true,cdSize:"L",imgOn:true,imgFx:true,
   live:{text:"Flash sale: {name}. {off} {applies}.",label:"Ends in",bg:"#C8102E",ink:"#FFFFFF",img:""},
-  soon:{text:"Coming up: {name}, {off} {applies}.",label:"Starts in",bg:"#EEF0FF",ink:"#000096",img:""},
+  soon:{text:"Coming up: {name}, {off} {applies}.",label:"Starts in",bg:"#FFF1E8",ink:"#B73700",img:""},
   fdlive:{text:"{name}: free delivery on {applies}.",label:"Ends in",bg:"#0A6B34",ink:"#FFFFFF",img:""},
   fdsoon:{text:"Coming up: {name}, free delivery on {applies}.",label:"Starts in",bg:"#E6F7EC",ink:"#0A6B34",img:""},
-  giftlive:{text:"🎁 {name}: free gifts with {applies}!",label:"Ends in",bg:"#FFE066",ink:"#000096",img:""},
-  giftsoon:{text:"Coming up: {name}, free gifts with {applies}.",label:"Starts in",bg:"#FFF7D6",ink:"#000096",img:""},
-  mq:{bg:"#000096",ink:"#FFFFFF",font:"display",fontData:"",fontName:"",size:"M",speed:"medium",sepOn:true,sepImg:""},
-  custom:{on:false,text:"Free delivery this weekend!",label:"Ends in",endsAt:"",bg:"#000096",ink:"#FFFFFF",img:""}}}
-function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day cookies"],images:[],bg:"#000096",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
+  giftlive:{text:"🎁 {name}: free gifts with {applies}!",label:"Ends in",bg:"#FFE066",ink:"#B73700",img:""},
+  giftsoon:{text:"Coming up: {name}, free gifts with {applies}.",label:"Starts in",bg:"#FFF7D6",ink:"#B73700",img:""},
+  mq:{bg:"#B73700",ink:"#FFFFFF",font:"display",fontData:"",fontName:"",size:"M",speed:"medium",sepOn:true,sepImg:""},
+  custom:{on:false,text:"Free delivery this weekend!",label:"Ends in",endsAt:"",bg:"#B73700",ink:"#FFFFFF",img:""}}}
+function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day cookies"],images:[],bg:"#B73700",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
 function defaultThanks(){return {logo:"",cookies:[],fx:true,amount:28,title:"Order placed",titleUpd:"Order updated",
   text:"Thanks, {name}! Your box of {size} is set for {mode} on {when}.",
   urgent:"Your cookies are waiting! Pay within {hours} to keep them.",
   cdLabel:"Time left to pay",payBtn:"Pay now & secure my cookies 🍪",trackBtn:"Track my order",buildBtn:"Build another box",
-  bg:"#ffffff",accent:"#000096",cdColor:"#C8102E"}}
+  bg:"#ffffff",accent:"#B73700",cdColor:"#C8102E"}}
 function defaultProofPop(){return {on:true,emoji:"🙏",img:"",cookies:[],fx:true,amount:36,
   title:"Thank you, {name}! ✅",
   text:"We have received your payment proof for order {code}. We will check it and confirm it shortly. You can follow the progress in My orders.",
-  btn:"Track my order",bg:"#ffffff",accent:"#000096",ink:"#0B0B45"}}
+  btn:"Track my order",bg:"#ffffff",accent:"#B73700",ink:"#2A1306"}}
 function defaultAlerts(){return {on:true,sound:true,vol:70,repeat:false,stay:true,custom:"",customName:"",
   ev:{order:{on:true,snd:"register"},proof:{on:true,snd:"chime"},complaint:{on:true,snd:"alarm"},courier:{on:true,snd:"alarm"}}}}
 function defaultLabel(){return {logo:"",qr:"",qrCaption:"",notes:"",warnOn:true,warn1:"UNBOXING WITH UNCUT VIDEO!",warn2:"CONTACT US IF SEAL BROKEN"}}
@@ -167,7 +167,7 @@ function migrate(db){
   if(db.settings.guardOn===undefined)Object.assign(db.settings,{guardOn:true,guardClear:true,guardShuf:true,guardIcon:"🛡️",guardImg:"",
     guardClearTitle:"Clear your box?",guardClearText:"You already picked a courier. This will empty your whole box. Your courier choice stays.",guardClearOk:"Yes, clear it",guardClearNo:"Keep my box",
     guardShufTitle:"Shuffle your box?",guardShufText:"You already picked a courier. This swaps your flavors for a new random mix.",guardShufOk:"Yes, shuffle",guardShufNo:"Keep my box"});
-  if(db.settings.rbOn===undefined)Object.assign(db.settings,{rbOn:true,rbIcon:"🎲",rbIcon2:"🔀",rbBg:"#FFD43B",rbFx:"wiggle",rbScroll:true,fabOn:true,fabIcon:"📦",fabText:"My box",fabTextOn:true,fabFx:"bounce",fabBg:"#FFD43B",fabInk:"#000096",fabHide:true});
+  if(db.settings.rbOn===undefined)Object.assign(db.settings,{rbOn:true,rbIcon:"🎲",rbIcon2:"🔀",rbBg:"#FFD43B",rbFx:"wiggle",rbScroll:true,fabOn:true,fabIcon:"📦",fabText:"My box",fabTextOn:true,fabFx:"bounce",fabBg:"#FFD43B",fabInk:"#B73700",fabHide:true});
   if(!Array.isArray(db.categories)){db.categories=DEFAULT_CATS.map(c=>({...c}));db.products.forEach(p=>{if(p.cat===undefined)p.cat=CAT_OF[p.id]||""})}
   db.products.forEach(p=>{if(p.cat===undefined)p.cat="";if(!Array.isArray(p.reviews))p.reviews=[]});
   db.products.forEach(p=>{if(p.track===undefined){p.track=true;p.stock=p.status==="soldout"?0:40}if(typeof p.stock!=="number")p.stock=0});
@@ -321,7 +321,7 @@ function cookieSVG(f, seed){
 const seedOf = id => [...id].reduce((a,c)=>a+c.charCodeAt(0),0)*97+3;
 const artOf = p => ART[p?.art]||ART.bb;
 const plateColorOf = p => {const i=DB.products.indexOf(p);return PLATES[(i<0?DB.products.length:i)%PLATES.length]};
-const DARK_PLATES = ["#000096","#2328C8"];
+const DARK_PLATES = ["#B73700","#D65A1A"];
 const hasImage = p => p.art!=="none" && !(p.art==="photo"&&!p.img);
 const initials = n => (n||"?").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 function plateInner(p){
@@ -337,9 +337,9 @@ function plateBg(p,b){
   b=b||p.bg||{};const d=plateColorOf(p);let css,dark;
   if(b.type==="color"&&HEX6.test(b.c1||"")){css=`background:${b.c1}`;dark=lumOf(b.c1)<.3}
   else if(b.type==="gradient"&&HEX6.test(b.c1||"")&&HEX6.test(b.c2||"")){css=`background:${BG_DIRS[b.dir]||BG_DIRS.diag}${b.c1},${b.c2})`;dark=(lumOf(b.c1)+lumOf(b.c2))/2<.3}
-  else if(b.type==="image"&&imgOk(b.img)){css=`background:#000096 url("${imgOk(b.img)}") center/cover no-repeat`;dark=true}
+  else if(b.type==="image"&&imgOk(b.img)){css=`background:#B73700 url("${imgOk(b.img)}") center/cover no-repeat`;dark=true}
   else if(b.type==="none"){css="background:transparent";dark=false}
-  else{css=`background:${d};${d==="#EEF0FF"?"box-shadow:inset 0 0 0 2px #000096":""}`;dark=DARK_PLATES.includes(d)}
+  else{css=`background:${d};${d==="#FFF1E8"?"box-shadow:inset 0 0 0 2px #B73700":""}`;dark=DARK_PLATES.includes(d)}
   if(b.ring&&HEX6.test(b.ring))css+=`;box-shadow:inset 0 0 0 4px ${b.ring}`;
   const z=+b.size;if(z>=40&&z<=100)css+=`;--ck:${Math.round(z)}%`;
   return {css,dark};
@@ -347,7 +347,7 @@ function plateBg(p,b){
 function plateHTML(p,bgDraft){const g=plateBg(p,bgDraft);return `<div class="plate${g.dark?" dark":""}${hasImage(p)?"":" blank"}" style="${esc(g.css)}">${plateInner(p)}</div>`}
 function crumbColors(p){
   if(p.art==="photo"&&p.tints)return {dough:p.tints[0],edge:p.tints[1],chips:[p.tints[2]]};
-  if(!hasImage(p))return {dough:"#000096",edge:"#2328C8",chips:["#D9DCFA"]};
+  if(!hasImage(p))return {dough:"#B73700",edge:"#D65A1A",chips:["#F7D6C4"]};
   return artOf(p);
 }
 /* ================= SHOP ================= */
@@ -455,7 +455,7 @@ function defaultBadges(){return {autoBest:true,bestTop:3,list:[
   {id:"best",text:"🔥 Best seller",font:"display",color:"#FFFFFF",bg:"#C8102E",fx:"shine"},
   {id:"wanted",text:"💛 Most wanted",font:"display",color:"#3B2200",bg:"#FFC53D",fx:"pulse"},
   {id:"seasonal",text:"🍂 Seasonal",font:"display",color:"#FFFFFF",bg:"#B5541B",fx:"glow"},
-  {id:"new",text:"✨ New flavor",font:"display",color:"#FFFFFF",bg:"#000096",fx:"bounce"},
+  {id:"new",text:"✨ New flavor",font:"display",color:"#FFFFFF",bg:"#B73700",fx:"bounce"},
   {id:"limited",text:"⏳ Limited",font:"display",color:"#FFFFFF",bg:"#6B2BD9",fx:"wiggle"}]}}
 const PAID_SET=["new","baking","ready","completed"];
 // how many of each flavor were bought (last 90 days). Visitors get the totals from the server.
@@ -704,7 +704,7 @@ function ghostOut(i){
 }
 function celebrate(){if(RM)return;const p=$(".boxpanel");
   p.animate([{transform:"scale(1)"},{transform:"scale(1.03) rotate(-.6deg)"},{transform:"scale(.99) rotate(.4deg)"},{transform:"scale(1)"}],{duration:600,delay:400,easing:"ease-out"});
-  if(inView(p.getBoundingClientRect()))crumbs(p.querySelector(".slots"),{dough:"#FFFFFF",edge:"#D9DCFA",chips:["#FFFFFF","#EEF0FF"]})}
+  if(inView(p.getBoundingClientRect()))crumbs(p.querySelector(".slots"),{dough:"#FFFFFF",edge:"#F7D6C4",chips:["#FFFFFF","#FFF1E8"]})}
 /* --- box actions --- */
 function setSize(n){S.size=n;if(S.box.length>n)S.box=S.box.slice(0,n);if(!full())S.step=1;renderStore()}
 function cpMsg(t,ok){const m=$("#cpnMsg");if(!m)return;m.textContent=t||"";m.hidden=!t;m.classList.toggle("ok",!!ok);clearTimeout(cpMsg.t);if(t)cpMsg.t=setTimeout(()=>{m.hidden=true},6000)}
@@ -721,7 +721,7 @@ function renderGiftBox(){
   const cl=(v,d)=>/^(#[0-9a-f]{6}|transparent)$/i.test(v||"")?v:d;
   el.hidden=false;
   el.innerHTML=pl.map(x=>{const t=x.sale,rnd=x.mode==="random";
-    return `<div class="gb fx-${["shine","pulse","none"].includes(t.fx)?t.fx:"shine"}" style="--gb:${cl(t.bg,"#FFE066")};--gi:${cl(t.ink,"#000096")}"><div class="gh"><span class="gtag">${esc(t.tag||"Gifts")}</span><b class="gt">${esc(t.name)}</b><span class="gend">Ends in <span class="cd" data-exp="${t.end}">${fmtLeft(t.end-Date.now())}</span></span></div>
+    return `<div class="gb fx-${["shine","pulse","none"].includes(t.fx)?t.fx:"shine"}" style="--gb:${cl(t.bg,"#FFE066")};--gi:${cl(t.ink,"#B73700")}"><div class="gh"><span class="gtag">${esc(t.tag||"Gifts")}</span><b class="gt">${esc(t.name)}</b><span class="gend">Ends in <span class="cd" data-exp="${t.end}">${fmtLeft(t.end-Date.now())}</span></span></div>
       <p class="gs">🎁 FREE with your box of ${S.size}. No extra cost:</p><div class="gl big">${rnd?`<span class="gcard rnd"><i aria-hidden="true">🎲</i><b>${giftSurprise(x.limit)}</b><em>FREE</em></span><div class="gpool">${x.gifts.map(g=>giftChip(g," sm")).join("")}</div>`:x.gifts.map(g=>giftCard(g)).join("")}</div>
       <button class="gbsee" type="button" data-giftsee="${S.size}">👀 See what you ${rnd?"may get":"get"}</button><p class="gnote">${GIFT_NOTE}</p></div>`}).join("");
 }
@@ -822,7 +822,7 @@ function fabPlateCss(t){
   return plateBg({},{type,c1:hexOk(t.fabBg,"#FFD43B"),c2:hexOk(t.fabBg2,"#FF9F43"),dir:"diag",ring,size:fabNum(t.fabImgSize,40,100,84)}).css;
 }
 const fabIconHTML=(img,emoji,dflt,cut)=>imgOk(img)?`<img class="fab-img${imgIsCut(img,cut)?" cut":""}" src="${esc(imgOk(img))}" alt="" draggable="false">`:esc(String(emoji||"").trim()||dflt);
-function fabPillCss(t){const ink=hexOk(t.fabInk,"#000096");return `background:${ink};color:${lumOf(ink)<.5?"#fff":"#000"}`}
+function fabPillCss(t){const ink=hexOk(t.fabInk,"#B73700");return `background:${ink};color:${lumOf(ink)<.5?"#fff":"#000"}`}
 const FAB_KEY="callebrownies-fab-v1";
 const fabPrefs=()=>{try{return JSON.parse(localStorage.getItem(FAB_KEY)||"null")||{}}catch(e){return {}}};
 const fabSave=o=>{try{localStorage.setItem(FAB_KEY,JSON.stringify(Object.assign(fabPrefs(),o)))}catch(e){}};
@@ -849,7 +849,7 @@ function renderFab(){
   const pl=$("#fabPl"),css=fabPlateCss(t);if(pl.dataset.c!==css){pl.dataset.c=css;pl.style.cssText=css}
   const tt=$("#fabTx");if(tt.textContent!==tx)tt.textContent=tx;tt.hidden=!tx;tt.style.cssText=fabPillCss(t);
   f.className="fab fx-"+fxOk(t.fabFx,["bounce","pulse","glow","none"],"bounce")+(f.classList.contains("dragging")?" dragging":"")+(t.fabHide!==false&&boxSeen?" away":"");
-  f.style.setProperty("--fab-ink",hexOk(t.fabInk,"#000096"));
+  f.style.setProperty("--fab-ink",hexOk(t.fabInk,"#B73700"));
   const d=fabDims();f.style.setProperty("--fab-s",d.s+"px");f.style.setProperty("--fab-o",d.o/100);
   f.title=tx||"Show my box";
   if(!f.dataset.placed){f.dataset.placed="1";if(window.fabApply)fabApply()}
@@ -912,8 +912,8 @@ $("#gdSheet").addEventListener("click",e=>{
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#gdSheet").hidden)closeGuard()});
 /* friendly pop-ups when a visitor gets close to a limit ("warn") or reaches it ("slow" = stop); look and wording set in the Security tab */
 const POP_DEF={
-  slow:{Title:"Slow down a little, friends!",Text:"Cookies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍪",Bg:"#FFF4D6",Ink:"#0B0B45",BtnBg:"#000096",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
-  warn:{Title:"Easy there, cookie lover!",Text:"You're going a little fast. Take a breath, cookies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#EAF6FF",Ink:"#0B0B45",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
+  slow:{Title:"Slow down a little, friends!",Text:"Cookies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍪",Bg:"#FFF4D6",Ink:"#2A1306",BtnBg:"#B73700",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
+  warn:{Title:"Easy there, cookie lover!",Text:"You're going a little fast. Take a breath, cookies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#FFF4EC",Ink:"#2A1306",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
 // which part of the shop the limit belongs to (each can have its own message)
 const POP_GRP={place_order:"Orders",track_order:"Track",check_coupon:"Coupon",courier:"Courier",submit_proof:"Upload",submit_complaint:"Upload",submit_place:"Upload"};
 const SLOW_FX=[["bounce","Bounce"],["wiggle","Wiggle"],["float","Float up and down"],["pulse","Pulse"],["spin","Slow spin"],["none","Still"]],SLOW_BFX=[["shine","Shine sweep"],["pulse","Gentle pulse"],["wiggle","Wiggle"],["none","Still"]];
@@ -1260,9 +1260,9 @@ let dnTimer;
 function fxBurst(fx,T,fb){
   clearTimeout(fx._t);fx.innerHTML="";
   if(RM||!T.fx)return;
-  const imgs=T.cookies.length?T.cookies:(fb&&fb.length?fb:[COOKIE_SVG]),n=Math.max(4,Math.min(60,+T.amount||28)),cols=["#000096","#ffffff","#F5B942","#7A7AFF"];let h="";
+  const imgs=T.cookies.length?T.cookies:(fb&&fb.length?fb:[COOKIE_SVG]),n=Math.max(4,Math.min(60,+T.amount||28)),cols=["#B73700","#ffffff","#F5B942","#F29A6B"];let h="";
   for(let i=0;i<n;i++){const sz=26+Math.random()*34;h+=`<i class="dn-p" style="--x:${(Math.random()*96).toFixed(1)}%;--s:${sz.toFixed(0)}px;--d:${(Math.random()*2.4).toFixed(2)}s;--t:${(2.6+Math.random()*2.4).toFixed(2)}s;--sw:${(Math.random()*160-80).toFixed(0)}px;--r:${(Math.random()*900-450).toFixed(0)}deg"><img src="${esc(imgs[i%imgs.length])}" alt="" draggable="false"></i>`}
-  for(let i=0;i<Math.round(n/2);i++){h+=`<i class="dn-p dot" style="--x:${(Math.random()*98).toFixed(1)}%;--s:${(8+Math.random()*8).toFixed(0)}px;--d:${(Math.random()*2.6).toFixed(2)}s;--t:${(2.2+Math.random()*2).toFixed(2)}s;--sw:${(Math.random()*120-60).toFixed(0)}px;--r:${(Math.random()*1000-500).toFixed(0)}deg;background:${cols[i%cols.length]};${i%cols.length===1?"box-shadow:0 0 0 1px #c9c9ee":""}"></i>`}
+  for(let i=0;i<Math.round(n/2);i++){h+=`<i class="dn-p dot" style="--x:${(Math.random()*98).toFixed(1)}%;--s:${(8+Math.random()*8).toFixed(0)}px;--d:${(Math.random()*2.6).toFixed(2)}s;--t:${(2.2+Math.random()*2).toFixed(2)}s;--sw:${(Math.random()*120-60).toFixed(0)}px;--r:${(Math.random()*1000-500).toFixed(0)}deg;background:${cols[i%cols.length]};${i%cols.length===1?"box-shadow:0 0 0 1px #EBC6B2":""}"></i>`}
   fx.innerHTML=h;fx._t=setTimeout(()=>{fx.innerHTML=""},9000);
 }
 function dnBurst(){fxBurst($("#dnFx"),DB.thanks)}
@@ -1745,7 +1745,7 @@ function mqBuild(el){
 }
 function mqFit(){document.querySelectorAll(".marq").forEach(el=>{if(el._m&&!el.hidden)mqBuild(el);else if(el._ai&&!el.hidden)anMqBuild(el)})}
 const LP_DEFAULT_SVG=`<svg viewBox="0 0 30 24" aria-hidden="true"><path d="M3 21a12 12 0 0 1 24 0Z" fill="currentColor"/><circle cx="15" cy="5" r="2.6" fill="currentColor"/><rect x="1" y="20.5" width="28" height="3" rx="1.5" fill="currentColor"/></svg>`;
-function defaultPage(){return {name:"callebrownies",logo:"",brand:"#000096",bg:"#ffffff",ink:"#0B0B45",headFont:"display",bodyFont:"body",fonts:[],
+function defaultPage(){return {name:"callebrownies",logo:"",brand:"#B73700",bg:"#ffffff",ink:"#2A1306",headFont:"display",bodyFont:"body",fonts:[],
   hero:{eyebrow:"Baked fresh every morning",title:"Warm cookies, boxed your way.",lede:"Pick a box, fill it with the flavors you love, and choose when you want it. Pickup or local delivery.",btn1:"Build a box",btn2:"See the flavors",bg:"",color:"#ffffff",mediaType:"none",src:"",overlay:35,floats:true,cookies:["","","","","",""],media:[],carousel:true,carouselSec:5,shape:"dome"},
   strip:{items:[{t:"Boxes of {sizes}",on:true},{t:"Order by {cutoff} for the next day",on:true},{t:"Closed {closed}",on:true}]},
   build:{title:"Build your box",intro:"Choose a size, fill every spot, then tell us when you want it. Each box is baked the morning it leaves the oven room."},
@@ -1807,7 +1807,7 @@ function heroFloats(dome,h){
   for(let i=0;i<heroCkN(h);i++){const x=heroCkx(h,i);if(!x.show)continue;const c=safeMedia(cs[i]);let inner="";
     if(c)inner=`<img class="ck ph${/^data:image\/jpeg/i.test(c)?"":" cut"}" src="${esc(c)}" alt="" draggable="false">`;else if(prods[i])inner=plateInner(prods[i]);
     if(!inner)continue;
-    html+=`<div class="float fx-${x.fx}${k>=ph?" hid-ph":""}${k>=pc?" hid-pc":""}" aria-hidden="true" style="left:${HERO_SPOTS[k][0]}%;top:${HERO_SPOTS[k][1]}%;opacity:${x.op/100}"><div class="plate" style="background:${x.bg||(i%2?"#2328C8":"#1A1FB0")}">${inner}</div></div>`;k++}
+    html+=`<div class="float fx-${x.fx}${k>=ph?" hid-ph":""}${k>=pc?" hid-pc":""}" aria-hidden="true" style="left:${HERO_SPOTS[k][0]}%;top:${HERO_SPOTS[k][1]}%;opacity:${x.op/100}"><div class="plate" style="background:${x.bg||(i%2?"#D65A1A":"#C4460C")}">${inner}</div></div>`;k++}
   dome.insertAdjacentHTML("afterbegin",html);
 }
 function heroFill(dome,h){

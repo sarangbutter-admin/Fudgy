@@ -26,7 +26,7 @@ const ART = {
   lm:{label:"Lemon sugar",        dough:"#EBCB6B", edge:"#B8922E", chips:["#FFF8E1","#F5E3A0"], salt:true},
   ub:{label:"Ube",                dough:"#8E6BB8", edge:"#5B3F82", chips:["#F3E9FF","#3B2214"]}
 };
-const PLATES = ["#000096","#D9DCFA","#2328C8","#EEF0FF"];
+const PLATES = ["#B73700","#F7D6C4","#D65A1A","#FFF1E8"];
 const STATUSES = [["awaiting","Awaiting payment"],["review","Check payment"],["new","Payment confirmed"],["baking","Baking"],["ready","Ready / Out for delivery"],["completed","Delivered / Picked up"],["cancelled","Cancelled"]];
 const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 const DOW_LONG = ["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
@@ -120,23 +120,23 @@ function countItems(box){const c={};box.forEach(id=>c[id]=(c[id]||0)+1);return c
 let DB;
 function defaultAnnouncer(){return {on:true,sticky:true,size:"M",cdColor:"#C8102E",cdBg:"#FFFFFF",cdFx:true,cdSize:"L",imgOn:true,imgFx:true,
   live:{text:"Flash sale: {name}. {off} {applies}.",label:"Ends in",bg:"#C8102E",ink:"#FFFFFF",img:""},
-  soon:{text:"Coming up: {name}, {off} {applies}.",label:"Starts in",bg:"#EEF0FF",ink:"#000096",img:""},
+  soon:{text:"Coming up: {name}, {off} {applies}.",label:"Starts in",bg:"#FFF1E8",ink:"#B73700",img:""},
   fdlive:{text:"{name}: free delivery on {applies}.",label:"Ends in",bg:"#0A6B34",ink:"#FFFFFF",img:""},
   fdsoon:{text:"Coming up: {name}, free delivery on {applies}.",label:"Starts in",bg:"#E6F7EC",ink:"#0A6B34",img:""},
-  giftlive:{text:"🎁 {name}: free gifts with {applies}!",label:"Ends in",bg:"#FFE066",ink:"#000096",img:""},
-  giftsoon:{text:"Coming up: {name}, free gifts with {applies}.",label:"Starts in",bg:"#FFF7D6",ink:"#000096",img:""},
-  mq:{bg:"#000096",ink:"#FFFFFF",font:"display",fontData:"",fontName:"",size:"M",speed:"medium",sepOn:true,sepImg:""},
-  custom:{on:false,text:"Free delivery this weekend!",label:"Ends in",endsAt:"",bg:"#000096",ink:"#FFFFFF",img:""}}}
-function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day cookies"],images:[],bg:"#000096",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
+  giftlive:{text:"🎁 {name}: free gifts with {applies}!",label:"Ends in",bg:"#FFE066",ink:"#B73700",img:""},
+  giftsoon:{text:"Coming up: {name}, free gifts with {applies}.",label:"Starts in",bg:"#FFF7D6",ink:"#B73700",img:""},
+  mq:{bg:"#B73700",ink:"#FFFFFF",font:"display",fontData:"",fontName:"",size:"M",speed:"medium",sepOn:true,sepImg:""},
+  custom:{on:false,text:"Free delivery this weekend!",label:"Ends in",endsAt:"",bg:"#B73700",ink:"#FFFFFF",img:""}}}
+function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day cookies"],images:[],bg:"#B73700",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
 function defaultThanks(){return {logo:"",cookies:[],fx:true,amount:28,title:"Order placed",titleUpd:"Order updated",
   text:"Thanks, {name}! Your box of {size} is set for {mode} on {when}.",
   urgent:"Your cookies are waiting! Pay within {hours} to keep them.",
   cdLabel:"Time left to pay",payBtn:"Pay now & secure my cookies 🍪",trackBtn:"Track my order",buildBtn:"Build another box",
-  bg:"#ffffff",accent:"#000096",cdColor:"#C8102E"}}
+  bg:"#ffffff",accent:"#B73700",cdColor:"#C8102E"}}
 function defaultProofPop(){return {on:true,emoji:"🙏",img:"",cookies:[],fx:true,amount:36,
   title:"Thank you, {name}! ✅",
   text:"We have received your payment proof for order {code}. We will check it and confirm it shortly. You can follow the progress in My orders.",
-  btn:"Track my order",bg:"#ffffff",accent:"#000096",ink:"#0B0B45"}}
+  btn:"Track my order",bg:"#ffffff",accent:"#B73700",ink:"#2A1306"}}
 function defaultAlerts(){return {on:true,sound:true,vol:70,repeat:false,stay:true,custom:"",customName:"",
   ev:{order:{on:true,snd:"register"},proof:{on:true,snd:"chime"},complaint:{on:true,snd:"alarm"},courier:{on:true,snd:"alarm"}}}}
 function defaultLabel(){return {logo:"",qr:"",qrCaption:"",notes:"",warnOn:true,warn1:"UNBOXING WITH UNCUT VIDEO!",warn2:"CONTACT US IF SEAL BROKEN"}}
@@ -170,7 +170,7 @@ function migrate(db){
   if(db.settings.guardOn===undefined)Object.assign(db.settings,{guardOn:true,guardClear:true,guardShuf:true,guardIcon:"🛡️",guardImg:"",
     guardClearTitle:"Clear your box?",guardClearText:"You already picked a courier. This will empty your whole box. Your courier choice stays.",guardClearOk:"Yes, clear it",guardClearNo:"Keep my box",
     guardShufTitle:"Shuffle your box?",guardShufText:"You already picked a courier. This swaps your flavors for a new random mix.",guardShufOk:"Yes, shuffle",guardShufNo:"Keep my box"});
-  if(db.settings.rbOn===undefined)Object.assign(db.settings,{rbOn:true,rbIcon:"🎲",rbIcon2:"🔀",rbBg:"#FFD43B",rbFx:"wiggle",rbScroll:true,fabOn:true,fabIcon:"📦",fabText:"My box",fabTextOn:true,fabFx:"bounce",fabBg:"#FFD43B",fabInk:"#000096",fabHide:true});
+  if(db.settings.rbOn===undefined)Object.assign(db.settings,{rbOn:true,rbIcon:"🎲",rbIcon2:"🔀",rbBg:"#FFD43B",rbFx:"wiggle",rbScroll:true,fabOn:true,fabIcon:"📦",fabText:"My box",fabTextOn:true,fabFx:"bounce",fabBg:"#FFD43B",fabInk:"#B73700",fabHide:true});
   if(!Array.isArray(db.categories)){db.categories=DEFAULT_CATS.map(c=>({...c}));db.products.forEach(p=>{if(p.cat===undefined)p.cat=CAT_OF[p.id]||""})}
   db.products.forEach(p=>{if(p.cat===undefined)p.cat="";if(!Array.isArray(p.reviews))p.reviews=[]});
   db.products.forEach(p=>{if(p.track===undefined){p.track=true;p.stock=p.status==="soldout"?0:40}if(typeof p.stock!=="number")p.stock=0});
@@ -327,7 +327,7 @@ function cookieSVG(f, seed){
 const seedOf = id => [...id].reduce((a,c)=>a+c.charCodeAt(0),0)*97+3;
 const artOf = p => ART[p?.art]||ART.bb;
 const plateColorOf = p => {const i=DB.products.indexOf(p);return PLATES[(i<0?DB.products.length:i)%PLATES.length]};
-const DARK_PLATES = ["#000096","#2328C8"];
+const DARK_PLATES = ["#B73700","#D65A1A"];
 const hasImage = p => p.art!=="none" && !(p.art==="photo"&&!p.img);
 const initials = n => (n||"?").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase();
 function plateInner(p){
@@ -343,9 +343,9 @@ function plateBg(p,b){
   b=b||p.bg||{};const d=plateColorOf(p);let css,dark;
   if(b.type==="color"&&HEX6.test(b.c1||"")){css=`background:${b.c1}`;dark=lumOf(b.c1)<.3}
   else if(b.type==="gradient"&&HEX6.test(b.c1||"")&&HEX6.test(b.c2||"")){css=`background:${BG_DIRS[b.dir]||BG_DIRS.diag}${b.c1},${b.c2})`;dark=(lumOf(b.c1)+lumOf(b.c2))/2<.3}
-  else if(b.type==="image"&&imgOk(b.img)){css=`background:#000096 url("${imgOk(b.img)}") center/cover no-repeat`;dark=true}
+  else if(b.type==="image"&&imgOk(b.img)){css=`background:#B73700 url("${imgOk(b.img)}") center/cover no-repeat`;dark=true}
   else if(b.type==="none"){css="background:transparent";dark=false}
-  else{css=`background:${d};${d==="#EEF0FF"?"box-shadow:inset 0 0 0 2px #000096":""}`;dark=DARK_PLATES.includes(d)}
+  else{css=`background:${d};${d==="#FFF1E8"?"box-shadow:inset 0 0 0 2px #B73700":""}`;dark=DARK_PLATES.includes(d)}
   if(b.ring&&HEX6.test(b.ring))css+=`;box-shadow:inset 0 0 0 4px ${b.ring}`;
   const z=+b.size;if(z>=40&&z<=100)css+=`;--ck:${Math.round(z)}%`;
   return {css,dark};
@@ -353,7 +353,7 @@ function plateBg(p,b){
 function plateHTML(p,bgDraft){const g=plateBg(p,bgDraft);return `<div class="plate${g.dark?" dark":""}${hasImage(p)?"":" blank"}" style="${esc(g.css)}">${plateInner(p)}</div>`}
 function crumbColors(p){
   if(p.art==="photo"&&p.tints)return {dough:p.tints[0],edge:p.tints[1],chips:[p.tints[2]]};
-  if(!hasImage(p))return {dough:"#000096",edge:"#2328C8",chips:["#D9DCFA"]};
+  if(!hasImage(p))return {dough:"#B73700",edge:"#D65A1A",chips:["#F7D6C4"]};
   return artOf(p);
 }
 
@@ -464,7 +464,7 @@ function defaultBadges(){return {autoBest:true,bestTop:3,list:[
   {id:"best",text:"🔥 Best seller",font:"display",color:"#FFFFFF",bg:"#C8102E",fx:"shine"},
   {id:"wanted",text:"💛 Most wanted",font:"display",color:"#3B2200",bg:"#FFC53D",fx:"pulse"},
   {id:"seasonal",text:"🍂 Seasonal",font:"display",color:"#FFFFFF",bg:"#B5541B",fx:"glow"},
-  {id:"new",text:"✨ New flavor",font:"display",color:"#FFFFFF",bg:"#000096",fx:"bounce"},
+  {id:"new",text:"✨ New flavor",font:"display",color:"#FFFFFF",bg:"#B73700",fx:"bounce"},
   {id:"limited",text:"⏳ Limited",font:"display",color:"#FFFFFF",bg:"#6B2BD9",fx:"wiggle"}]}}
 const PAID_SET=["new","baking","ready","completed"];
 // how many of each flavor were bought (last 90 days). Visitors get the totals from the server.
@@ -715,7 +715,7 @@ function ghostOut(i){
 }
 function celebrate(){if(RM)return;const p=$(".boxpanel");
   p.animate([{transform:"scale(1)"},{transform:"scale(1.03) rotate(-.6deg)"},{transform:"scale(.99) rotate(.4deg)"},{transform:"scale(1)"}],{duration:600,delay:400,easing:"ease-out"});
-  if(inView(p.getBoundingClientRect()))crumbs(p.querySelector(".slots"),{dough:"#FFFFFF",edge:"#D9DCFA",chips:["#FFFFFF","#EEF0FF"]})}
+  if(inView(p.getBoundingClientRect()))crumbs(p.querySelector(".slots"),{dough:"#FFFFFF",edge:"#F7D6C4",chips:["#FFFFFF","#FFF1E8"]})}
 
 /* --- box actions --- */
 function setSize(n){S.size=n;if(S.box.length>n)S.box=S.box.slice(0,n);if(!full())S.step=1;renderStore()}
@@ -734,7 +734,7 @@ function renderGiftBox(){
   const cl=(v,d)=>/^(#[0-9a-f]{6}|transparent)$/i.test(v||"")?v:d;
   el.hidden=false;
   el.innerHTML=pl.map(x=>{const t=x.sale,rnd=x.mode==="random";
-    return `<div class="gb fx-${["shine","pulse","none"].includes(t.fx)?t.fx:"shine"}" style="--gb:${cl(t.bg,"#FFE066")};--gi:${cl(t.ink,"#000096")}"><div class="gh"><span class="gtag">${esc(t.tag||"Gifts")}</span><b class="gt">${esc(t.name)}</b><span class="gend">Ends in <span class="cd" data-exp="${t.end}">${fmtLeft(t.end-Date.now())}</span></span></div>
+    return `<div class="gb fx-${["shine","pulse","none"].includes(t.fx)?t.fx:"shine"}" style="--gb:${cl(t.bg,"#FFE066")};--gi:${cl(t.ink,"#B73700")}"><div class="gh"><span class="gtag">${esc(t.tag||"Gifts")}</span><b class="gt">${esc(t.name)}</b><span class="gend">Ends in <span class="cd" data-exp="${t.end}">${fmtLeft(t.end-Date.now())}</span></span></div>
       <p class="gs">🎁 FREE with your box of ${S.size}. No extra cost:</p><div class="gl big">${rnd?`<span class="gcard rnd"><i aria-hidden="true">🎲</i><b>${giftSurprise(x.limit)}</b><em>FREE</em></span><div class="gpool">${x.gifts.map(g=>giftChip(g," sm")).join("")}</div>`:x.gifts.map(g=>giftCard(g)).join("")}</div>
       <button class="gbsee" type="button" data-giftsee="${S.size}">👀 See what you ${rnd?"may get":"get"}</button><p class="gnote">${GIFT_NOTE}</p></div>`}).join("");
 }
@@ -835,7 +835,7 @@ function fabPlateCss(t){
   return plateBg({},{type,c1:hexOk(t.fabBg,"#FFD43B"),c2:hexOk(t.fabBg2,"#FF9F43"),dir:"diag",ring,size:fabNum(t.fabImgSize,40,100,84)}).css;
 }
 const fabIconHTML=(img,emoji,dflt,cut)=>imgOk(img)?`<img class="fab-img${imgIsCut(img,cut)?" cut":""}" src="${esc(imgOk(img))}" alt="" draggable="false">`:esc(String(emoji||"").trim()||dflt);
-function fabPillCss(t){const ink=hexOk(t.fabInk,"#000096");return `background:${ink};color:${lumOf(ink)<.5?"#fff":"#000"}`}
+function fabPillCss(t){const ink=hexOk(t.fabInk,"#B73700");return `background:${ink};color:${lumOf(ink)<.5?"#fff":"#000"}`}
 const FAB_KEY="callebrownies-fab-v1";
 const fabPrefs=()=>{try{return JSON.parse(localStorage.getItem(FAB_KEY)||"null")||{}}catch(e){return {}}};
 const fabSave=o=>{try{localStorage.setItem(FAB_KEY,JSON.stringify(Object.assign(fabPrefs(),o)))}catch(e){}};
@@ -862,7 +862,7 @@ function renderFab(){
   const pl=$("#fabPl"),css=fabPlateCss(t);if(pl.dataset.c!==css){pl.dataset.c=css;pl.style.cssText=css}
   const tt=$("#fabTx");if(tt.textContent!==tx)tt.textContent=tx;tt.hidden=!tx;tt.style.cssText=fabPillCss(t);
   f.className="fab fx-"+fxOk(t.fabFx,["bounce","pulse","glow","none"],"bounce")+(f.classList.contains("dragging")?" dragging":"")+(t.fabHide!==false&&boxSeen?" away":"");
-  f.style.setProperty("--fab-ink",hexOk(t.fabInk,"#000096"));
+  f.style.setProperty("--fab-ink",hexOk(t.fabInk,"#B73700"));
   const d=fabDims();f.style.setProperty("--fab-s",d.s+"px");f.style.setProperty("--fab-o",d.o/100);
   f.title=tx||"Show my box";
   if(!f.dataset.placed){f.dataset.placed="1";if(window.fabApply)fabApply()}
@@ -925,8 +925,8 @@ $("#gdSheet").addEventListener("click",e=>{
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#gdSheet").hidden)closeGuard()});
 /* friendly pop-ups when a visitor gets close to a limit ("warn") or reaches it ("slow" = stop); look and wording set in the Security tab */
 const POP_DEF={
-  slow:{Title:"Slow down a little, friends!",Text:"Cookies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍪",Bg:"#FFF4D6",Ink:"#0B0B45",BtnBg:"#000096",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
-  warn:{Title:"Easy there, cookie lover!",Text:"You're going a little fast. Take a breath, cookies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#EAF6FF",Ink:"#0B0B45",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
+  slow:{Title:"Slow down a little, friends!",Text:"Cookies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍪",Bg:"#FFF4D6",Ink:"#2A1306",BtnBg:"#B73700",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
+  warn:{Title:"Easy there, cookie lover!",Text:"You're going a little fast. Take a breath, cookies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#FFF4EC",Ink:"#2A1306",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
 // which part of the shop the limit belongs to (each can have its own message)
 const POP_GRP={place_order:"Orders",track_order:"Track",check_coupon:"Coupon",courier:"Courier",submit_proof:"Upload",submit_complaint:"Upload",submit_place:"Upload"};
 const SLOW_FX=[["bounce","Bounce"],["wiggle","Wiggle"],["float","Float up and down"],["pulse","Pulse"],["spin","Slow spin"],["none","Still"]],SLOW_BFX=[["shine","Shine sweep"],["pulse","Gentle pulse"],["wiggle","Wiggle"],["none","Still"]];
@@ -1275,9 +1275,9 @@ let dnTimer;
 function fxBurst(fx,T,fb){
   clearTimeout(fx._t);fx.innerHTML="";
   if(RM||!T.fx)return;
-  const imgs=T.cookies.length?T.cookies:(fb&&fb.length?fb:[COOKIE_SVG]),n=Math.max(4,Math.min(60,+T.amount||28)),cols=["#000096","#ffffff","#F5B942","#7A7AFF"];let h="";
+  const imgs=T.cookies.length?T.cookies:(fb&&fb.length?fb:[COOKIE_SVG]),n=Math.max(4,Math.min(60,+T.amount||28)),cols=["#B73700","#ffffff","#F5B942","#F29A6B"];let h="";
   for(let i=0;i<n;i++){const sz=26+Math.random()*34;h+=`<i class="dn-p" style="--x:${(Math.random()*96).toFixed(1)}%;--s:${sz.toFixed(0)}px;--d:${(Math.random()*2.4).toFixed(2)}s;--t:${(2.6+Math.random()*2.4).toFixed(2)}s;--sw:${(Math.random()*160-80).toFixed(0)}px;--r:${(Math.random()*900-450).toFixed(0)}deg"><img src="${esc(imgs[i%imgs.length])}" alt="" draggable="false"></i>`}
-  for(let i=0;i<Math.round(n/2);i++){h+=`<i class="dn-p dot" style="--x:${(Math.random()*98).toFixed(1)}%;--s:${(8+Math.random()*8).toFixed(0)}px;--d:${(Math.random()*2.6).toFixed(2)}s;--t:${(2.2+Math.random()*2).toFixed(2)}s;--sw:${(Math.random()*120-60).toFixed(0)}px;--r:${(Math.random()*1000-500).toFixed(0)}deg;background:${cols[i%cols.length]};${i%cols.length===1?"box-shadow:0 0 0 1px #c9c9ee":""}"></i>`}
+  for(let i=0;i<Math.round(n/2);i++){h+=`<i class="dn-p dot" style="--x:${(Math.random()*98).toFixed(1)}%;--s:${(8+Math.random()*8).toFixed(0)}px;--d:${(Math.random()*2.6).toFixed(2)}s;--t:${(2.2+Math.random()*2).toFixed(2)}s;--sw:${(Math.random()*120-60).toFixed(0)}px;--r:${(Math.random()*1000-500).toFixed(0)}deg;background:${cols[i%cols.length]};${i%cols.length===1?"box-shadow:0 0 0 1px #EBC6B2":""}"></i>`}
   fx.innerHTML=h;fx._t=setTimeout(()=>{fx.innerHTML=""},9000);
 }
 function dnBurst(){fxBurst($("#dnFx"),DB.thanks)}
@@ -1692,7 +1692,7 @@ setInterval(()=>{tickCountdowns();if(Math.round(Date.now()/1000)%10===0)sweepOrd
 
 /* ================= ADMIN ================= */
 const A={sel:new Set(),lbl:null,lblPrev:"sample",rvPid:null,tab:"dashboard",nf:{type:"news",title:"",text:"",pid:"",code:"",until:""},dd:"today",vr:"today",dsig:"",filter:"all",od:"all",q:"",pq:"",pcat:"all",modal:null,np:null,bakeDay:null,openOrder:null,
-  draft:{kind:"discount",name:"Flash sale",type:"percent",value:20,appliesTo:"all",startMode:"now",startAt:"",durH:1,durM:0,gifts:[],rules:[],tag:"Gifts",bg:"#FFE066",ink:"#000096",fx:"shine"}};
+  draft:{kind:"discount",name:"Flash sale",type:"percent",value:20,appliesTo:"all",startMode:"now",startAt:"",durH:1,durM:0,gifts:[],rules:[],tag:"Gifts",bg:"#FFE066",ink:"#B73700",fx:"shine"}};
 function toast(msg){if(typeof toastHook==="function")msg=toastHook(msg);const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,Math.max(1600,msg.length*45))}
 let saveTimer;function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{saveDB();toast("Saved")},500)}
 function armed(btn,fn){if(btn.dataset.armed){fn();return}btn.dataset.armed="1";const t=btn.textContent;btn.textContent="Tap again to confirm";btn.classList.add("armed");
@@ -1884,11 +1884,11 @@ function viewHero(){
   const pg=DB.page,h=hrDraft(),prods=DB.products.filter(p=>p.status!=="hidden"&&hasImage(p)).slice(0,6);
   const inp=(label,path,max,rows)=>`<label class="af">${label}${rows?`<textarea class="in" rows="${rows}" data-hr="${path}" maxlength="${max}">${esc(h[path])}</textarea>`:`<input class="in" data-hr="${path}" maxlength="${max}" value="${esc(h[path])}">`}</label>`;
   const slot=i=>{const c=safeMedia(h.cookies[i]),pr=prods[i],x=heroCkx(h,i);
-    const thumb=c?`<img src="${esc(c)}" alt="" style="width:100%;height:100%;object-fit:contain">`:pr?`<div class="plate" style="background:#1A1FB0;width:100%">${plateInner(pr)}</div>`:`<span class="note">Empty</span>`;
-    return `<div class="pmcard" style="text-align:center;gap:8px${x.show?"":";opacity:.6"}"><b style="font-size:13px">Cookie ${i+1}</b><label class="sw" style="justify-self:center"><input type="checkbox" data-hrx="${i}.show" ${x.show?"checked":""} aria-label="Show Cookie ${i+1}"><span></span></label><span class="note" style="margin:0">${x.show?"Shown":"Hidden"}</span><div style="width:72px;height:72px;margin:0 auto;display:grid;place-items:center;background:#EEF0FF;border-radius:50%;overflow:hidden">${thumb}</div>
+    const thumb=c?`<img src="${esc(c)}" alt="" style="width:100%;height:100%;object-fit:contain">`:pr?`<div class="plate" style="background:#C4460C;width:100%">${plateInner(pr)}</div>`:`<span class="note">Empty</span>`;
+    return `<div class="pmcard" style="text-align:center;gap:8px${x.show?"":";opacity:.6"}"><b style="font-size:13px">Cookie ${i+1}</b><label class="sw" style="justify-self:center"><input type="checkbox" data-hrx="${i}.show" ${x.show?"checked":""} aria-label="Show Cookie ${i+1}"><span></span></label><span class="note" style="margin:0">${x.show?"Shown":"Hidden"}</span><div style="width:72px;height:72px;margin:0 auto;display:grid;place-items:center;background:#FFF1E8;border-radius:50%;overflow:hidden">${thumb}</div>
       <span class="note" style="margin:0">${c?"Your image":pr?"Default (flavor photo)":"Nothing to show"}</span>
       <label class="ghost mqbtn" style="justify-self:center">${c?"Replace":"Upload"}<input type="file" accept="image/*" hidden data-hrck="${i}"></label>${c?`<button class="danger" type="button" data-hrckrm="${i}">Use default</button>`:""}
-      <label class="af" style="margin:0;text-align:left;font-size:12px">Background<input type="color" data-hrx="${i}.bg" value="${x.bg||(i%2?"#2328C8":"#1A1FB0")}" style="width:100%;height:34px"></label>
+      <label class="af" style="margin:0;text-align:left;font-size:12px">Background<input type="color" data-hrx="${i}.bg" value="${x.bg||(i%2?"#D65A1A":"#C4460C")}" style="width:100%;height:34px"></label>
       <label class="af" style="margin:0;text-align:left;font-size:12px">Opacity: ${x.op}%<input type="range" min="10" max="100" step="5" value="${x.op}" data-hrx="${i}.op"></label>
       <label class="af" style="margin:0;text-align:left;font-size:12px">Effect<select class="in" data-hrx="${i}.fx">${HERO_FX.map(([k,l])=>`<option value="${k}"${x.fx===k?" selected":""}>${l}</option>`).join("")}</select></label>
       ${i>=6?`<button class="danger" type="button" data-hrckdel="${i}">Remove cookie</button>`:""}</div>`};
@@ -2714,12 +2714,12 @@ function reuseSale(id){
   const s=DB.sales.find(x=>x.id===id);if(!s)return;
   const mins=Math.max(5,Math.round((s.end-s.start)/60e3)),kind=isFD(s)?"freedelivery":isGift(s)?"gifts":"discount";
   const d={kind,name:s.name,type:s.type==="amount"?"amount":"percent",value:+s.value||20,appliesTo:String(s.appliesTo||"all"),startMode:"now",startAt:"",
-    durH:Math.min(168,Math.floor(mins/60)),durM:Math.min(168,Math.floor(mins/60))>=168?0:mins%60,gifts:[],rules:[],tag:"Gifts",bg:"#FFE066",ink:"#000096",fx:"shine"};
+    durH:Math.min(168,Math.floor(mins/60)),durM:Math.min(168,Math.floor(mins/60))>=168?0:mins%60,gifts:[],rules:[],tag:"Gifts",bg:"#FFE066",ink:"#B73700",fx:"shine"};
   if(kind==="gifts"){
     const gm={};
     d.gifts=(s.gifts||[]).map(g=>{const n=uid();gm[g.id]=n;return {id:n,name:g.name,img:g.img||"",stock:g.stock==null?"":g.stock}});
     d.rules=(s.rules||[]).map(r=>({id:uid(),from:r.from,to:r.to,limit:r.limit,mode:r.mode==="random"?"random":"specific",ids:(r.ids||[]).map(i=>gm[i]).filter(Boolean),custom:!(+r.from===+r.to&&DB.sizes.some(z=>z.n===+r.from))}));
-    Object.assign(d,{tag:s.tag||"Gifts",bg:s.bg||"#FFE066",ink:s.ink||"#000096",fx:s.fx||"shine"});
+    Object.assign(d,{tag:s.tag||"Gifts",bg:s.bg||"#FFE066",ink:s.ink||"#B73700",fx:s.fx||"shine"});
   }
   A.draft=d;renderAdmin();
   const f=$("#saleForm");if(f)f.scrollIntoView({behavior:"smooth",block:"start"});
@@ -2783,7 +2783,7 @@ function giftForm(D){
     <div class="grid2">${col("Gift card background","bg")}${col("Gift card text color","ink")}</div>
     <div class="af">1. Gift pool<p class="note" style="margin:0">Add every gift you may give away. Leave Stock empty for unlimited. The rules below choose which gifts each box size gets.</p></div>
     <div class="stack" style="gap:10px">${D.gifts.map((g,i)=>`<div class="pmcard" style="gap:8px">
-      <div class="colin"><div style="width:56px;height:56px;border-radius:12px;background:#EEF0FF;display:grid;place-items:center;overflow:hidden;flex:none">${g.img?`<img src="${esc(g.img)}" alt="" style="width:100%;height:100%;object-fit:cover">`:`<span style="font-size:26px">🎁</span>`}</div>
+      <div class="colin"><div style="width:56px;height:56px;border-radius:12px;background:#FFF1E8;display:grid;place-items:center;overflow:hidden;flex:none">${g.img?`<img src="${esc(g.img)}" alt="" style="width:100%;height:100%;object-fit:cover">`:`<span style="font-size:26px">🎁</span>`}</div>
         <input class="in" data-gname="${i}" maxlength="40" placeholder="Gift name (e.g. Tote bag)" value="${esc(g.name)}" aria-label="Gift ${i+1} name">
         <button class="danger" type="button" data-gdel="${i}" aria-label="Remove gift ${i+1}">×</button></div>
       <div class="colin" style="flex-wrap:wrap"><label class="ghost mqbtn">${g.img?"Replace picture":"Upload picture"}<input type="file" accept="image/*" hidden data-gimg="${i}"></label>${g.img?`<button class="danger" type="button" data-gimgrm="${i}">Remove picture</button>`:""}
@@ -3040,7 +3040,7 @@ function addCat(){
 /* --- Flavor background editor (preview first, saved only on "Save") --- */
 let BG=null;
 function openBg(id,dr){const p=prod(id);if(!p)return;const cur=(dr?dr.bg:p.bg)||{};
-  BG={id,d:Object.assign({type:"auto",c1:"#EEF0FF",c2:"#000096",dir:"diag",img:"",size:84,ring:""},JSON.parse(JSON.stringify(cur)))};
+  BG={id,d:Object.assign({type:"auto",c1:"#FFF1E8",c2:"#B73700",dir:"diag",img:"",size:84,ring:""},JSON.parse(JSON.stringify(cur)))};
   if(!BG.d.size)BG.d.size=84;
   if(dr){BG.done=dr.done;BG.back=dr.back}
   openModal("","pbg");renderBg();}
@@ -3048,7 +3048,7 @@ function bgPrev(){const p=prod(BG.id),el=$("#bgPrev");if(!p||!el)return;
   el.innerHTML=[["Menu",""],["Small","sm"]].map(([l,c])=>`<div class="bgp ${c}"><div class="bgp-plate">${plateHTML(p,BG.d)}</div><span>${l}</span></div>`).join("")}
 function renderBg(){const p=prod(BG.id),d=BG.d,t=d.type;
   const types=[["auto","Automatic"],["color","Colour"],["gradient","Gradient"],["image","Picture"],["none","None"]];
-  const col=(id,lbl,v)=>`<label class="af">${lbl}<span class="bgcol"><input type="color" id="${id}" value="${HEX6.test(v||"")?v:"#000096"}"><input class="in" id="${id}Hex" value="${esc(v||"")}" maxlength="7" placeholder="#000096"></span></label>`;
+  const col=(id,lbl,v)=>`<label class="af">${lbl}<span class="bgcol"><input type="color" id="${id}" value="${HEX6.test(v||"")?v:"#B73700"}"><input class="in" id="${id}Hex" value="${esc(v||"")}" maxlength="7" placeholder="#B73700"></span></label>`;
   $("#modalCard").innerHTML=`<div class="sheet-top"><h3 id="modalTitle">Background · ${esc(p.name)}</h3><button class="x" type="button" data-mclose aria-label="Close">✕</button></div>
     <p class="note" style="margin-top:6px">The circle behind this flavor's photo in the shop. Nothing changes for customers until you tap Save.</p>
     <div class="bgprev" id="bgPrev"></div>
@@ -3061,7 +3061,7 @@ function renderBg(){const p=prod(BG.id),d=BG.d,t=d.type;
       ${t==="image"?`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label class="upl">${d.img?"Change picture":"Choose picture"}<input type="file" accept="image/*" id="bgFile"></label>${d.img?`<span class="note" style="margin:0">Picture ready</span>`:`<span class="note" style="margin:0">Square pictures work best (pattern, texture, colour splash).</span>`}</div>`:""}
       ${t==="none"?`<p class="note" style="margin:0">No circle. Best with cut-out photos (transparent PNG).</p>`:""}
       <label class="af">Photo size inside the circle: <b id="bgSizeV">${d.size}%</b><input type="range" id="bgSize" min="50" max="100" step="1" value="${d.size}"></label>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label class="sw"><input type="checkbox" id="bgRingOn" ${d.ring?"checked":""}><span></span></label><span class="stlabel">Outline ring</span>${d.ring?`<span class="bgcol"><input type="color" id="bgRing" value="${HEX6.test(d.ring)?d.ring:"#000096"}"></span>`:""}</div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><label class="sw"><input type="checkbox" id="bgRingOn" ${d.ring?"checked":""}><span></span></label><span class="stlabel">Outline ring</span>${d.ring?`<span class="bgcol"><input type="color" id="bgRing" value="${HEX6.test(d.ring)?d.ring:"#B73700"}"></span>`:""}</div>
     </div>
     <p class="err" id="bgErr" hidden></p>
     <div class="modal-actions"><button class="btn btn-ghost-blue" type="button" data-bgreset>Reset to automatic</button><button class="btn btn-ghost-blue" type="button" data-mclose>Cancel</button><button class="btn btn-blue" type="button" data-bgsave>Save</button></div>`;
@@ -3095,7 +3095,7 @@ $("#modal").addEventListener("input",e=>{if(A.modal!=="pbg"||!BG)return;const el
 });
 $("#modal").addEventListener("change",async e=>{if(A.modal!=="pbg"||!BG)return;const el=e.target;
   if(el.id==="bgDir"){BG.d.dir=el.value;bgPrev()}
-  else if(el.id==="bgRingOn"){BG.d.ring=el.checked?(BG.d.ring||"#000096"):"";renderBg()}
+  else if(el.id==="bgRingOn"){BG.d.ring=el.checked?(BG.d.ring||"#B73700"):"";renderBg()}
   else if(el.id==="bgFile"&&el.files[0]){try{const r=await processImage(el.files[0]);BG.d.img=r.img;renderBg()}catch(x){const er=$("#bgErr");er.textContent=x.message;er.hidden=false}}
 });
 
@@ -3164,7 +3164,7 @@ function guardPanel(){
       <div class="af">Preview<div class="grid2" id="gdPrev">${guardPrevHTML()}</div></div>
     </div></section>`;
 }
-const guardPrevHTML=()=>["clear","shuf"].map(k=>`<div class="sheet-card cw-card cw-prev" style="position:static;max-width:none;box-shadow:0 2px 12px rgba(0,0,60,.12);animation:none">${guardCardHTML(k,DB.settings)}</div>`).join("");
+const guardPrevHTML=()=>["clear","shuf"].map(k=>`<div class="sheet-card cw-card cw-prev" style="position:static;max-width:none;box-shadow:0 2px 12px rgba(60,20,0,.12);animation:none">${guardCardHTML(k,DB.settings)}</div>`).join("");
 /* Boxes & extras: the phone bar random button and the floating "show my box" circle */
 const BTN_FX_RB=[["wiggle","Wiggle now and then"],["pulse","Gentle pulse"],["none","No movement"]],BTN_FX_FAB=[["bounce","Bounce"],["pulse","Gentle pulse"],["glow","Glowing ring"],["none","No movement"]];
 function fpInit(){document.querySelectorAll("[data-fpk]").forEach(r=>{const [,lo,hi]=FP_KEYS[r.dataset.fpk];r.style.setProperty("--p",((+r.value-lo)/(hi-lo)*100)+"%")})}
@@ -3172,7 +3172,7 @@ function btnPreviewHTML(){
   const t=DB.settings,d=fabDims(),tx=t.fabTextOn!==false?String(t.fabText||"").trim().slice(0,14):"",bg=hexOk(t.rbBg,"#FFD43B");
   return `<span class="barrand fx-${fxOk(t.rbFx,["wiggle","pulse","none"],"wiggle")}" style="--rb-bg:${bg}" title="Random fill">${fabIconHTML(t.rbImg,t.rbIcon,"🎲",t.rbImgCut)}</span>
     <span class="barrand fx-none" style="--rb-bg:${bg}" title="After the box is full (shuffle)">${fabIconHTML(t.rbImg2,t.rbIcon2,"🔀",t.rbImg2Cut)}</span>
-    <span class="fab fx-${fxOk(t.fabFx,["bounce","pulse","glow","none"],"bounce")}" style="--fab-ink:${hexOk(t.fabInk,"#000096")};--fab-s:${d.ds}px;--fab-o:${d.dopa/100}"><span class="fab-pl" style="${esc(fabPlateCss(t))}"><span>${fabIconHTML(t.fabImg,t.fabIcon,"📦",t.fabImgCut)}</span></span>${tx?`<small class="fab-tx" style="${esc(fabPillCss(t))}">${esc(tx)}</small>`:""}</span>`;
+    <span class="fab fx-${fxOk(t.fabFx,["bounce","pulse","glow","none"],"bounce")}" style="--fab-ink:${hexOk(t.fabInk,"#B73700")};--fab-s:${d.ds}px;--fab-o:${d.dopa/100}"><span class="fab-pl" style="${esc(fabPlateCss(t))}"><span>${fabIconHTML(t.fabImg,t.fabIcon,"📦",t.fabImgCut)}</span></span>${tx?`<small class="fab-tx" style="${esc(fabPillCss(t))}">${esc(tx)}</small>`:""}</span>`;
 }
 function btnPanels(){
   const t=DB.settings,sw=(k,label)=>`<label class="chk"><span class="sw"><input type="checkbox" data-k="settings::${k}" ${t[k]!==false?"checked":""}><span></span></span><span>${label}</span></label>`,
@@ -3201,9 +3201,9 @@ function btnPanels(){
       <div class="af">Background behind the icon or picture (like the flavor plates)
         <div style="margin-top:6px"><label class="af">Style${sel("fabBgType",[["color","Solid colour"],["gradient","Gradient"],["none","None (see through)"]])}</label></div>
         <div class="grid2" style="margin-top:6px">${col("fabBg","Colour")}${col("fabBg2","Second colour (gradient)","#FF9F43")}</div>
-        <div class="grid2" style="margin-top:6px"><label class="af">Ring colour (optional)<input type="color" data-k="settings::fabRing" value="${hexOk(t.fabRing,"#000096")}" style="width:100%;height:42px"></label>
+        <div class="grid2" style="margin-top:6px"><label class="af">Ring colour (optional)<input type="color" data-k="settings::fabRing" value="${hexOk(t.fabRing,"#B73700")}" style="width:100%;height:42px"></label>
           <div class="af">&nbsp;<button class="ghost" type="button" data-fabringoff>${/^#[0-9a-f]{6}$/i.test(t.fabRing||"")?"Remove the ring":"No ring"}</button></div></div></div>
-      <div class="grid2">${col("fabInk","Tiny text and icon colour","#000096")}<label class="af">Movement${sel("fabFx",BTN_FX_FAB)}</label></div>
+      <div class="grid2">${col("fabInk","Tiny text and icon colour","#B73700")}<label class="af">Movement${sel("fabFx",BTN_FX_FAB)}</label></div>
       ${sw("fabGest","Let customers make it smaller and fainter (pinch it, or press and hold it)")}
       ${sw("fabHide","Hide the circle while the box is already on screen")}
       <div class="af">Size, fade and picture size
@@ -3867,7 +3867,7 @@ am.addEventListener("click",e=>{
 
 /* --- landing page editor --- */
 const LP_DEFAULT_SVG=`<svg viewBox="0 0 30 24" aria-hidden="true"><path d="M3 21a12 12 0 0 1 24 0Z" fill="currentColor"/><circle cx="15" cy="5" r="2.6" fill="currentColor"/><rect x="1" y="20.5" width="28" height="3" rx="1.5" fill="currentColor"/></svg>`;
-function defaultPage(){return {name:"callebrownies",logo:"",brand:"#000096",bg:"#ffffff",ink:"#0B0B45",headFont:"display",bodyFont:"body",fonts:[],
+function defaultPage(){return {name:"callebrownies",logo:"",brand:"#B73700",bg:"#ffffff",ink:"#2A1306",headFont:"display",bodyFont:"body",fonts:[],
   hero:{eyebrow:"Baked fresh every morning",title:"Warm cookies, boxed your way.",lede:"Pick a box, fill it with the flavors you love, and choose when you want it. Pickup or local delivery.",btn1:"Build a box",btn2:"See the flavors",bg:"",color:"#ffffff",mediaType:"none",src:"",overlay:35,floats:true,cookies:["","","","","",""],media:[],carousel:true,carouselSec:5,shape:"dome"},
   strip:{items:[{t:"Boxes of {sizes}",on:true},{t:"Order by {cutoff} for the next day",on:true},{t:"Closed {closed}",on:true}]},
   build:{title:"Build your box",intro:"Choose a size, fill every spot, then tell us when you want it. Each box is baked the morning it leaves the oven room."},
@@ -3932,7 +3932,7 @@ function heroFloats(dome,h){
   for(let i=0;i<heroCkN(h);i++){const x=heroCkx(h,i);if(!x.show)continue;const c=safeMedia(cs[i]);let inner="";
     if(c)inner=`<img class="ck ph${/^data:image\/jpeg/i.test(c)?"":" cut"}" src="${esc(c)}" alt="" draggable="false">`;else if(prods[i])inner=plateInner(prods[i]);
     if(!inner)continue;
-    html+=`<div class="float fx-${x.fx}${k>=ph?" hid-ph":""}${k>=pc?" hid-pc":""}" aria-hidden="true" style="left:${HERO_SPOTS[k][0]}%;top:${HERO_SPOTS[k][1]}%;opacity:${x.op/100}"><div class="plate" style="background:${x.bg||(i%2?"#2328C8":"#1A1FB0")}">${inner}</div></div>`;k++}
+    html+=`<div class="float fx-${x.fx}${k>=ph?" hid-ph":""}${k>=pc?" hid-pc":""}" aria-hidden="true" style="left:${HERO_SPOTS[k][0]}%;top:${HERO_SPOTS[k][1]}%;opacity:${x.op/100}"><div class="plate" style="background:${x.bg||(i%2?"#D65A1A":"#C4460C")}">${inner}</div></div>`;k++}
   dome.insertAdjacentHTML("afterbegin",html);
 }
 function heroFill(dome,h){
@@ -4040,7 +4040,7 @@ function viewLanding(){
   ${sec("Brand, colors and fonts",`
     <div class="grid2">${lpIn("Brand name","name",{max:30})}
       <div class="af">Logo image (optional)<div class="colin"><label class="ghost mqbtn">${pg.logo?"Replace logo":"Upload logo"}<input type="file" accept="image/*" hidden data-lpimg="logo"></label>${pg.logo?`<img class="lpthumb" style="max-height:36px;max-width:90px" src="${esc(safeMedia(pg.logo))}" alt="Logo"><button class="danger" type="button" data-lpclear="logo">Remove</button>`:""}</div></div></div>
-    <div class="grid3">${lpCol("Brand color (buttons, accents)","brand","#000096")}${lpCol("Page background","bg","#ffffff")}${lpCol("Text color","ink","#0B0B45")}</div>
+    <div class="grid3">${lpCol("Brand color (buttons, accents)","brand","#B73700")}${lpCol("Page background","bg","#ffffff")}${lpCol("Text color","ink","#2A1306")}</div>
     <div class="grid2">${lpFontSel("Heading font","headFont")}${lpFontSel("Body font","bodyFont")}</div>
     <div class="af">Your own fonts<div class="colin" style="flex-wrap:wrap">${pg.fonts.map(f=>`<span class="fchip">${esc(f.name)} <button class="danger" type="button" data-lpfontrm="${f.id}" style="padding:2px 8px">×</button></span>`).join("")}${pg.fonts.length<3?`<label class="ghost mqbtn">+ Upload font<input type="file" accept=".ttf,.otf,.woff,.woff2,font/*" hidden data-lpfont></label>`:""}</div>
       <p class="note">Up to 3 fonts (.ttf, .otf, .woff, .woff2, 1 MB each). They appear in the font lists above. Only upload fonts you're licensed to use on the web.</p></div>`,true)}
@@ -4052,12 +4052,12 @@ function viewLanding(){
       ${lpIn("Heading",`blocks.${i}.heading`,{max:90})}${lpIn("Text",`blocks.${i}.text`,{rows:3,max:600})}
       ${b.layout!=="text"?lpMedia(`blocks.${i}`,b):""}
       <div class="grid2">${lpIn("Button label (optional)",`blocks.${i}.btnLabel`,{max:30})}${lpIn("Button link (#build, #menu or https://...)",`blocks.${i}.btnLink`,{max:200,ph:"#build"})}</div>
-      <div class="grid2">${lpCol("Section background",`blocks.${i}.bg`,"#ffffff",true)}${lpCol("Section text color",`blocks.${i}.color`,"#0B0B45",true)}</div></div>`).join("")}
+      <div class="grid2">${lpCol("Section background",`blocks.${i}.bg`,"#ffffff",true)}${lpCol("Section text color",`blocks.${i}.color`,"#2A1306",true)}</div></div>`).join("")}
     ${pg.blocks.length<8?`<button class="btn btn-blue btn-sm" type="button" data-lpbadd style="justify-self:start">+ Add section</button>`:`<p class="note">Maximum of 8 sections.</p>`}`,pg.blocks.length>0)}
   ${sec("Build your box heading",`${lpIn("Heading","build.title",{max:60})}${lpIn("Intro text","build.intro",{rows:3,max:300})}`)}
   ${sec("Come say hello and FAQ",`
     <div class="grid2">${lpIn("Heading","visit.title",{max:60})}${lpIn("FAQ heading","visit.faqTitle",{max:60})}</div>
-    ${lpIn("Text","visit.text",{rows:2,max:300})}${lpCol("Section background","visit.bg","#EEF0FF",true)}
+    ${lpIn("Text","visit.text",{rows:2,max:300})}${lpCol("Section background","visit.bg","#FFF1E8",true)}
     <p class="note">Opening hours and the address are edited in Shop settings. In an answer, <b>{cutoff}</b> becomes your order cutoff time.</p>
     ${pg.faq.map((f,i)=>`<div class="lpblock">${lpIn("Question",`faq.${i}.q`,{max:120})}${lpIn("Answer",`faq.${i}.a`,{rows:3,max:500})}<button class="danger" type="button" data-lpfdel="${i}" style="justify-self:start">Delete question</button></div>`).join("")}
     ${pg.faq.length<8?`<button class="btn btn-blue btn-sm" type="button" data-lpfadd style="justify-self:start">+ Add question</button>`:""}`)}
@@ -4529,7 +4529,7 @@ am.addEventListener("change",e=>{const el=e.target;if(A.tab!=="badges")return;if
   else if(k==="menuSort"){DB.settings.menuSort=el.value==="manual"?"manual":"popular";if(SBH.on&&SBH.changed)setTimeout(()=>draftPublish("settings",["menuSort"]),0)}   // the Badges page has no publish bar: the flavor order goes live straight away
   saveDB();toast("Saved");renderAdmin()});
 am.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||A.tab!=="badges")return;const d=b.dataset;
-  if(d.bdnew!==undefined){BD.edit={isNew:true,id:"b"+uid().slice(0,6),text:"⭐ Chef's pick",font:"display",color:"#FFFFFF",bg:"#000096",fx:"shine"};renderAdmin();scrollTo(0,0)}
+  if(d.bdnew!==undefined){BD.edit={isNew:true,id:"b"+uid().slice(0,6),text:"⭐ Chef's pick",font:"display",color:"#FFFFFF",bg:"#B73700",fx:"shine"};renderAdmin();scrollTo(0,0)}
   else if(d.bdedit){const x=DB.badges.list.find(y=>y.id===d.bdedit);if(x){BD.edit=Object.assign({},x);renderAdmin();scrollTo(0,0)}}
   else if(d.bdcancel!==undefined){BD.edit=null;renderAdmin()}
   else if(d.bdsave!==undefined){bdRead();const E=BD.edit,t=String(E.text||"").trim();
@@ -4542,7 +4542,7 @@ am.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||A.tab!
 });
 
 /* --- colour picker pop-up: swatches, HEX code, Transparent (replaces the phone's own colour box everywhere) --- */
-const CP_SW=["#000096","#1A1FB0","#2328C8","#2563EB","#06B6D4","#16A34A","#84CC16","#FACC15","#F97316","#C8102E","#EC4899","#7C3AED","#000000","#475569","#94A3B8","#FFFFFF"];
+const CP_SW=["#B73700","#C4460C","#D65A1A","#2563EB","#06B6D4","#16A34A","#84CC16","#FACC15","#F97316","#C8102E","#EC4899","#7C3AED","#000000","#475569","#94A3B8","#FFFFFF"];
 const cpShow=v=>v==="transparent"?"transparent":String(v||"").toUpperCase();
 const cpRecent=()=>{try{return JSON.parse(localStorage.getItem("dd_cp_recent")||"[]").filter(x=>HEX6.test(x)).slice(0,8)}catch(e){return[]}};
 function cpAttach(c){
@@ -4555,20 +4555,20 @@ function cpAttach(c){
 }
 function cpOpen(c){
   const old=document.getElementById("cpov");if(old)old.remove();
-  let v=HEX6.test(c.value)?c.value.toLowerCase():"#000096";const ov=document.createElement("div");ov.id="cpov";ov.className="cpov";
+  let v=HEX6.test(c.value)?c.value.toLowerCase():"#B73700";const ov=document.createElement("div");ov.id="cpov";ov.className="cpov";
   const sw=x=>`<button type="button" class="cpsw" data-c="${x}" style="background:${x}" aria-label="${x}"></button>`,rec=cpRecent();
   ov.innerHTML=`<div class="cpcard" role="dialog" aria-modal="true" aria-label="Select colour"><h3>Select colour</h3>
     <div class="cpgrid">${CP_SW.map(sw).join("")}</div>
     ${rec.length?`<p class="note" style="margin:10px 0 6px">Recently chosen</p><div class="cpgrid">${rec.map(sw).join("")}</div>`:""}
     <div class="cprow"><button type="button" class="cpsw tr" data-c="transparent" aria-label="Transparent"></button><button type="button" class="ghost" data-c="transparent">Transparent</button>
       <label class="ghost cpwheel">Colour wheel<input type="color" hidden></label></div>
-    <label class="af" style="margin-top:10px">HEX code<div class="cprow" style="margin:0"><i class="cpprev" id="cpPrev"></i><input class="in" id="cpHex" maxlength="11" spellcheck="false" autocomplete="off" placeholder="#000096"></div></label>
+    <label class="af" style="margin-top:10px">HEX code<div class="cprow" style="margin:0"><i class="cpprev" id="cpPrev"></i><input class="in" id="cpHex" maxlength="11" spellcheck="false" autocomplete="off" placeholder="#B73700"></div></label>
     <div class="cpact"><button type="button" class="ghost" data-cpx>Cancel</button><button type="button" class="btn btn-blue" id="cpSet" data-cpset>Set</button></div></div>`;
   document.body.appendChild(ov);
   const hx=ov.querySelector("#cpHex"),pv=ov.querySelector("#cpPrev"),st=ov.querySelector("#cpSet"),wheel=ov.querySelector("input[type=color]");
   const show=()=>{pv.classList.toggle("tr",v==="transparent");pv.style.background=v==="transparent"?"":v;hx.value=cpShow(v);hx.classList.remove("bad");st.disabled=false;ov.querySelectorAll(".cpsw").forEach(n=>n.classList.toggle("on",n.dataset.c.toLowerCase()===v))};
   const close=()=>{ov.remove();document.removeEventListener("keydown",esc)},esc=e=>{if(e.key==="Escape")close()};document.addEventListener("keydown",esc);
-  wheel.value=HEX6.test(v)&&v!=="transparent"?v:"#000096";
+  wheel.value=HEX6.test(v)&&v!=="transparent"?v:"#B73700";
   wheel.addEventListener("input",()=>{v=wheel.value.toLowerCase();show()});
   hx.addEventListener("input",()=>{let t=hexNorm(hx.value);if(/^#[0-9a-f]{3}$/.test(t))t="#"+t.slice(1).split("").map(q=>q+q).join("");
     if(HEX6.test(t)){v=t;pv.classList.toggle("tr",v==="transparent");pv.style.background=v==="transparent"?"":v;hx.classList.remove("bad");st.disabled=false;ov.querySelectorAll(".cpsw").forEach(n=>n.classList.toggle("on",n.dataset.c.toLowerCase()===v))}
