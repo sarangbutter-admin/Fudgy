@@ -535,7 +535,7 @@ function renderStoreStatic(){
   renderLanding();
   $("#hours").innerHTML = set.hours.map(h=>`<dt>${esc(h[0])}</dt><dd>${esc(h[1])}</dd>`).join("");
   $("#addr").textContent = set.address;
-  $("#bases").innerHTML=activeBases().map(b=>`<button class="extra" type="button" data-batter="${esc(b.id)}" aria-pressed="false"><span class="tick">✓</span><span><b>${esc(b.name)}</b>${b.desc?`<small>${esc(b.desc)}</small>`:""}</span>${+b.price>0?`<span class="pr">+${money(b.price)} each</span>`:""}</button>`).join("");
+  $("#bases").innerHTML=activeBases().map(b=>{const pic=imgOk(b.img),ico=imgOk(b.icon);return `<button class="extra baseopt" type="button" data-batter="${esc(b.id)}" aria-pressed="false"><span class="tick">✓</span>${pic?`<img class="bpic" src="${esc(pic)}" alt="" loading="lazy">`:""}<span><b class="bnm">${ico?`<img class="bico" src="${esc(ico)}" alt="">`:""}${esc(b.name)}</b>${b.desc?`<small>${esc(b.desc)}</small>`:""}</span>${+b.price>0?`<span class="pr">+${money(b.price)} each</span>`:""}</button>`}).join("");
   const act=DB.addons.filter(a=>a.active);
   $("#extrasBlock").hidden=!act.length;
   $("#extras").innerHTML=act.map(a=>`<button class="extra" type="button" data-addon="${a.id}" aria-pressed="false"><span class="tick">✓</span><span><b>${esc(a.name)}</b><small>${esc(a.desc)}</small></span><span class="pr">+${money(a.price)}</span></button>`).join("");
@@ -564,7 +564,8 @@ function renderStore(){
     <button class="btn btn-blue btn-sm cuse" type="button" data-cuse ${on?"disabled":""}>${on?"Selected":`Use box of ${n}`}</button></div>${giftPlan(n).length?`<div class="gifthint inl"><span class="ic" aria-hidden="true">🎁</span><span class="t">Free gift with ${n} brownies!</span><button class="gifthint-b" type="button" data-giftsee="${n}">See gifts ›</button></div>`:""}`}}
   // sizes (with live sale prices)
   $("#sizes").innerHTML = activeSizes().map(s=>{const sale=bestSale(s.n),now=sale?r2(s.price-saleDiscount(sale,s.price)):s.price;
-    return `<button class="size" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>BROWNIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
+    const pic=imgOk(s.img),ico=imgOk(s.icon);
+    return `<button class="size${pic?" pic":""}" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${pic?`<img class="spic" src="${esc(pic)}" alt="" loading="lazy">`:""}${ico?`<img class="sico" src="${esc(ico)}" alt="">`:""}${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>BROWNIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
   renderGiftHint();renderBarExtras();renderFab();
   document.querySelectorAll(".card").forEach(c=>{const st=c.querySelector(".stepper");if(!st)return;const n=countOf(c.dataset.id);st.querySelector("output").textContent=n;c.classList.toggle("has",n>0);
     st.querySelector('[data-act="dec"]').disabled=n===0;st.querySelector('[data-act="inc"]').disabled=full()||n>=stockLeft(prod(c.dataset.id))});
@@ -3126,13 +3127,17 @@ $("#modal").addEventListener("change",async e=>{if(A.modal!=="pbg"||!BG)return;c
 });
 
 /* --- Boxes & extras --- */
+// picture + icon upload for a brownie base or a box size (k = "bases:<id>" or "sizes:<n>")
+function mediaCell(k,o){const one=(f,l)=>{const u=imgOk(o[f]);return `<div class="medrow">${u?`<img class="medthumb${f==="icon"?" ico":""}" src="${esc(u)}" alt="">`:`<span class="medthumb none${f==="icon"?" ico":""}" aria-hidden="true"></span>`}<label class="upl">${u?"Replace":"Upload"} ${l}<input type="file" accept="image/*" data-mimg="${k}:${f}" aria-label="Upload ${l}"></label>${u?`<button class="linkbtn" type="button" data-mrm="${k}:${f}">Remove</button>`:""}</div>`};
+  return `<td class="medcell">${one("img","picture")}${one("icon","icon")}</td>`}
+function mediaItem(k){const [c,id]=k.split(":");return c==="sizes"?DB.sizes.find(x=>String(x.n)===id):(DB.bases||[]).find(x=>x.id===id)}
 function viewBoxes(){
   return head("Boxes & extras","Set brownie bases, box sizes and prices, and the paid extras customers can add at checkout.")+MOCK+`
   <div class="stack">
     <section class="panel">
       <div class="phead"><div><h2>Brownie bases</h2><p class="sub">Step 1 in the shop: customers choose a base before they build their box. Turn a base off to hide it without deleting it. If every base is off, the step is skipped.</p></div><button class="btn btn-blue btn-sm" type="button" data-badd>+ Add base</button></div>
-      ${(DB.bases||[]).length?`<div class="tablewrap"><table class="t" style="min-width:620px"><thead><tr><th>Name</th><th>Description</th><th>Extra per brownie</th><th>Available</th><th></th></tr></thead><tbody>
-      ${DB.bases.map(b=>`<tr>
+      ${(DB.bases||[]).length?`<div class="tablewrap"><table class="t" style="min-width:820px"><thead><tr><th>Picture &amp; icon</th><th>Name</th><th>Description</th><th>Extra per brownie</th><th>Available</th><th></th></tr></thead><tbody>
+      ${DB.bases.map(b=>`<tr>${mediaCell("bases:"+b.id,b)}
         <td><input class="in" data-k="bases:${b.id}:name" maxlength="40" value="${esc(b.name)}" aria-label="Base name"></td>
         <td><input class="in" data-k="bases:${b.id}:desc" maxlength="120" value="${esc(b.desc||"")}" placeholder="Optional" aria-label="Base description"></td>
         <td style="width:150px"><div class="money-in"><span>+${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.05" data-k="bases:${b.id}:price" value="${+b.price||0}" aria-label="Extra price per brownie"></div></td>
@@ -3141,21 +3146,16 @@ function viewBoxes(){
       </tbody></table></div><p class="note" style="margin-top:8px">Extra per brownie: 0 means the base is included in the box price. Example: +${money(0.5)} on a box of 6 adds ${money(3)}.</p>`:`<div class="empty">No bases. The shop skips this step.</div>`}
     </section>
     <section class="panel">
-      <h2>Box sizes</h2><p class="sub">Turn a size off to hide it from the shop without deleting it.</p>
-      <div class="tablewrap"><table class="t" style="min-width:460px"><thead><tr><th>Brownies</th><th>Price</th><th>On sale now</th><th>Available</th><th></th></tr></thead><tbody>
-      ${DB.sizes.slice().sort((a,b)=>a.n-b.n).map(s=>{const sale=bestSale(s.n);return `<tr>
-        <td><b>Box of ${s.n}</b></td>
+      <div class="phead"><div><h2>Brownies size</h2><p class="sub">The box sizes customers choose in step 2. Turn a size off to hide it from the shop without deleting it.</p></div><button class="btn btn-blue btn-sm" type="button" data-sadd>+ Add size</button></div>
+      <div class="tablewrap"><table class="t" style="min-width:760px"><thead><tr><th>Picture &amp; icon</th><th>Brownies</th><th>Price</th><th>On sale now</th><th>Available</th><th></th></tr></thead><tbody>
+      ${DB.sizes.slice().sort((a,b)=>a.n-b.n).map(s=>{const sale=bestSale(s.n);return `<tr>${mediaCell("sizes:"+s.n,s)}
+        <td style="width:120px"><input class="in" type="number" min="1" max="48" step="1" data-sn="${s.n}" value="${s.n}" ${ROLE()==="owner"?"":"disabled"} aria-label="Brownies in this box"></td>
         <td style="width:150px"><div class="money-in"><span>${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.5" data-k="sizes:${s.n}:price" value="${s.price}" aria-label="Price for box of ${s.n}"></div></td>
         <td>${sale?`<span class="spill live">${money(s.price-saleDiscount(sale,s.price))}</span>`:`<span class="note">No</span>`}</td>
         <td><label class="sw"><input type="checkbox" data-k="sizes:${s.n}:active" ${s.active?"checked":""} aria-label="Box of ${s.n} available"><span></span></label></td>
         <td class="r">${ROLE()==="owner"?`<button class="danger" type="button" data-sdel="${s.n}">Delete</button>`:""}</td></tr>`}).join("")}
       </tbody></table></div>
-      <div class="grid3" style="margin-top:14px;align-items:end">
-        <label class="af">New size (brownies)<input class="in" type="number" min="1" max="24" id="newN" placeholder="e.g. 9"></label>
-        <label class="af">Price<div class="money-in"><span>${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.5" id="newP" placeholder="30"></div></label>
-        <button class="ghost" type="button" data-sadd style="height:40px">+ Add size</button>
-      </div>
-      <p class="err" id="sizeErr" hidden style="margin-top:8px"></p>
+      <p class="note" style="margin-top:8px">A new size starts turned off: set the number of brownies and the price, then switch it on. Only the owner can change the number.</p>
     </section>
     <section class="panel">
       <div class="phead"><div><h2>Custom box</h2><p class="sub">Lets customers build a bigger box than your fixed sizes. They can only pick the minimum or a step above it (for example 14, 16, 18).</p></div>
@@ -3481,6 +3481,21 @@ function setK(el){
 }
 const am=$("#amain");
 am.addEventListener("input",e=>{const el=e.target;if(!el.dataset.cpf||!A.cp)return;cpSetF(el)});
+am.addEventListener("change",async e=>{const el=e.target;if(!el.dataset.mimg||!el.files||!el.files[0])return;
+  const k=el.dataset.mimg,f=k.split(":")[2],o=mediaItem(k),lbl=el.closest(".upl");if(!o)return;
+  lbl&&lbl.classList.add("busy");
+  try{const r=await processImage(el.files[0]),prev=o[f];o[f]=r.img;
+    if(!saveDB()){if(prev)o[f]=prev;else delete o[f];toast("Not enough storage space. Use a smaller picture.")}
+    else toast(f==="icon"?"Icon added":"Picture added")}catch(x){toast(x.message)}
+  renderAdmin()});
+am.addEventListener("change",e=>{const el=e.target;if(el.dataset.sn===undefined)return;
+  const old=+el.dataset.sn,n=Math.round(+el.value),z=DB.sizes.find(x=>x.n===old);if(!z||n===old)return;
+  const back=m=>{el.value=old;if(m)toast(m)};
+  if(!(n>=1&&n<=48))return back("Brownies: use a number from 1 to 48.");
+  if(DB.sizes.some(x=>x.n===n))return back(`There's already a box of ${n}.`);
+  (SBH.on?needOwner("change a box size"):Promise.resolve()).then(()=>{z.n=n;
+    (DB.sales||[]).forEach(x=>{if(x.appliesTo===String(old))x.appliesTo=String(n);(x.rules||[]).forEach(r=>{if(+r.from===old&&+r.to===old){r.from=n;r.to=n}})});
+    saveDB();toast(`Box of ${old} is now a box of ${n}`);renderAdmin()}).catch(()=>back("Size not changed"))});
 am.addEventListener("change",e=>{const el=e.target;if(!el.dataset.cpf||!A.cp)return;cpSetF(el);if(el.dataset.cprr)renderAdmin()});
 function cpSetF(el){const k=el.dataset.cpf;A.cp[k]=el.type==="checkbox"?el.checked:el.type==="number"?(+el.value||0):el.value}
 am.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
@@ -3687,12 +3702,11 @@ am.addEventListener("click",e=>{
   else if(d.pst){A.pst=d.pst;renderAdmin()}
   else if(d.pedit){openPEdit(d.pedit)}
   else if(d.pclear!==undefined){A.pq="";A.pcat="all";renderAdmin()}
-  else if(d.sadd!==undefined){const n=Math.round(+$("#newN").value),p=+$("#newP").value,err=$("#sizeErr");
-    if(!(n>=1&&n<=24)){err.textContent="Box size must be between 1 and 24 brownies.";err.hidden=false;return}
-    if(DB.sizes.some(s=>s.n===n)){err.textContent=`There's already a box of ${n}.`;err.hidden=false;return}
-    if(!(p>0)){err.textContent="Set a price above 0.";err.hidden=false;return}
-    DB.sizes.push({n,price:p,active:true});saveDB();toast(`Box of ${n} added`);renderAdmin()}
+  else if(d.sadd!==undefined){let n=Math.max(0,...DB.sizes.map(z=>z.n))+1;while(DB.sizes.some(z=>z.n===n))n++;
+    if(n>48){toast("Every size up to 48 is already used.");return}
+    DB.sizes.push({n,price:r2(n*(+DB.settings.customPer||1)),active:false});saveDB();toast(`Box of ${n} added, turned off`);renderAdmin()}
   else if(d.sdel){delConfirm("this box size",()=>{if(DB.sizes.length<=1){toast("Keep at least one box size");return}needOwner("delete a box size").then(()=>{DB.sizes=DB.sizes.filter(s=>String(s.n)!==d.sdel);saveDB();toast("Size deleted");renderAdmin()}).catch(()=>{})})}
+  else if(d.mrm){const o=mediaItem(d.mrm),f=d.mrm.split(":")[2];if(o){delete o[f];saveDB();toast(f==="icon"?"Icon removed":"Picture removed");renderAdmin()}}
   else if(d.badd!==undefined){DB.bases=DB.bases||[];DB.bases.push({id:uid(),name:"New base",desc:"",price:0,active:false});saveDB();toast("Base added, turned off");renderAdmin()}
   else if(d.bdel){delConfirm("this base",()=>needOwner("delete a brownie base").then(()=>{DB.bases=DB.bases.filter(b=>b.id!==d.bdel);saveDB();toast("Base deleted");renderAdmin()}).catch(()=>{}))}
   else if(d.aadd!==undefined){DB.addons.push({id:uid(),name:"New extra",desc:"",price:1,active:false});saveDB();toast("Extra added, turned off");renderAdmin()}

@@ -526,7 +526,7 @@ function renderStoreStatic(){
   renderLanding();
   $("#hours").innerHTML = set.hours.map(h=>`<dt>${esc(h[0])}</dt><dd>${esc(h[1])}</dd>`).join("");
   $("#addr").textContent = set.address;
-  $("#bases").innerHTML=activeBases().map(b=>`<button class="extra" type="button" data-batter="${esc(b.id)}" aria-pressed="false"><span class="tick">✓</span><span><b>${esc(b.name)}</b>${b.desc?`<small>${esc(b.desc)}</small>`:""}</span>${+b.price>0?`<span class="pr">+${money(b.price)} each</span>`:""}</button>`).join("");
+  $("#bases").innerHTML=activeBases().map(b=>{const pic=imgOk(b.img),ico=imgOk(b.icon);return `<button class="extra baseopt" type="button" data-batter="${esc(b.id)}" aria-pressed="false"><span class="tick">✓</span>${pic?`<img class="bpic" src="${esc(pic)}" alt="" loading="lazy">`:""}<span><b class="bnm">${ico?`<img class="bico" src="${esc(ico)}" alt="">`:""}${esc(b.name)}</b>${b.desc?`<small>${esc(b.desc)}</small>`:""}</span>${+b.price>0?`<span class="pr">+${money(b.price)} each</span>`:""}</button>`}).join("");
   const act=DB.addons.filter(a=>a.active);
   $("#extrasBlock").hidden=!act.length;
   $("#extras").innerHTML=act.map(a=>`<button class="extra" type="button" data-addon="${a.id}" aria-pressed="false"><span class="tick">✓</span><span><b>${esc(a.name)}</b><small>${esc(a.desc)}</small></span><span class="pr">+${money(a.price)}</span></button>`).join("");
@@ -554,7 +554,8 @@ function renderStore(){
     <button class="btn btn-blue btn-sm cuse" type="button" data-cuse ${on?"disabled":""}>${on?"Selected":`Use box of ${n}`}</button></div>${giftPlan(n).length?`<div class="gifthint inl"><span class="ic" aria-hidden="true">🎁</span><span class="t">Free gift with ${n} brownies!</span><button class="gifthint-b" type="button" data-giftsee="${n}">See gifts ›</button></div>`:""}`}}
   // sizes (with live sale prices)
   $("#sizes").innerHTML = activeSizes().map(s=>{const sale=bestSale(s.n),now=sale?r2(s.price-saleDiscount(sale,s.price)):s.price;
-    return `<button class="size" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>BROWNIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
+    const pic=imgOk(s.img),ico=imgOk(s.icon);
+    return `<button class="size${pic?" pic":""}" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${pic?`<img class="spic" src="${esc(pic)}" alt="" loading="lazy">`:""}${ico?`<img class="sico" src="${esc(ico)}" alt="">`:""}${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>BROWNIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
   renderGiftHint();renderBarExtras();renderFab();
   document.querySelectorAll(".card").forEach(c=>{const st=c.querySelector(".stepper");if(!st)return;const n=countOf(c.dataset.id);st.querySelector("output").textContent=n;c.classList.toggle("has",n>0);
     st.querySelector('[data-act="dec"]').disabled=n===0;st.querySelector('[data-act="inc"]').disabled=full()||n>=stockLeft(prod(c.dataset.id))});
