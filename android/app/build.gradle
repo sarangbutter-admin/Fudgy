@@ -1,0 +1,39 @@
+plugins { id "com.android.application" }
+
+// Two test apps that open the dev branch addresses full-screen (Trusted Web Activity).
+def flavorsCfg = [
+  admin: [id: "com.callebrownies.admin.test", name: "Callebrownies Admin (test)", host: "YOUR-TEAM-ADDRESS"],
+  shop : [id: "com.callebrownies.shop.test",  name: "Callebrownies (test)",       host: "YOUR-SHOP-ADDRESS"],
+]
+
+android {
+  namespace "com.callebrownies.twa"
+  compileSdk 34
+  defaultConfig { minSdk 21; targetSdk 34; versionCode 1; versionName "0.1-test" }
+  signingConfigs {
+    release {
+      storeFile file(System.getenv("KS_FILE") ?: "../test-signing/callebrownies-TEST-ONLY.jks")
+      storePassword System.getenv("KS_PASS")
+      keyAlias "callebrownies"
+      keyPassword System.getenv("KS_PASS")
+    }
+  }
+  buildTypes { release { minifyEnabled false; signingConfig signingConfigs.release } }
+  flavorDimensions "app"
+  productFlavors {
+    flavorsCfg.each { k, c ->
+      create(k) {
+        dimension "app"
+        applicationId c.id
+        resValue "string", "app_name", c.name
+        resValue "string", "launch_url", "https://${c.host}/"
+        manifestPlaceholders = [twaHost: c.host]
+        resValue "string", "asset_statements",
+          "[{\\\"relation\\\": [\\\"delegate_permission/common.handle_all_urls\\\"], \\\"target\\\": {\\\"namespace\\\": \\\"web\\\", \\\"site\\\": \\\"https://${c.host}\\\"}}]"
+      }
+    }
+  }
+  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
+
+dependencies { implementation "com.google.androidbrowserhelper:androidbrowserhelper:2.5.0" }

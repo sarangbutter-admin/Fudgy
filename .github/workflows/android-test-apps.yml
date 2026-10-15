@@ -1,0 +1,42 @@
+name: Android test apps
+
+# Builds two TEST apps that open the dev addresses full-screen:
+#   Callebrownies (test)        -> https://YOUR-SHOP-ADDRESS
+#   Callebrownies Admin (test)  -> https://YOUR-TEAM-ADDRESS
+# The APKs are attached to the "android-test" pre-release on GitHub.
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths: ["android/**", ".github/workflows/android-test-apps.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: "8.7" }
+      - name: Build both APKs
+        env:
+          KS_PASS: "EujQ_ZK6Yk0MkphtMbko0CTA"   # TEST ONLY key, see android/test-signing/README.md
+        run: gradle -p android assembleRelease --no-daemon
+      - name: Collect APKs
+        run: |
+          mkdir out
+          cp android/app/build/outputs/apk/shop/release/*.apk  out/Callebrownies-shop-TEST.apk
+          cp android/app/build/outputs/apk/admin/release/*.apk out/Callebrownies-admin-TEST.apk
+          ls -la out
+      - name: Publish to the android-test pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete android-test --yes --cleanup-tag || true
+          gh release create android-test out/*.apk --prerelease --target "${{ github.sha }}" \
+            --title "Android test apps" \
+            --notes "Test APKs that open the dev addresses. Built from ${{ github.sha }}. Not for the Play Store."
