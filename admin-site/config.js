@@ -2,5 +2,5 @@ window.CALLEBROWNIES_CONFIG = {
   supabaseUrl: "https://uvxocwqzjilabkywfroq.supabase.co",
   supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2eG9jd3F6amlsYWJreXdmcm9xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwODA0NDgsImV4cCI6MjEwNzY1NjQ0OH0.QTmb-a_Gtprv3YniEgQaLOWsRoHRrZgzknsb5WETso4",
   // team site only: address of the customer shop (for the "View shop" button)
-  shopUrl: ""
+  shopUrl: "https://dev--fudgy.netlify.app"
 };
