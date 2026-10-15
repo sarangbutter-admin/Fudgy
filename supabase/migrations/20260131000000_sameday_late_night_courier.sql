@@ -31,10 +31,9 @@ end $$;
 -- the hourly courier job (the webhook secret is read when it runs, it is not stored in the job)
 create extension if not exists pg_net;
 create extension if not exists pg_cron;
--- !! Before running: replace YOUR-PROJECT-REF below with your own Supabase project ref.
 select cron.schedule('dd-courier-sweep', '0 * * * *', $job$
   select net.http_post(
-    url := 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/biteship-webhook?k=' || coalesce((select data ->> 'v' from public.private_kv where key = 'webhook_secret'), ''),
+    url := 'https://uvxocwqzjilabkywfroq.supabase.co/functions/v1/biteship-webhook?k=' || coalesce((select data ->> 'v' from public.private_kv where key = 'webhook_secret'), ''),
     body := '{"cron":"sweep"}'::jsonb,
     headers := '{"Content-Type":"application/json"}'::jsonb,
     timeout_milliseconds := 60000)
