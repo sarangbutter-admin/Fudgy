@@ -122,12 +122,12 @@ Deno.serve(async (req) => {
       if (!(Number.isFinite(lat) && Number.isFinite(lng)) && !postal) return json({ error: "Choose your delivery area or location first." }, 400);
       const { data: sz } = await db.from("coll").select("data").eq("coll", "sizes").eq("id", String(size)).maybeSingle();
       let base = sz && sz.data ? num((sz.data as any).price) : 0;
-      // a custom box (for example 14 cookies) is not in the sizes list: price it like the shop does, when the size is allowed
+      // a custom box (for example 14 brownies) is not in the sizes list: price it like the shop does, when the size is allowed
       const cmin = num(set?.customMin), cstep = Math.max(1, num(set?.customStep, 1));
       if (!base && set?.customOn && size >= cmin && size <= num(set?.customMax) && (size - cmin) % cstep === 0) base = Math.round(size * num(set?.customPer));
       if (!base) return json({ error: "Unknown box size." }, 400);
       const box = boxOf(cfg, size);
-      const items = [{ name: "Cookie box of " + size, description: "Fragile baked goods", value: Math.round(base), length: box.length, width: box.width, height: box.height, weight: box.weight, quantity: 1 }];
+      const items = [{ name: "Brownie box of " + size, description: "Fragile baked goods", value: Math.round(base), length: box.length, width: box.width, height: box.height, weight: box.weight, quantity: 1 }];
       const allowed: string[] = (Array.isArray(cfg.couriers) ? cfg.couriers : ["gojek", "grab", "lalamove"]).map((c: string) => String(c).toLowerCase().trim()).filter(Boolean);
       const inst = allowed.filter((c) => INSTANT.includes(c)), reg = allowed.filter((c) => !INSTANT.includes(c));
       const pricing: any[] = [];

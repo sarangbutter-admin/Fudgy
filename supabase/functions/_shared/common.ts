@@ -119,11 +119,11 @@ export function driverOf(b: any) {
   return d.name || d.phone || d.plate ? d : null;
 }
 const CUST_TXT: Record<string, (sh: any) => string> = {
-  allocated: (sh) => `Driver found${sh.driver && sh.driver.name ? ": " + sh.driver.name : ""} (${sh.courierName || sh.courier}). They're coming to pick up your cookies.`,
+  allocated: (sh) => `Driver found${sh.driver && sh.driver.name ? ": " + sh.driver.name : ""} (${sh.courierName || sh.courier}). They're coming to pick up your brownies.`,
   picking_up: () => "Your courier is on the way to pick up your order.",
-  picked: () => "Your cookies were picked up by the courier.",
+  picked: () => "Your brownies were picked up by the courier.",
   dropping_off: () => "Your order is on the way to you!",
-  delivered: () => "Your order was delivered. Enjoy your cookies!",
+  delivered: () => "Your order was delivered. Enjoy your brownies!",
   courier_not_found: () => "No courier was free yet. We're arranging another one for you.",
   rejected: () => "The courier couldn't take your order. We're arranging another one for you.",
   cancelled: () => "The courier cancelled. We're arranging another one for you.",
@@ -230,8 +230,8 @@ export async function bookOrder(db: any, key: string, cfg: any, row: { id: strin
     destination_contact_name: cl(c.name, 60), destination_contact_phone: cl(c.phone, 20), destination_contact_email: cl(c.email, 100),
     destination_address: cl(c.address, 250), destination_note: cl(await driverNote(db, o, row.id), 500),
     courier_company: sh.courier, courier_type: sh.service, delivery_type: "now",
-    order_note: "Callebrownies order " + o.code + " (cookies, handle with care)", metadata: { orderCode: o.code },
-    items: [{ name: "Cookie box of " + o.size, description: "Fragile baked goods", value: Math.round(nm(o.base)), quantity: 1, weight: box.weight, length: box.length, width: box.width, height: box.height }],
+    order_note: "Callebrownies order " + o.code + " (brownies, handle with care)", metadata: { orderCode: o.code },
+    items: [{ name: "Brownie box of " + o.size, description: "Fragile baked goods", value: Math.round(nm(o.base)), quantity: 1, weight: box.weight, length: box.length, width: box.width, height: box.height }],
   };
   if (org.lat !== "" && org.lng !== "" && Number.isFinite(nm(org.lat, NaN)) && Number.isFinite(nm(org.lng, NaN))) payload.origin_coordinate = { latitude: nm(org.lat), longitude: nm(org.lng) };
   else if (org.postal) payload.origin_postal_code = Math.round(nm(org.postal));

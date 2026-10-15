@@ -23,7 +23,7 @@ begin
   return r;
 end $$;
 
--- the gifts a box of p_n cookies earns right now: every "always" gift, plus a random pick from each promo's "random" pool
+-- the gifts a box of p_n brownies earns right now: every "always" gift, plus a random pick from each promo's "random" pool
 create or replace function public.gifts_for(p_n int, p_at bigint) returns jsonb
 language plpgsql volatile security definer set search_path = public as $$
 declare s record; g jsonb; res jsonb := '[]'::jsonb; q int; k int; cnt int;

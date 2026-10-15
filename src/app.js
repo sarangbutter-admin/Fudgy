@@ -57,7 +57,7 @@ function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15
 function seedDB(){
   const now=Date.now(), H=3600e3;
   const db={v:1,
-    settings:{currency:"$",tz:"Asia/Jakarta",deliveryFee:5,deliveryKm:10,samedayOn:false,samedayLeadH:3,samedayCutoff:15,samedayFee:8,samedayPayMin:60,minPayMin:30,rejPayMin:120,payCdColor:"#C8102E",payCdSize:"L",payCdFx:true,pickupOn:true,pickupLeadH:24,schedOn:true,schedLeadH:24,cutoffHour:20,closedWeekdays:[1],lowStockAt:10,customOn:true,customMin:14,customStep:2,customMax:48,customPer:3.25,payWindowH:24,complaintWindowH:24,waCountry:"62",payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Cookies",
+    settings:{currency:"$",tz:"Asia/Jakarta",deliveryFee:5,deliveryKm:10,samedayOn:false,samedayLeadH:3,samedayCutoff:15,samedayFee:8,samedayPayMin:60,minPayMin:30,rejPayMin:120,payCdColor:"#C8102E",payCdSize:"L",payCdFx:true,pickupOn:true,pickupLeadH:24,schedOn:true,schedLeadH:24,cutoffHour:20,closedWeekdays:[1],lowStockAt:10,customOn:true,customMin:14,customStep:2,customMax:48,customPer:3.25,payWindowH:24,complaintWindowH:24,waCountry:"62",payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Brownies",
       times:["10 to 11am","12 to 1pm","3 to 4pm","5 to 6pm"],
       address:"12 Example Street, Your City. Look for the blue dome sign.",
       hours:[["Tue to Fri","10am to 6pm"],["Saturday","9am to 5pm"],["Sunday","10am to 3pm"],["Monday","Closed"]]},
@@ -76,7 +76,7 @@ function seedDB(){
     addons:[
       {id:"wrap",name:"Gift wrap",desc:"Ribbon, tissue and a sticker seal.",price:3,active:true},
       {id:"card",name:"Greeting card",desc:"We handwrite your gift note on a card.",price:2,active:true},
-      {id:"milk",name:"Fresh milk, 500 ml",desc:"Chilled, to go with the cookies.",price:4,active:true}
+      {id:"milk",name:"Fresh milk, 500 ml",desc:"Chilled, to go with the brownies.",price:4,active:true}
     ],
     sales:[
       {id:uid(),name:"Lunch rush",type:"percent",value:20,appliesTo:"all",start:now-15*60e3,end:now+105*60e3},
@@ -127,11 +127,11 @@ function defaultAnnouncer(){return {on:true,sticky:true,size:"M",cdColor:"#C8102
   giftsoon:{text:"Coming up: {name}, free gifts with {applies}.",label:"Starts in",bg:"#FFF7D6",ink:"#B73700",img:""},
   mq:{bg:"#B73700",ink:"#FFFFFF",font:"display",fontData:"",fontName:"",size:"M",speed:"medium",sepOn:true,sepImg:""},
   custom:{on:false,text:"Free delivery this weekend!",label:"Ends in",endsAt:"",bg:"#B73700",ink:"#FFFFFF",img:""}}}
-function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day cookies"],images:[],bg:"#B73700",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
+function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day brownies"],images:[],bg:"#B73700",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
 function defaultThanks(){return {logo:"",cookies:[],fx:true,amount:28,title:"Order placed",titleUpd:"Order updated",
   text:"Thanks, {name}! Your box of {size} is set for {mode} on {when}.",
-  urgent:"Your cookies are waiting! Pay within {hours} to keep them.",
-  cdLabel:"Time left to pay",payBtn:"Pay now & secure my cookies 🍪",trackBtn:"Track my order",buildBtn:"Build another box",
+  urgent:"Your brownies are waiting! Pay within {hours} to keep them.",
+  cdLabel:"Time left to pay",payBtn:"Pay now & secure my brownies 🍫",trackBtn:"Track my order",buildBtn:"Build another box",
   bg:"#ffffff",accent:"#B73700",cdColor:"#C8102E"}}
 function defaultProofPop(){return {on:true,emoji:"🙏",img:"",cookies:[],fx:true,amount:36,
   title:"Thank you, {name}! ✅",
@@ -154,7 +154,7 @@ function migrate(db){
   if(db.settings&&db.settings.menuSort===undefined)db.settings.menuSort="popular";
   if(!Array.isArray(db.coupons))db.coupons=[{id:"cp1",code:"WELCOME10",desc:"10% off your box",type:"percent",value:10,minSpend:0,appliesTo:"all",startsAt:"",endsAt:"",maxUses:0,onePerPhone:true,stack:true,show:true,on:true}];
   db.alerts=deepFill(defaultAlerts(),db.alerts);
-  if(!Array.isArray(db.payMethods))db.payMethods=[{id:"pm1",name:"Bank transfer",details:(db.settings&&db.settings.payBank)||"Example Bank\nAccount 123 456 7890\nName: Callebrownies Cookies",img:"",on:true}];
+  if(!Array.isArray(db.payMethods))db.payMethods=[{id:"pm1",name:"Bank transfer",details:(db.settings&&db.settings.payBank)||"Example Bank\nAccount 123 456 7890\nName: Callebrownies Brownies",img:"",on:true}];
   db.proofpop=Object.assign(defaultProofPop(),db.proofpop||{});
   if(db.page&&db.page.strip&&db.page.strip.mode){const st=db.page.strip,d=defaultPage().strip.items;
     db.page.strip={items:st.mode==="off"?d.map(x=>({...x,on:false})):st.mode==="custom"?String(st.text||"").split("\n").map(x=>x.trim()).filter(Boolean).map(t=>({t,on:true})):d}}
@@ -163,7 +163,7 @@ function migrate(db){
   db.announcer=deepFill(defaultAnnouncer(),db.announcer);
   if(db.settings.complaintWindowH===undefined)db.settings.complaintWindowH=24;
   if(db.settings.waCountry===undefined)db.settings.waCountry="62";
-  if(db.settings.payWindowH===undefined)Object.assign(db.settings,{payWindowH:24,payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Cookies"});
+  if(db.settings.payWindowH===undefined)Object.assign(db.settings,{payWindowH:24,payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Brownies"});
   if(db.settings.lowStockAt===undefined)db.settings.lowStockAt=10;
   if(db.settings.customOn===undefined)Object.assign(db.settings,{customOn:true,customMin:14,customStep:2,customMax:48,customPer:3.25});
   if(db.settings.fabGest===undefined)Object.assign(db.settings,{fabGest:true,fabBgType:"color",fabBg2:"#FF9F43",fabRing:"",fabImgSize:84,fabSizePx:58,fabOpacity:100,fabImg:"",rbImg:"",rbImg2:""});
@@ -252,7 +252,7 @@ const bsHTML=(o,adm)=>{const b=o.bship;if(!b||!b.courier||o.mode!=="delivery")re
   const booked=!!b.biteshipId,st=b.status?(BS_ST[b.status]||b.status):"",nm=esc((b.courierName||b.courier)+" "+(b.serviceName||b.service)),dr=b.driver;
   const fail=adm&&b.nightHold&&!booked?`<div class="oc-alert appr" style="margin:0 0 8px">🌙 No driver before closing time. Searching again automatically tomorrow at ${fmtHour(b.resumeH??9)}. You can still book now yourself.<div style="margin-top:6px"><button class="ghost" type="button" data-bsact="nohold" data-oid="${o.id}">Don't search tomorrow</button></div></div>`
     :adm&&b.failed?`<div class="oc-alert cmp" style="margin:0 0 8px">🛵 ${esc(st||"Courier failed")}. Book again below${b.retries?" (already retried once)":""}${b.nightErr?`<br><small>Tomorrow's automatic search didn't start: ${esc(b.nightErr)}</small>`:""}</div>`:"";
-  const lines=!adm?`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${b.waybill?`<dt>Waybill</dt><dd>${esc(b.waybill)}</dd>`:""}`:`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${st?`<dt>Status</dt><dd><b>${esc(st)}</b>${b.statusAt?` <small class="note">${fmtAgo(b.statusAt)}</small>`:""}</dd>`:booked?"":`<dt>Status</dt><dd>${adm?"Not booked yet":"We'll call the courier when your cookies are ready"}</dd>`}
+  const lines=!adm?`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${b.waybill?`<dt>Waybill</dt><dd>${esc(b.waybill)}</dd>`:""}`:`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${st?`<dt>Status</dt><dd><b>${esc(st)}</b>${b.statusAt?` <small class="note">${fmtAgo(b.statusAt)}</small>`:""}</dd>`:booked?"":`<dt>Status</dt><dd>${adm?"Not booked yet":"We'll call the courier when your brownies are ready"}</dd>`}
     ${dr&&(dr.name||dr.plate)?`<dt>Driver</dt><dd>${esc(dr.name||"")}${dr.plate?` · ${esc(dr.plate)}`:""}${dr.phone?` · <a href="tel:${esc(dr.phone)}">${esc(dr.phone)}</a>`:""}</dd>`:""}
     ${b.waybill?`<dt>Waybill</dt><dd>${esc(b.waybill)}</dd>`:""}${(adm?o._clink||b.link:b.link)&&booked?`<dt>Tracking</dt><dd><a href="${esc(safeUrl(adm?o._clink||b.link:b.link))}" target="_blank" rel="noopener">${adm?"Track the courier live (team only)":"Track the courier live"}</a></dd>`:""}
     ${adm&&b.price!==undefined?`<dt>Price</dt><dd>${money(b.price)} quoted${b.bookedPrice!==undefined&&b.bookedAt?` · ${money(b.bookedPrice)} booked`:""}</dd>`:""}`;
@@ -304,7 +304,7 @@ function giftAppliesText(s){const ps=[...new Set(s.rules.map(r=>+r.from===+r.to&
   return ps.length>1?ps.slice(0,-1).join(", ")+" and "+ps[ps.length-1]:ps[0]}
 const saleAppliesText = s => isGift(s)&&giftHasRules(s)?giftAppliesText(s):s.appliesTo==="all"?"every box":`the box of ${s.appliesTo}`;
 
-/* --- cookie drawing --- */
+/* --- brownie drawing --- */
 let gid=0;
 function cookieSVG(f, seed){
   const r=rng(seed), id="g"+(gid++), N=30, pts=[];
@@ -548,13 +548,13 @@ function renderStore(){
    if(t.customOn){const on=validCustom(S.size),n=on?S.size:snapCustom(S.cv||t.customMin);S.cv=n;
     const base=basePrice(n),sale=bestSale(n),now=sale?r2(base-saleDiscount(sale,base)):base;
     cb.dataset.on=on;
-    cb.innerHTML=`<h4>Need a bigger box?</h4><p>Build your own from ${t.customMin} cookies, in steps of ${t.customStep}. ${money(t.customPer)} per cookie.</p>
-    <div class="crow"><div class="stepper" role="group" aria-label="Custom box size"><button type="button" data-cstep="-1" aria-label="Fewer cookies" ${n<=t.customMin?"disabled":""}>−</button><input id="cvIn" type="number" inputmode="numeric" min="${t.customMin}" max="${t.customMax}" step="${t.customStep}" value="${n}" aria-label="Number of cookies"><button type="button" data-cstep="1" aria-label="More cookies" ${n+t.customStep>t.customMax?"disabled":""}>+</button></div>
+    cb.innerHTML=`<h4>Need a bigger box?</h4><p>Build your own from ${t.customMin} brownies, in steps of ${t.customStep}. ${money(t.customPer)} per brownie.</p>
+    <div class="crow"><div class="stepper" role="group" aria-label="Custom box size"><button type="button" data-cstep="-1" aria-label="Fewer brownies" ${n<=t.customMin?"disabled":""}>−</button><input id="cvIn" type="number" inputmode="numeric" min="${t.customMin}" max="${t.customMax}" step="${t.customStep}" value="${n}" aria-label="Number of brownies"><button type="button" data-cstep="1" aria-label="More brownies" ${n+t.customStep>t.customMax?"disabled":""}>+</button></div>
     <span class="cprice num">${sale?`<s style="opacity:.6;font-weight:400">${money(base)}</s> `:""}${money(now)}</span>
-    <button class="btn btn-blue btn-sm cuse" type="button" data-cuse ${on?"disabled":""}>${on?"Selected":`Use box of ${n}`}</button></div>${giftPlan(n).length?`<div class="gifthint inl"><span class="ic" aria-hidden="true">🎁</span><span class="t">Free gift with ${n} cookies!</span><button class="gifthint-b" type="button" data-giftsee="${n}">See gifts ›</button></div>`:""}`}}
+    <button class="btn btn-blue btn-sm cuse" type="button" data-cuse ${on?"disabled":""}>${on?"Selected":`Use box of ${n}`}</button></div>${giftPlan(n).length?`<div class="gifthint inl"><span class="ic" aria-hidden="true">🎁</span><span class="t">Free gift with ${n} brownies!</span><button class="gifthint-b" type="button" data-giftsee="${n}">See gifts ›</button></div>`:""}`}}
   // sizes (with live sale prices)
   $("#sizes").innerHTML = activeSizes().map(s=>{const sale=bestSale(s.n),now=sale?r2(s.price-saleDiscount(sale,s.price)):s.price;
-    return `<button class="size" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>COOKIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
+    return `<button class="size" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>BROWNIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
   renderGiftHint();renderBarExtras();renderFab();
   document.querySelectorAll(".card").forEach(c=>{const st=c.querySelector(".stepper");if(!st)return;const n=countOf(c.dataset.id);st.querySelector("output").textContent=n;c.classList.toggle("has",n>0);
     st.querySelector('[data-act="dec"]').disabled=n===0;st.querySelector('[data-act="inc"]').disabled=full()||n>=stockLeft(prod(c.dataset.id))});
@@ -774,11 +774,11 @@ async function applyCoupon(code){
 $("#cpnForm").addEventListener("submit",e=>{e.preventDefault();applyCoupon($("#cpnIn").value)});
 $("#cpn").addEventListener("click",e=>{const u=e.target.closest("[data-cpnuse]");if(u){applyCoupon(u.dataset.cpnuse);return}
   if(e.target.closest("[data-cpnrm]")){S.coupon="";renderStore();cpMsg("Coupon removed.",true)}});
-// tap the cookie picture to add it
+// tap the brownie picture to add it
 $("#menuGrid").addEventListener("click",e=>{
   if(e.target.closest("button,a,.stepper"))return;
   const w=e.target.closest(".pwrap, h4");if(!w)return;const card=w.closest(".card");if(!card||card.classList.contains("out"))return;
-  const id=card.dataset.id;if(full()){toast(`Your box is full. Remove a cookie to add another.`);return}add(id,card)});
+  const id=card.dataset.id;if(full()){toast(`Your box is full. Remove a brownie to add another.`);return}add(id,card)});
 function add(id,card){
   if(full())return;
   if(countOf(id)>=stockLeft(prod(id))){toast(`That's all we have of ${prod(id).name} right now`);return}
@@ -925,8 +925,8 @@ $("#gdSheet").addEventListener("click",e=>{
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#gdSheet").hidden)closeGuard()});
 /* friendly pop-ups when a visitor gets close to a limit ("warn") or reaches it ("slow" = stop); look and wording set in the Security tab */
 const POP_DEF={
-  slow:{Title:"Slow down a little, friends!",Text:"Cookies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍪",Bg:"#FFF4D6",Ink:"#2A1306",BtnBg:"#B73700",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
-  warn:{Title:"Easy there, cookie lover!",Text:"You're going a little fast. Take a breath, cookies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#FFF4EC",Ink:"#2A1306",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
+  slow:{Title:"Slow down a little, friends!",Text:"Brownies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍫",Bg:"#FFF4D6",Ink:"#2A1306",BtnBg:"#B73700",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
+  warn:{Title:"Easy there, brownie lover!",Text:"You're going a little fast. Take a breath, brownies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#FFF4EC",Ink:"#2A1306",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
 // which part of the shop the limit belongs to (each can have its own message)
 const POP_GRP={place_order:"Orders",track_order:"Track",check_coupon:"Coupon",courier:"Courier",submit_proof:"Upload",submit_complaint:"Upload",submit_place:"Upload"};
 const SLOW_FX=[["bounce","Bounce"],["wiggle","Wiggle"],["float","Float up and down"],["pulse","Pulse"],["spin","Slow spin"],["none","Still"]],SLOW_BFX=[["shine","Shine sweep"],["pulse","Gentle pulse"],["wiggle","Wiggle"],["none","Still"]];
@@ -1372,7 +1372,7 @@ function rateNudge(){
   if(Date.now()-(RN_SEEN._last||0)<864e5)return;   // one reminder a day at most
   const o=mineOrders().find(o=>o.status==="completed"&&!(RN_SEEN[o.id]===-1||Date.now()-(RN_SEEN[o.id]||0)<864e5)&&Object.keys(o.items||{}).some(pid=>prod(pid)&&!(o.rated||{})[pid]));if(!o)return;
   const left=Object.keys(o.items).filter(pid=>prod(pid)&&!(o.rated||{})[pid]).map(pid=>prod(pid).name);
-  $("#rnPop").innerHTML=`<div class="rn-ic" aria-hidden="true">⭐</div><div class="rn-tx"><b>How were your cookies?</b><span>Your order ${esc(o.code)} was ${o.mode==="delivery"?"delivered":"picked up"}. Rate ${esc(listJoin(left.slice(0,3)).replace(" or "," and "))}${left.length>3?" and more":""}.</span></div><div class="rn-act"><button class="btn btn-blue btn-sm" type="button" data-rnrate="${o.id}">Rate now</button><button class="linkbtn sm" type="button" data-rnlater="${o.id}">Later</button></div>`;
+  $("#rnPop").innerHTML=`<div class="rn-ic" aria-hidden="true">⭐</div><div class="rn-tx"><b>How were your brownies?</b><span>Your order ${esc(o.code)} was ${o.mode==="delivery"?"delivered":"picked up"}. Rate ${esc(listJoin(left.slice(0,3)).replace(" or "," and "))}${left.length>3?" and more":""}.</span></div><div class="rn-act"><button class="btn btn-blue btn-sm" type="button" data-rnrate="${o.id}">Rate now</button><button class="linkbtn sm" type="button" data-rnlater="${o.id}">Later</button></div>`;
   $("#rnPop").hidden=false;
 }
 function rnDone(id,forGood){RN_SEEN[id]=forGood?-1:Date.now();RN_SEEN._last=Date.now();try{localStorage.setItem(RN_KEY,JSON.stringify(RN_SEEN))}catch(e){}$("#rnPop").hidden=true}
@@ -1392,12 +1392,12 @@ function renderBell(){
   if(!$("#bellPop").hidden)drawBell(list);
 }
 let BELLF="all";
-const ST_ICON={refunded:"💸",awaiting:"⏳",review:"🔎",new:"✅",baking:"🍪",ready:"🚚",completed:"🎉",cancelled:"❌"};
+const ST_ICON={refunded:"💸",awaiting:"⏳",review:"🔎",new:"✅",baking:"🍫",ready:"🚚",completed:"🎉",cancelled:"❌"};
 function drawBell(list){
   $("#bellTabs").innerHTML=[["all","All"],["orders","My orders"],["deals","News & deals"]].map(([k,l])=>`<button type="button" role="tab" data-belltab="${k}" aria-selected="${BELLF===k}">${l}</button>`).join("");
   const items=[];
   if(BELLF!=="deals")payDue().forEach(o=>{
-    items.push({at:Infinity,h:`<button class="bell-it bell-pay" type="button" data-bellgo="${o.id}"><span class="bell-ic" aria-hidden="true">⏰</span><span class="bell-tx"><small>Order #${esc(o.code)} · ${isRej(o)?"payment rejected":"waiting for payment"}</small><b>${isRej(o)?"Payment rejected – please send a new proof":"Pay now or you'll miss your cookies!"}</b>${isRej(o)&&o.rejected.reason?`<span class="bell-rej">Reason: ${esc(o.rejected.reason)}</span>`:""}<span class="bell-cdrow">Time left: <span class="cd" data-exp="${o.expiresAt}">${fmtLeft(o.expiresAt-Date.now())}</span></span></span><span class="bell-ch" aria-hidden="true">›</span></button>`})});
+    items.push({at:Infinity,h:`<button class="bell-it bell-pay" type="button" data-bellgo="${o.id}"><span class="bell-ic" aria-hidden="true">⏰</span><span class="bell-tx"><small>Order #${esc(o.code)} · ${isRej(o)?"payment rejected":"waiting for payment"}</small><b>${isRej(o)?"Payment rejected – please send a new proof":"Pay now or you'll miss your brownies!"}</b>${isRej(o)&&o.rejected.reason?`<span class="bell-rej">Reason: ${esc(o.rejected.reason)}</span>`:""}<span class="bell-cdrow">Time left: <span class="cd" data-exp="${o.expiresAt}">${fmtLeft(o.expiresAt-Date.now())}</span></span></span><span class="bell-ch" aria-hidden="true">›</span></button>`})});
   if(BELLF!=="deals")refundList().forEach(o=>{
     items.push({at:o.refund.at,h:`<button class="bell-it${o.refund.at>SEENV?" new":""}" type="button" data-bellgo="${o.id}"><span class="bell-ic" aria-hidden="true">💸</span><span class="bell-tx"><small>Order #${esc(o.code)} · ${fmtAgo(o.refund.at)}</small><b>${o.refund.full?"Your order was refunded":"Part of your order was refunded"}: ${money(o.refund.amount)}</b><span>${o.refund.note?esc(o.refund.note)+" · ":""}It can take a few days to show in your account.</span></span><span class="bell-ch" aria-hidden="true">›</span></button>`})});
   if(BELLF!=="deals")list.forEach(x=>{const st=x.m.status,o=x.o,lab=x.m.courier?"Courier update":st==="complaint"?"Complaint update":st?stLabel(st,o.mode):"Update";
@@ -1464,12 +1464,12 @@ function courierStep(o,b){
   const dl=bsDriverLine(b),lk=bsLiveLink(b),both=[dl,lk].filter(Boolean).join("<br>");
   if(o.status==="ready"||o.status==="completed")return {label:"Picked up by the courier",sub:both};
   if(b.biteshipId){
-    if(b.status==="allocated"||b.status==="picking_up")return {label:b.status==="picking_up"?"Driver on the way to pick up":"Driver found",sub:both||"Your driver is coming to pick up your cookies."};
+    if(b.status==="allocated"||b.status==="picking_up")return {label:b.status==="picking_up"?"Driver on the way to pick up":"Driver found",sub:both||"Your driver is coming to pick up your brownies."};
     return {label:"Searching for a driver…",srch:1,sub:["We're finding a courier for your order.",lk].filter(Boolean).join("<br>")};
   }
   if(b.nightHold)return {label:"Searching again tomorrow",srch:1,sub:`No driver was free today. We'll look for a courier again tomorrow from ${fmtHour(b.resumeH??9)}.`};
   if(b.failed)return {label:"Searching for a driver…",srch:1,sub:`<span class="trk-rej">No driver yet. We're arranging another courier.</span>`};
-  return {label:"Courier pickup",sub:"We'll call the courier when your cookies are ready."};
+  return {label:"Courier pickup",sub:"We'll call the courier when your brownies are ready."};
 }
 function moSteps(o){
   if(o.bship&&o.bship.biteshipId&&o.mode==="delivery"&&!o.courier)o.courier=(o.bship.courierName||o.bship.courier)+" "+(o.bship.serviceName||o.bship.service);
@@ -1507,7 +1507,7 @@ function ratingHTML(o){
     return done?`<div class="rrow"><b>${esc(p.name)}</b><span class="stars" role="img" aria-label="You rated ${done} out of 5">${starStr(done)}</span></div>`
     :`<div class="rrow"><b>${esc(p.name)}</b><div class="rstars" role="group" aria-label="Rate ${esc(p.name)}">${[1,2,3,4,5].map(n=>`<button type="button" data-rstar="${pid}" data-n="${n}" aria-label="${n} star${n>1?"s":""}">★</button>`).join("")}</div><input class="in" data-rcomment="${pid}" maxlength="200" placeholder="Say something about it (optional)" aria-label="Comment on ${esc(p.name)}"></div>`}).join("");
   const left=ids.some(pid=>prod(pid)&&!rated[pid]);
-  return `<div class="dsec"><h4>Rate your cookies</h4>${rows}${left?`<p class="err" id="rtErr" hidden></p><button class="btn btn-blue btn-sm" type="button" data-rsubmit style="margin-top:8px">Send ratings</button>`:`<p class="hint" style="margin:8px 0 0">Thanks for rating!</p>`}</div>`;
+  return `<div class="dsec"><h4>Rate your brownies</h4>${rows}${left?`<p class="err" id="rtErr" hidden></p><button class="btn btn-blue btn-sm" type="button" data-rsubmit style="margin-top:8px">Send ratings</button>`:`<p class="hint" style="margin:8px 0 0">Thanks for rating!</p>`}</div>`;
 }
 function complaintHTML(o){
   if(o.status!=="ready"&&o.status!=="completed")return "";
@@ -1528,7 +1528,7 @@ function complaintHTML(o){
       <label class="chk"><input type="radio" name="cpScope" value="order" checked> Whole order</label>
       <label class="chk"><input type="radio" name="cpScope" value="items"> Specific flavors</label>
       <div id="cpItems" hidden style="padding-left:26px;display:grid;gap:6px">${Object.keys(o.items).map(pid=>{const p=prod(pid);return p?`<label class="chk"><input type="checkbox" name="cpItem" value="${pid}"> ${o.items[pid]} × ${esc(p.name)}</label>`:""}).join("")}</div></div>
-    <div class="field"><label for="cpText">Tell us what happened</label><textarea id="cpText" rows="4" maxlength="600" placeholder="e.g. 3 cookies were crushed when I opened the box"></textarea></div>
+    <div class="field"><label for="cpText">Tell us what happened</label><textarea id="cpText" rows="4" maxlength="600" placeholder="e.g. 3 brownies were crushed when I opened the box"></textarea></div>
     <div class="field"><label for="cpPhotos">Photos (optional, up to 3)</label><input id="cpPhotos" type="file" accept="image/*" multiple></div>
     <label class="chk"><input type="checkbox" id="cpVideo"> I have an uncut unboxing video and can send it if asked.</label>
     <p class="err" id="cpErr" hidden></p>
@@ -1542,7 +1542,7 @@ function renderMO(){
     card.innerHTML=`<div class="sheet-top"><h3>My orders</h3><button class="x" type="button" data-moclose aria-label="Close">✕</button></div>
     ${list.length?`<div class="mo-list">${list.map(x=>`<button class="mo-card" type="button" data-moopen="${x.id}"><div class="mo-row"><span class="mo-code">${esc(x.code)}</span><span class="mo-chip st-${isRej(x)?"rejected":x.status}">${cusLabel(x)}</span></div>
       <div class="mo-row"><span>Box of ${x.size} · ${money(x.total)}${x.refund?` · <b style="color:#0a7a3b">${refundTxt(x)} ${money(x.refund.amount)}</b>`:""}</span><span class="mo-sub">${fmtDay(x.day)}, ${esc(x.time)}</span></div>
-      ${x.status==="completed"&&x.complaint?`<div class="mo-sub">Complaint: ${CP_STATUS[x.complaint.status]}</div>`:cwinOpen(x)?`<div class="mo-sub">Complaint window: <span class="cd" data-cexp="${cwinEnd(x)}">${fmtLeft(cwinEnd(x)-Date.now())}</span></div>`:""}${x.status==="completed"&&Object.keys(x.items).some(id=>prod(id)&&!(x.rated||{})[id])?`<div class="mo-sub">Tap to rate your cookies</div>`:""}
+      ${x.status==="completed"&&x.complaint?`<div class="mo-sub">Complaint: ${CP_STATUS[x.complaint.status]}</div>`:cwinOpen(x)?`<div class="mo-sub">Complaint window: <span class="cd" data-cexp="${cwinEnd(x)}">${fmtLeft(cwinEnd(x)-Date.now())}</span></div>`:""}${x.status==="completed"&&Object.keys(x.items).some(id=>prod(id)&&!(x.rated||{})[id])?`<div class="mo-sub">Tap to rate your brownies</div>`:""}
       ${x.status==="awaiting"?`<div class="mo-sub">Pay within <span class="cd" data-exp="${x.expiresAt}">${fmtLeft(x.expiresAt-Date.now())}</span></div>`:""}</button>`).join("")}</div>`:`<p class="hint">No orders yet in this browser. Build a box and it will show up here.</p>`}
     <details class="mo-find" ${list.length?"":"open"}><summary>Find an order</summary>
       <form class="form" id="moFind" novalidate style="margin-top:12px"><div class="row2"><div class="field"><label for="moCode">Order code</label><input id="moCode" placeholder="DD-ABCD" autocapitalize="characters"></div><div class="field"><label for="moMail">WhatsApp number used</label><input id="moMail" type="tel" inputmode="numeric" maxlength="24" placeholder="Numbers only"></div></div>
@@ -1885,13 +1885,13 @@ function viewHero(){
   const inp=(label,path,max,rows)=>`<label class="af">${label}${rows?`<textarea class="in" rows="${rows}" data-hr="${path}" maxlength="${max}">${esc(h[path])}</textarea>`:`<input class="in" data-hr="${path}" maxlength="${max}" value="${esc(h[path])}">`}</label>`;
   const slot=i=>{const c=safeMedia(h.cookies[i]),pr=prods[i],x=heroCkx(h,i);
     const thumb=c?`<img src="${esc(c)}" alt="" style="width:100%;height:100%;object-fit:contain">`:pr?`<div class="plate" style="background:#C4460C;width:100%">${plateInner(pr)}</div>`:`<span class="note">Empty</span>`;
-    return `<div class="pmcard" style="text-align:center;gap:8px${x.show?"":";opacity:.6"}"><b style="font-size:13px">Cookie ${i+1}</b><label class="sw" style="justify-self:center"><input type="checkbox" data-hrx="${i}.show" ${x.show?"checked":""} aria-label="Show Cookie ${i+1}"><span></span></label><span class="note" style="margin:0">${x.show?"Shown":"Hidden"}</span><div style="width:72px;height:72px;margin:0 auto;display:grid;place-items:center;background:#FFF1E8;border-radius:50%;overflow:hidden">${thumb}</div>
+    return `<div class="pmcard" style="text-align:center;gap:8px${x.show?"":";opacity:.6"}"><b style="font-size:13px">Brownie ${i+1}</b><label class="sw" style="justify-self:center"><input type="checkbox" data-hrx="${i}.show" ${x.show?"checked":""} aria-label="Show Brownie ${i+1}"><span></span></label><span class="note" style="margin:0">${x.show?"Shown":"Hidden"}</span><div style="width:72px;height:72px;margin:0 auto;display:grid;place-items:center;background:#FFF1E8;border-radius:50%;overflow:hidden">${thumb}</div>
       <span class="note" style="margin:0">${c?"Your image":pr?"Default (flavor photo)":"Nothing to show"}</span>
       <label class="ghost mqbtn" style="justify-self:center">${c?"Replace":"Upload"}<input type="file" accept="image/*" hidden data-hrck="${i}"></label>${c?`<button class="danger" type="button" data-hrckrm="${i}">Use default</button>`:""}
       <label class="af" style="margin:0;text-align:left;font-size:12px">Background<input type="color" data-hrx="${i}.bg" value="${x.bg||(i%2?"#D65A1A":"#C4460C")}" style="width:100%;height:34px"></label>
       <label class="af" style="margin:0;text-align:left;font-size:12px">Opacity: ${x.op}%<input type="range" min="10" max="100" step="5" value="${x.op}" data-hrx="${i}.op"></label>
       <label class="af" style="margin:0;text-align:left;font-size:12px">Effect<select class="in" data-hrx="${i}.fx">${HERO_FX.map(([k,l])=>`<option value="${k}"${x.fx===k?" selected":""}>${l}</option>`).join("")}</select></label>
-      ${i>=6?`<button class="danger" type="button" data-hrckdel="${i}">Remove cookie</button>`:""}</div>`};
+      ${i>=6?`<button class="danger" type="button" data-hrckdel="${i}">Remove brownie</button>`:""}</div>`};
   const mt=h.mediaType,src=h.src||"",isData=/^data:/i.test(src);
   const col=(l,k,v)=>`<label class="af">${l}<input type="color" data-hr="${k}" value="${v}" style="width:100%;height:42px"></label>`;
   return head("Top banner","The big dome at the top of your shop. Edit everything here and check the preview. Nothing changes in the shop until you press Save.")+MOCK+`
@@ -1924,15 +1924,15 @@ function viewHero(){
     <div class="af">Info line under the banner<p class="note" style="margin:0">Each item is a line of text. Tick to show it. <b>{sizes}</b> becomes your box sizes (like "4, 6 or 12"), <b>{cutoff}</b> your order cutoff time, <b>{closed}</b> your closed days.</p></div>
     ${pg.strip.items.map((it,i)=>`<div class="colin"><span class="sw"><input type="checkbox" data-lp="strip.items.${i}.on" ${it.on?"checked":""} aria-label="Show item ${i+1}"><span></span></span><input class="in" data-lp="strip.items.${i}.t" maxlength="80" value="${esc(it.t)}" aria-label="Info item ${i+1}"><button class="danger" type="button" data-lpsdel="${i}" aria-label="Delete item ${i+1}">×</button></div>`).join("")}
     ${pg.strip.items.length<6?`<button class="ghost" type="button" data-lpsadd style="justify-self:start">+ Add item</button>`:""}</div><p class="note" style="margin:8px 0 0">Saved as a draft. Press Save &amp; publish at the top to show it in the shop.</p></section>
-    <section class="panel"><h2>Floating cookies</h2>
-      <div style="display:flex;gap:10px;align-items:center;margin:10px 0"><label class="sw"><input type="checkbox" data-hr="floats" ${h.floats?"checked":""} aria-label="Show floating cookies"><span></span></label><span class="stlabel">Show floating cookies</span></div>
-      <p class="sub" style="margin:0 0 10px">Upload a photo from your phone or computer for any spot. It is resized and saved as WebP automatically. Each cookie keeps its round frame; choose its background color, opacity and effect. Spots you leave alone keep showing your flavor photos.</p>
+    <section class="panel"><h2>Floating brownies</h2>
+      <div style="display:flex;gap:10px;align-items:center;margin:10px 0"><label class="sw"><input type="checkbox" data-hr="floats" ${h.floats?"checked":""} aria-label="Show floating brownies"><span></span></label><span class="stlabel">Show floating brownies</span></div>
+      <p class="sub" style="margin:0 0 10px">Upload a photo from your phone or computer for any spot. It is resized and saved as WebP automatically. Each brownie keeps its round frame; choose its background color, opacity and effect. Spots you leave alone keep showing your flavor photos.</p>
       <div class="grid2" style="margin:0 0 12px">
-        <label class="af">Cookies shown on phones<input class="in" type="number" min="0" max="12" step="1" data-hr="ckPh" data-hrnum="1" value="${heroCkShow(h,"ckPh")}"></label>
-        <label class="af">Cookies shown on larger screens and PC<input class="in" type="number" min="0" max="12" step="1" data-hr="ckPc" data-hrnum="1" value="${heroCkShow(h,"ckPc")}"></label></div>
-      <p class="note" style="margin:0 0 10px">Cookies show in order, Cookie 1 first. Switch a cookie off to hide it; the next ones move up to fill its place. 0 hides them on that screen.</p>
+        <label class="af">Brownies shown on phones<input class="in" type="number" min="0" max="12" step="1" data-hr="ckPh" data-hrnum="1" value="${heroCkShow(h,"ckPh")}"></label>
+        <label class="af">Brownies shown on larger screens and PC<input class="in" type="number" min="0" max="12" step="1" data-hr="ckPc" data-hrnum="1" value="${heroCkShow(h,"ckPc")}"></label></div>
+      <p class="note" style="margin:0 0 10px">Brownies show in order, Brownie 1 first. Switch a brownie off to hide it; the next ones move up to fill its place. 0 hides them on that screen.</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px">${Array.from({length:heroCkN(h)},(_,i)=>i).map(slot).join("")}</div>
-      ${heroCkN(h)<12?`<button class="ghost" type="button" data-hrckadd style="margin-top:10px">+ Add cookie (${heroCkN(h)} of 12)</button>`:`<p class="note" style="margin:10px 0 0">12 cookies is the most.</p>`}
+      ${heroCkN(h)<12?`<button class="ghost" type="button" data-hrckadd style="margin-top:10px">+ Add brownie (${heroCkN(h)} of 12)</button>`:`<p class="note" style="margin:10px 0 0">12 brownies is the most.</p>`}
     </section>
   </div>`;
 }
@@ -1984,7 +1984,7 @@ function viewNotify(){
       <h2>🔔 Send a notification</h2><p class="sub">Every customer sees it under the bell 🔔 on the shop. Order updates and flash sales are added there automatically.</p>
       <div class="stack" style="gap:14px">
         <div class="af">Type<div class="chips">${NF_TYPES.map(([k,i,n])=>`<button class="fchip" type="button" data-nftype="${k}" aria-pressed="${f.type===k}">${i} ${n}</button>`).join("")}</div></div>
-        <label class="af">Title<input class="in" data-nf="title" maxlength="80" value="${esc(f.title)}" placeholder="e.g. Weekend deal: 10% off all cookies"></label>
+        <label class="af">Title<input class="in" data-nf="title" maxlength="80" value="${esc(f.title)}" placeholder="e.g. Weekend deal: 10% off all brownies"></label>
         <label class="af">Message (optional)<textarea class="in" rows="3" data-nf="text" maxlength="240" placeholder="e.g. Use the code at checkout. Valid until Sunday!">${esc(f.text)}</textarea></label>
         <div class="grid3">
           <label class="af">Link to a flavor (optional)<select class="in" data-nf="pid"><option value="">None</option>${DB.products.filter(p=>p.status!=="hidden").map(p=>`<option value="${p.id}" ${f.pid===p.id?"selected":""}>${esc(p.name)}</option>`).join("")}</select></label>
@@ -2084,7 +2084,7 @@ function viewDashSales(){
     <section class="panel"><h2>Most picked box</h2><p class="sub">Number of orders for each box size, top selling first.</p>${rankList(sizes,"orders")}</section>
     <section class="panel"><h2>Total order random</h2><p class="sub">Orders where the customer used Random fill, Shuffle or "fill the rest for me".</p>
       <div class="db-kpis" style="margin-top:8px">${kpiTile(shuf,"Orders using random",n?Math.round(shuf/n*100)+"% of orders":"")}</div></section>
-    <section class="panel"><h2>Best seller item</h2><p class="sub">Cookies sold per flavor, top selling first.</p>${rankList(best,"cookies")}</section>
+    <section class="panel"><h2>Best seller item</h2><p class="sub">Brownies sold per flavor, top selling first.</p>${rankList(best,"brownies")}</section>
     ${moreInsights(set)}</div>`;
 }
 // performance numbers for any date range [a,b)
@@ -2159,7 +2159,7 @@ function viewDashboard(){
   const unit=A.vr==="today"?"hour":"day",note=`Visits per ${unit}${A.vr==="today"?" today":A.vr==="week"?", last 7 days":", last 30 days"}. Staff and search-engine bots are not counted; a visitor returning within 30 minutes counts once.`;
   // activity
   const ev=[];DB.orders.forEach(o=>{
-    ev.push({at:o.createdAt,i:"🍪",t:`New order #${o.code} · ${o.customer.name} · ${money(o.total)}`});
+    ev.push({at:o.createdAt,i:"🍫",t:`New order #${o.code} · ${o.customer.name} · ${money(o.total)}`});
     if(o.proof)ev.push({at:o.proof.at,i:"🧾",t:`Payment submitted for #${o.code} (${o.proof.name})`});
     if(o.complaint)ev.push({at:o.complaint.at,i:"⚠️",t:`Complaint on #${o.code} · ${o.complaint.reason}`});
     if(o.completedAt)ev.push({at:o.completedAt,i:"📦",t:`#${o.code} ${stLabel("completed",o.mode).toLowerCase()}`})});
@@ -2228,7 +2228,7 @@ function viewOrders(){
     os.forEach(o=>{Object.entries(o.items).forEach(([id,n])=>{agg[id]=(agg[id]||0)+n;cookies+=n});bySize[o.size]=(bySize[o.size]||0)+1;o.mode==="delivery"?deliv++:pick++});
     const rows=Object.entries(agg).sort((a,b)=>b[1]-a[1]),max=rows[0]?rows[0][1]:1;
     bake=`<ul class="bake">${rows.map(([id,n])=>{const p=prod(id);return `<li>${miniPlate(p)}<div><div style="font-weight:600">${esc(p?p.name:"Removed flavor")}</div><div class="bar-t"><i style="width:${n/max*100}%"></i></div></div><b>${n}</b></li>`}).join("")}</ul>
-      <div class="bakesum"><span>${cookies} cookies</span>${Object.entries(bySize).sort((a,b)=>a[0]-b[0]).map(([n,c])=>`<span>${c} × box of ${n}</span>`).join("")}<span>${pick} pickup</span><span>${deliv} delivery</span></div>`;
+      <div class="bakesum"><span>${cookies} brownies</span>${Object.entries(bySize).sort((a,b)=>a[0]-b[0]).map(([n,c])=>`<span>${c} × box of ${n}</span>`).join("")}<span>${pick} pickup</span><span>${deliv} delivery</span></div>`;
   }
   const base=ordRows(),rows=shownRows(),todayYmd=ymd(t);
   const cnt=k=>k==="all"?base.length:k==="rejected"?base.filter(isRej).length:k==="awaiting"?base.filter(o=>o.status==="awaiting"&&!isRej(o)).length:base.filter(o=>o.status===k).length;
@@ -2237,15 +2237,15 @@ function viewOrders(){
   const alerts=DB.products.filter(isLow).sort((a,b)=>a.stock-b.stock);
   return head("Orders","Today's work at a glance: what's new, what to bake, and every order's status.")+MOCK+`
   <div class="stack">
-    ${alerts.length?`<section class="panel"><div class="phead"><div><h2>Stock alert</h2><p class="sub">Flavors at or below ${DB.settings.lowStockAt} cookies. Customers see "Only N left" and can't order more than what's in stock.</p></div><button class="btn btn-blue btn-sm" type="button" data-goto="products">Restock flavors</button></div><div class="chips">${alerts.map(p=>`<span class="fchip${p.stock===0?" outc":""}">${esc(p.name)} <i>${p.stock===0?"Out of stock":p.stock+" left"}</i></span>`).join("")}</div></section>`:""}
+    ${alerts.length?`<section class="panel"><div class="phead"><div><h2>Stock alert</h2><p class="sub">Flavors at or below ${DB.settings.lowStockAt} brownies. Customers see "Only N left" and can't order more than what's in stock.</p></div><button class="btn btn-blue btn-sm" type="button" data-goto="products">Restock flavors</button></div><div class="chips">${alerts.map(p=>`<span class="fchip${p.stock===0?" outc":""}">${esc(p.name)} <i>${p.stock===0?"Out of stock":p.stock+" left"}</i></span>`).join("")}</div></section>`:""}
     <div class="kpis">
       <div class="kpi${nNew?" alert":""}"><small>New orders</small><strong>${nNew}</strong><span>paid or payment to check</span></div>
-      <div class="kpi"><small>Boxes for tomorrow</small><strong>${tmr.length}</strong><span>${tmr.reduce((a,o)=>a+o.size,0)} cookies, ${fmtDay(tomorrow)}</span></div>
+      <div class="kpi"><small>Boxes for tomorrow</small><strong>${tmr.length}</strong><span>${tmr.reduce((a,o)=>a+o.size,0)} brownies, ${fmtDay(tomorrow)}</span></div>
       <div class="kpi"><small>Sales, last 7 days</small><strong>${money(rev)}</strong><span>${wk.length} orders</span></div>
       <div class="kpi"><small>Average order</small><strong>${money(wk.length?rev/wk.length:0)}</strong><span>last 7 days</span></div>
     </div>
     <section class="panel">
-        <div class="phead"><div><h2>Bake sheet</h2><p class="sub">Cookies to bake for each day, from open orders.</p></div>${A.bakeDay?`<div class="colin" style="flex-wrap:wrap;gap:8px"><button class="btn btn-blue btn-sm" type="button" data-bakeprint>🖨 Print bake sheet</button><button class="ghost" type="button" data-bakedl>Save file</button></div>`:""}</div>
+        <div class="phead"><div><h2>Bake sheet</h2><p class="sub">Brownies to bake for each day, from open orders.</p></div>${A.bakeDay?`<div class="colin" style="flex-wrap:wrap;gap:8px"><button class="btn btn-blue btn-sm" type="button" data-bakeprint>🖨 Print bake sheet</button><button class="ghost" type="button" data-bakedl>Save file</button></div>`:""}</div>
         <div class="chips">${days.map(d=>`<button class="fchip" type="button" data-bake="${d}" aria-pressed="${d===A.bakeDay}">${d===todayS?"Today":d===tomorrow?"Tomorrow":fmtDay(d)}</button>`).join("")}</div>
         ${bake}
       </section>
@@ -2430,7 +2430,7 @@ function msgText(o,st){
     new:`Hi ${nm}, your payment for order ${o.code} is confirmed. Thank you! Your box is set for ${o.mode==="delivery"?"delivery":"pickup"} on ${when}.`,
     baking:`Hi ${nm}, your order ${o.code} is being baked now.`,
     ready:o.mode==="delivery"?`Hi ${nm}, your order ${o.code} is out for delivery.${o.courier||o.awb?` ${o.courier?"Courier: "+o.courier+". ":""}${o.awb?"Airway bill: "+o.awb+".":""}`:""} Please keep your phone close.`:`Hi ${nm}, your order ${o.code} is ready for pickup. Address: ${DB.settings.address}`,
-    completed:o.mode==="delivery"?`Hi ${nm}, your order ${o.code} was delivered. Enjoy! Please keep your unboxing video, rate your cookies, and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`:`Hi ${nm}, thanks for picking up order ${o.code}. Enjoy! You can rate your cookies in My orders and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`,
+    completed:o.mode==="delivery"?`Hi ${nm}, your order ${o.code} was delivered. Enjoy! Please keep your unboxing video, rate your brownies, and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`:`Hi ${nm}, thanks for picking up order ${o.code}. Enjoy! You can rate your brownies in My orders and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`,
     refunded:`Hi ${nm}, your order ${o.code} was refunded${o.refund?": "+money(o.refund.amount):""}.${o.refund&&o.refund.note?" "+o.refund.note:""} It can take a few days to show in your account.`,
     cancelled:`Hi ${nm}, your order ${o.code} was cancelled.${o.cancelReason?" "+o.cancelReason:""} Contact us if you have questions.`
   };
@@ -2504,7 +2504,7 @@ function renderStatusDialog(){
   $("#modalCard").innerHTML=`<div class="sheet-top"><h3 id="modalTitle">Change status?</h3><button class="x" type="button" data-mclose aria-label="Close">✕</button></div>
   <p style="margin:0 0 4px"><b>${esc(o.code)}</b> · ${esc(c.name)}</p>
   <p style="margin:0 0 14px"><span class="mo-chip st-${o.status}">${esc(stLabel(o.status,o.mode))}</span> → <span class="mo-chip st-${SC.extra&&SC.extra.reject?"rejected":st}">${esc(SC.extra&&SC.extra.reject?"Rejected":stLabel(st,o.mode))}</span></p>
-  ${st==="cancelled"?`<p class="hint" style="margin:0 0 12px">Cancelling puts the cookies back into stock.</p>`:""}
+  ${st==="cancelled"?`<p class="hint" style="margin:0 0 12px">Cancelling puts the brownies back into stock.</p>`:""}
   <div class="af" style="gap:8px">Notify the customer by
     <div class="stack" style="gap:8px">${opt("whatsapp","WhatsApp",c.phone)}${opt("email","Email",c.email)}${opt("both","Both")}${opt("none","Shop bell only")}</div>
     <p class="note" style="margin:0">The customer chose: ${esc(pref==="both"?"WhatsApp and email":pref==="none"?"no WhatsApp or email":CHANNELS[pref])}. The bell in the shop is always updated.</p></div>
@@ -2648,7 +2648,7 @@ function drawPEdit(){
       <label class="af">Name<input class="in" data-pe="name" value="${esc(v.name||"")}" maxlength="40"></label>
       <div class="grid2">
         <label class="af">Category<select class="in" data-pe="cat">${catOptions(v.cat)}</select></label>
-        <label class="af">Extra price per cookie<div class="money-in"><span>+${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.25" data-pe="surcharge" value="${+v.surcharge||0}"></div></label>
+        <label class="af">Extra price per brownie<div class="money-in"><span>+${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.25" data-pe="surcharge" value="${+v.surcharge||0}"></div></label>
       </div>
       <label class="af">Description<textarea class="in" rows="2" data-pe="desc" maxlength="90">${esc(v.desc||"")}</textarea></label>
       <label class="af">Look<select class="in" data-pe="art">${lookOptions(v)}</select></label>
@@ -2656,7 +2656,7 @@ function drawPEdit(){
   </div>
   <div class="af" style="margin-top:12px">Availability<div class="seg" role="group">${[["available","Available"],["soldout","Sold out"],["hidden","Hidden"]].map(([k,l])=>`<button type="button" data-pestatus="${k}" aria-pressed="${v.status===k}">${l}</button>`).join("")}</div></div>
   <div class="stockrow" style="margin-top:12px"><label class="sw"><input type="checkbox" data-pe="track" ${v.track?"checked":""} aria-label="Track stock"><span></span></label><span class="stlabel">Track stock</span>
-    ${v.track?`<div class="stepin"><button class="ghost" type="button" data-pestk="-1" aria-label="One less">−</button><input class="in" type="number" min="0" step="1" data-pe="stock" value="${v.stock||0}" aria-label="Cookies in stock"><button class="ghost" type="button" data-pestk="1" aria-label="One more">+</button></div><button class="ghost" type="button" data-pestk="12">+12</button>`:`<span class="note" style="margin:0">Stock is not counted</span>`}</div>
+    ${v.track?`<div class="stepin"><button class="ghost" type="button" data-pestk="-1" aria-label="One less">−</button><input class="in" type="number" min="0" step="1" data-pe="stock" value="${v.stock||0}" aria-label="Brownies in stock"><button class="ghost" type="button" data-pestk="1" aria-label="One more">+</button></div><button class="ghost" type="button" data-pestk="12">+12</button>`:`<span class="note" style="margin:0">Stock is not counted</span>`}</div>
   <div class="bdgpick" style="margin-top:12px"><span class="lblx">Badges</span>${(DB.badges.list||[]).map(b=>{const on=(v.badges||[]).includes(b.id),auto=b.id==="best"&&bestIds().includes(p.id)&&!on;return `<button type="button" class="bdgtog${on?" on":""}${auto?" auto":""}" data-pebadge="${esc(b.id)}" aria-pressed="${on}">${badgeHTML(b)}${auto?"<small>auto</small>":""}</button>`}).join("")}</div>
   <div class="grid2" style="margin-top:12px;align-items:end">
     <label class="af">Position in the menu<select class="in" data-pepos>${Array.from({length:n},(_,i)=>`<option value="${i}" ${i===PE.pos?"selected":""}>${i===0?"1 (top)":i===n-1?`${n} (bottom)`:i+1}</option>`).join("")}</select></label>
@@ -2789,7 +2789,7 @@ function giftForm(D){
       <div class="colin" style="flex-wrap:wrap"><label class="ghost mqbtn">${g.img?"Replace picture":"Upload picture"}<input type="file" accept="image/*" hidden data-gimg="${i}"></label>${g.img?`<button class="danger" type="button" data-gimgrm="${i}">Remove picture</button>`:""}
         <div class="money-in" style="max-width:170px"><input class="in" type="number" min="0" step="1" data-gstock="${i}" value="${g.stock===""||g.stock==null?"":esc(g.stock)}" placeholder="Unlimited" aria-label="Stock of gift ${i+1}"><span style="padding-right:8px">in stock</span></div></div></div>`).join("")||`<p class="note">No gifts yet.</p>`}
       <button class="ghost" type="button" data-gadd style="justify-self:start">+ Add gift</button></div>
-    <div class="af">2. Gift rules<p class="note" style="margin:0"><b>Specific</b>: every customer gets the gifts you tick. <b>Random</b>: tick the gifts that may come up, and the shop picks the number you set, at random, when the customer sends the payment proof. A random pick can't be rerolled. Custom boxes can have one or more rules (a range of cookies each).</p></div>
+    <div class="af">2. Gift rules<p class="note" style="margin:0"><b>Specific</b>: every customer gets the gifts you tick. <b>Random</b>: tick the gifts that may come up, and the shop picks the number you set, at random, when the customer sends the payment proof. A random pick can't be rerolled. Custom boxes can have one or more rules (a range of brownies each).</p></div>
     <div class="stack" style="gap:10px">${D.rules.map((r,i)=>giftRuleCard(D,r,i,sizes,named)).join("")||`<p class="note">No rules yet. Add a rule for each box size that should get gifts.</p>`}
       <button class="ghost" type="button" data-rnew style="justify-self:start">+ Add rule</button></div>
   </div>`;
@@ -2801,10 +2801,10 @@ function giftRuleCard(D,r,i,sizes,named){
   const lim=Math.max(1,Math.min(5,Math.round(+r.limit)||1)),n=(r.ids||[]).filter(id=>named.some(g=>g.id===id)).length,cm=DB.settings;
   return `<div class="pmcard" style="gap:8px"><div class="colin" style="flex-wrap:wrap;align-items:end">
     <label class="af" style="margin:0;flex:1;min-width:140px">Box<select class="in" data-rbox="${i}">${sizes.map(z=>`<option value="${z.n}" ${!r.custom&&+r.from===z.n?"selected":""}>Box of ${z.n}</option>`).join("")}<option value="custom" ${r.custom?"selected":""}>Custom box</option></select></label>
-    ${r.custom?`<label class="af" style="margin:0">From<div class="money-in" style="max-width:100px"><input class="in" type="number" min="1" step="1" data-rfrom="${i}" value="${+r.from||""}" aria-label="From cookies"></div></label><label class="af" style="margin:0">To<div class="money-in" style="max-width:100px"><input class="in" type="number" min="1" step="1" data-rto="${i}" value="${+r.to||""}" aria-label="To cookies"></div></label>`:""}
+    ${r.custom?`<label class="af" style="margin:0">From<div class="money-in" style="max-width:100px"><input class="in" type="number" min="1" step="1" data-rfrom="${i}" value="${+r.from||""}" aria-label="From brownies"></div></label><label class="af" style="margin:0">To<div class="money-in" style="max-width:100px"><input class="in" type="number" min="1" step="1" data-rto="${i}" value="${+r.to||""}" aria-label="To brownies"></div></label>`:""}
     <label class="af" style="margin:0">Gifts<div class="money-in" style="max-width:90px"><input class="in" type="number" min="1" max="5" step="1" data-rlim="${i}" value="${lim}" aria-label="How many gifts"></div></label>
     <button class="danger" type="button" data-rdel="${i}" aria-label="Remove rule">×</button></div>
-    ${r.custom&&cm.customOn?`<p class="note" style="margin:0">Custom boxes are ${cm.customMin} to ${cm.customMax} cookies, in steps of ${cm.customStep}. This rule covers ${+r.from||"?"} to ${+r.to||"?"} cookies.</p>`:""}
+    ${r.custom&&cm.customOn?`<p class="note" style="margin:0">Custom boxes are ${cm.customMin} to ${cm.customMax} brownies, in steps of ${cm.customStep}. This rule covers ${+r.from||"?"} to ${+r.to||"?"} brownies.</p>`:""}
     <div class="seg"><button type="button" data-rmode="${i}:specific" aria-pressed="${r.mode!=="random"}">Specific</button><button type="button" data-rmode="${i}:random" aria-pressed="${r.mode==="random"}">Random</button></div>
     <div class="chips" data-rchips="${i}">${giftChipsHTML(D,r,i)}</div>
     <p class="note" style="margin:0">${r.mode==="random"?`Tick the gifts that may come up (at least ${lim}). Each order gets ${lim} at random. Ticked: ${n}.`:`Tick exactly ${lim} gift${lim===1?"":"s"}. Every customer gets ${lim===1?"it":"them"}. Ticked: ${n}.`}</p></div>`;
@@ -2831,7 +2831,7 @@ function giftCheck(D){
   const std=DB.sizes.map(z=>z.n),rs=D.rules;
   for(let i=0;i<rs.length;i++){const r=rs[i],nm=r.custom?`Custom rule ${+r.from||"?"} to ${+r.to||"?"}`:`Box of ${r.from}`,lim=Math.max(1,Math.min(5,Math.round(+r.limit)||1));
     const ids=(r.ids||[]).filter(id=>gs.some(g=>g.id===id));
-    if(!(Math.round(+r.from)>=1&&Math.round(+r.to)>=Math.round(+r.from)))return `${nm}: enter a cookie range, "to" can't be smaller than "from".`;
+    if(!(Math.round(+r.from)>=1&&Math.round(+r.to)>=Math.round(+r.from)))return `${nm}: enter a brownie range, "to" can't be smaller than "from".`;
     if(r.custom&&std.some(n=>n>=+r.from&&n<=+r.to))return `${nm}: a custom rule can't include the standard box sizes (${std.join(", ")}). Use a Box of N rule for those.`;
     if(r.mode==="random"){if(ids.length<lim)return `${nm}: tick at least ${lim} gift${lim===1?"":"s"} for the random pick.`}
     else if(ids.length!==lim)return `${nm}: Specific mode needs exactly ${lim} gift${lim===1?"":"s"} ticked (you ticked ${ids.length}).`;
@@ -2882,11 +2882,11 @@ function prow(p){const own=ROLE()==="owner",r=ratingOf(p);return `<div class="pr
         <label class="upl">${p.img?"Replace photo":"Upload photo"}<input type="file" accept="image/*" data-upload="${p.id}" aria-label="Upload photo for ${esc(p.name)}"></label>
       </div>
       <div class="pfields">
-        <div class="ptitle"><b>${esc(p.name)}</b><span>${p.surcharge>0?`+${money(p.surcharge)} per cookie`:"Regular price"}</span></div>
+        <div class="ptitle"><b>${esc(p.name)}</b><span>${p.surcharge>0?`+${money(p.surcharge)} per brownie`:"Regular price"}</span></div>
         <p class="pmeta">${esc(catName(p.cat)||"No category")} · ${r.n?`★ ${r.avg.toFixed(1)} (${r.n})`:"no reviews"} · position ${DB.products.indexOf(p)+1} of ${DB.products.length}${(p.badges||[]).length?` · ${(p.badges||[]).length} badge${(p.badges||[]).length>1?"s":""}`:""}</p>
         <div class="stockrow">
           <label class="sw"><input type="checkbox" data-k="products:${p.id}:track" ${p.track?"checked":""} aria-label="Track stock for ${esc(p.name)}"><span></span></label><span class="stlabel">Track stock</span>
-          ${p.track?`<div class="stepin"><button class="ghost" type="button" data-stk="${p.id}:-1" aria-label="One less">−</button><input class="in" type="number" min="0" step="1" data-k="products:${p.id}:stock" value="${p.stock}" aria-label="Cookies in stock for ${esc(p.name)}"><button class="ghost" type="button" data-stk="${p.id}:1" aria-label="One more">+</button></div><button class="ghost" type="button" data-stk="${p.id}:12">+12</button>${p.stock<=0?`<span class="spill out">Out of stock</span>`:p.stock<=DB.settings.lowStockAt?`<span class="spill low">Low: ${p.stock} left</span>`:`<span class="spill ok">${p.stock} in stock</span>`}`:`<span class="note">Unlimited. Turn on to count cookies.</span>`}
+          ${p.track?`<div class="stepin"><button class="ghost" type="button" data-stk="${p.id}:-1" aria-label="One less">−</button><input class="in" type="number" min="0" step="1" data-k="products:${p.id}:stock" value="${p.stock}" aria-label="Brownies in stock for ${esc(p.name)}"><button class="ghost" type="button" data-stk="${p.id}:1" aria-label="One more">+</button></div><button class="ghost" type="button" data-stk="${p.id}:12">+12</button>${p.stock<=0?`<span class="spill out">Out of stock</span>`:p.stock<=DB.settings.lowStockAt?`<span class="spill low">Low: ${p.stock} left</span>`:`<span class="spill ok">${p.stock} in stock</span>`}`:`<span class="note">Unlimited. Turn on to count brownies.</span>`}
         </div>
         <div class="pfoot">
           <div class="left"><div class="seg" role="group" aria-label="Availability">${[["available","Available"],["soldout","Sold out"],["hidden","Hidden"]].map(([k,l])=>`<button type="button" data-pstatus="${p.id}:${k}" aria-pressed="${p.status===k}">${l}</button>`).join("")}</div></div>
@@ -2909,7 +2909,7 @@ function viewProducts(){
     <div class="seg p-tabs" role="tablist" aria-label="Stock" style="margin:4px 0 12px">${[["all","All"],["avail","Available"],["low","Low stock"],["sold","Sold out"],["hidden","Hidden"]].map(([k,l])=>`<button type="button" role="tab" data-pst="${k}" aria-pressed="${(A.pst||"all")===k}" class="pst-${k}">${l} <i>${DB.products.filter(PST[k]).length}</i></button>`).join("")}</div>
     <div class="ptools"><input class="search" id="pSearch" type="search" placeholder="Search flavor or category" value="${esc(A.pq)}" aria-label="Search flavors and categories"></div>
     <div class="chips" style="margin-bottom:6px">${chip("all","All",DB.products.length)}${DB.categories.map(c=>chip(c.id,esc(c.name),DB.products.filter(p=>p.cat===c.id).length)).join("")}${noCat&&DB.categories.length?chip("none","No category",noCat):""}</div>
-    <details class="helpd"><summary>How prices, stock and photos work</summary><p>Extra price is charged per cookie on top of the box price; leave it at 0 for regular flavors. Stock counts cookies: each order takes them out and a cancelled order puts them back, and at 0 the flavor shows "Out of stock" by itself. Upload or drag a photo onto any flavor; it's cropped square and resized to 400 px, and a PNG with a transparent background shows as a cut-out. Look: None shows an empty circle.</p></details>
+    <details class="helpd"><summary>How prices, stock and photos work</summary><p>Extra price is charged per brownie on top of the box price; leave it at 0 for regular flavors. Stock counts brownies: each order takes them out and a cancelled order puts them back, and at 0 the flavor shows "Out of stock" by itself. Upload or drag a photo onto any flavor; it's cropped square and resized to 400 px, and a PNG with a transparent background shows as a cut-out. Look: None shows an empty circle.</p></details>
     <div id="plist">${productRows()}</div>
   </section>`;
 }
@@ -2981,7 +2981,7 @@ function openAddFlavor(){
     <div class="field"><label for="npDesc">Description</label><input id="npDesc" maxlength="90" autocomplete="off" placeholder="Dough, mix-ins and topping"></div>
     <div class="row2">
       <div class="field"><label for="npCat">Category</label><select id="npCat">${catOptions(defCat)}<option value="__new">+ New category…</option></select></div>
-      <div class="field"><label for="npPrice">Extra price per cookie</label><input id="npPrice" type="number" min="0" step="0.25" value="0"></div>
+      <div class="field"><label for="npPrice">Extra price per brownie</label><input id="npPrice" type="number" min="0" step="0.25" value="0"></div>
     </div>
     <div class="field" id="npNewCatWrap" hidden><label for="npNewCat">New category name</label><input id="npNewCat" maxlength="30" autocomplete="off" placeholder="e.g. Seasonal"></div>
     <div class="row2">
@@ -2990,7 +2990,7 @@ function openAddFlavor(){
     </div>
     <div class="field"><label for="npPos">Position in menu</label><select id="npPos"><option value="top">Top of the menu</option><option value="middle">Middle of the menu</option><option value="bottom" selected>Bottom of the menu</option></select></div>
     <div class="stockrow"><label class="sw"><input type="checkbox" id="npTrack" checked aria-label="Track stock"><span></span></label><span class="stlabel">Track stock</span>
-      <span id="npStockWrap" class="stepin"><input class="in" type="number" min="0" step="1" id="npStock" value="24" aria-label="Cookies in stock"><span class="note">cookies in stock</span></span></div>
+      <span id="npStockWrap" class="stepin"><input class="in" type="number" min="0" step="1" id="npStock" value="24" aria-label="Brownies in stock"><span class="note">brownies in stock</span></span></div>
     <p class="err" id="npErr" hidden></p>
     <div class="modal-actions"><button class="btn btn-line" type="button" data-mclose>Cancel</button><button class="btn btn-blue" type="submit">Add flavor</button></div>
   </form>`,"add");
@@ -3105,7 +3105,7 @@ function viewBoxes(){
   <div class="stack">
     <section class="panel">
       <h2>Box sizes</h2><p class="sub">Turn a size off to hide it from the shop without deleting it.</p>
-      <div class="tablewrap"><table class="t" style="min-width:460px"><thead><tr><th>Cookies</th><th>Price</th><th>On sale now</th><th>Available</th><th></th></tr></thead><tbody>
+      <div class="tablewrap"><table class="t" style="min-width:460px"><thead><tr><th>Brownies</th><th>Price</th><th>On sale now</th><th>Available</th><th></th></tr></thead><tbody>
       ${DB.sizes.slice().sort((a,b)=>a.n-b.n).map(s=>{const sale=bestSale(s.n);return `<tr>
         <td><b>Box of ${s.n}</b></td>
         <td style="width:150px"><div class="money-in"><span>${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.5" data-k="sizes:${s.n}:price" value="${s.price}" aria-label="Price for box of ${s.n}"></div></td>
@@ -3114,7 +3114,7 @@ function viewBoxes(){
         <td class="r">${ROLE()==="owner"?`<button class="danger" type="button" data-sdel="${s.n}">Delete</button>`:""}</td></tr>`}).join("")}
       </tbody></table></div>
       <div class="grid3" style="margin-top:14px;align-items:end">
-        <label class="af">New size (cookies)<input class="in" type="number" min="1" max="24" id="newN" placeholder="e.g. 9"></label>
+        <label class="af">New size (brownies)<input class="in" type="number" min="1" max="24" id="newN" placeholder="e.g. 9"></label>
         <label class="af">Price<div class="money-in"><span>${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.5" id="newP" placeholder="30"></div></label>
         <button class="ghost" type="button" data-sadd style="height:40px">+ Add size</button>
       </div>
@@ -3124,12 +3124,12 @@ function viewBoxes(){
       <div class="phead"><div><h2>Custom box</h2><p class="sub">Lets customers build a bigger box than your fixed sizes. They can only pick the minimum or a step above it (for example 14, 16, 18).</p></div>
         <label class="sw"><input type="checkbox" data-k="settings::customOn" ${DB.settings.customOn?"checked":""} aria-label="Custom box on"><span></span></label></div>
       <div class="grid3" style="align-items:end">
-        <label class="af">Minimum cookies<input class="in" type="number" min="1" step="1" data-k="settings::customMin" value="${DB.settings.customMin}"></label>
+        <label class="af">Minimum brownies<input class="in" type="number" min="1" step="1" data-k="settings::customMin" value="${DB.settings.customMin}"></label>
         <label class="af">Step (add by)<input class="in" type="number" min="1" step="1" data-k="settings::customStep" value="${DB.settings.customStep}"></label>
-        <label class="af">Maximum cookies<input class="in" type="number" min="1" step="1" data-k="settings::customMax" value="${DB.settings.customMax}"></label>
+        <label class="af">Maximum brownies<input class="in" type="number" min="1" step="1" data-k="settings::customMax" value="${DB.settings.customMax}"></label>
       </div>
-      <div class="grid3" style="margin-top:12px;align-items:end"><label class="af">Price per cookie<div class="money-in"><span>${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.05" data-k="settings::customPer" value="${DB.settings.customPer}"></div></label>
-        <p class="note" style="grid-column:span 2;margin:0">Example: a box of ${DB.settings.customMin} costs ${money(r2(DB.settings.customMin*DB.settings.customPer))}. Flash sales set to "Every box" apply to it; per-cookie flavor extras are added on top.</p></div>
+      <div class="grid3" style="margin-top:12px;align-items:end"><label class="af">Price per brownie<div class="money-in"><span>${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.05" data-k="settings::customPer" value="${DB.settings.customPer}"></div></label>
+        <p class="note" style="grid-column:span 2;margin:0">Example: a box of ${DB.settings.customMin} costs ${money(r2(DB.settings.customMin*DB.settings.customPer))}. Flash sales set to "Every box" apply to it; per-brownie flavor extras are added on top.</p></div>
     </section>
     <section class="panel">
       <div class="phead"><div><h2>Paid extras</h2><p class="sub">Shown in step 2 of the box builder. Each one adds its price to the order.</p></div><button class="btn btn-blue btn-sm" type="button" data-aadd>+ Add extra</button></div>
@@ -3217,7 +3217,7 @@ function btnPanels(){
 }
 
 /* --- Settings --- */
-const SND_OPTS=[["register","Ka-ching"],["chime","Chime"],["bell","Bell"],["door","Doorbell"],["pop","Cookie pop"],["alarm","Alarm"]];
+const SND_OPTS=[["register","Ka-ching"],["chime","Chime"],["bell","Bell"],["door","Doorbell"],["pop","Brownie pop"],["alarm","Alarm"]];
 /* --- Courier delivery with Biteship (owner, optional) --- */
 const BSA={loaded:false,loading:false,hasKey:false,hasGoogle:false,mode:"",cfg:{},secret:"",msg:"",dirty:false};
 const BS_COURIERS=[["gojek","Gojek"],["grab","Grab"],["lalamove","Lalamove"],["borzo","Borzo"],["jne","JNE"],["sicepat","SiCepat"],["jnt","J&T"],["anteraja","AnterAja"]];
@@ -3259,9 +3259,9 @@ function bsPanel(){
     <div style="margin-top:10px">${inp("Note for the courier (optional)","origin.note",o.note,"e.g. Ask for Callebrownies at the front desk")}</div>
     <h3 style="margin:18px 0 4px;font-size:15px">3. Couriers customers can choose</h3>
     <div class="chips">${BS_COURIERS.map(([k,l])=>`<button class="fchip" type="button" data-bscour="${k}" aria-pressed="${cou.includes(k)}">${l}</button>`).join("")}</div>
-    <p class="note" style="margin:6px 0 0">Gojek, Grab and Lalamove deliver within hours, best for fresh cookies. The others need the postal codes.</p>
+    <p class="note" style="margin:6px 0 0">Gojek, Grab and Lalamove deliver within hours, best for fresh brownies. The others need the postal codes.</p>
     <h3 style="margin:18px 0 4px;font-size:15px">4. Box weight and size</h3>
-    <p class="note" style="margin:0 0 6px">Couriers price by weight. Leave blank to use ${c.gramsPerCookie||100} g per cookie + ${c.boxGrams||200} g for the box.</p>
+    <p class="note" style="margin:0 0 6px">Couriers price by weight. Leave blank to use ${c.gramsPerCookie||100} g per brownie + ${c.boxGrams||200} g for the box.</p>
     <div class="grid3">${DB.sizes.slice().sort((x,y)=>x.n-y.n).map(z=>`<label class="af">Box of ${z.n} (grams)<input class="in" type="number" min="0" step="10" data-bsw="${z.n}" value="${esc((c.weights&&c.weights[z.n])||"")}" placeholder="${z.n*(+c.gramsPerCookie||100)+(+c.boxGrams||200)}"></label>`).join("")}</div>
     <div class="grid3" style="margin-top:10px">${inp("Length (cm)","dims.l",d.l,"25","number")}${inp("Width (cm)","dims.w",d.w,"25","number")}${inp("Height (cm)","dims.h",d.h,"10","number")}</div>
     <h3 style="margin:18px 0 4px;font-size:15px">Pickup and problems</h3>
@@ -3283,7 +3283,7 @@ function bsAdmMsg(t,bad){const n=document.getElementById("bsAdmMsg");if(!n)retur
 /* --- Delivery & courier tab (owner): delivery fee, ways to get an order, time slots, couriers --- */
 function viewDelivery(){
   const s=DB.settings;
-  return head("Delivery & courier","How customers get their cookies: delivery fee, pickup and delivery options, time slots, the Biteship courier and the driver note and photo.")+MOCK+`
+  return head("Delivery & courier","How customers get their brownies: delivery fee, pickup and delivery options, time slots, the Biteship courier and the driver note and photo.")+MOCK+`
   <div class="stack">
     <section class="panel">
       <h2>Delivery and pickup</h2>
@@ -3338,7 +3338,7 @@ function viewSettings(){
         <div class="af">Closed days<div class="chips">${DOW.map((d,i)=>`<button class="fchip" type="button" data-closed="${i}" aria-pressed="${s.closedWeekdays.includes(i)}">${d}</button>`).join("")}</div></div>
       </div>
       <div class="grid2" style="margin-top:12px"><label class="af">Shop time zone<select class="in" data-k="settings::tz">${(TZS.includes(s.tz||"Asia/Jakarta")?TZS:[s.tz,...TZS]).map(z=>`<option value="${esc(z)}" ${z===(s.tz||"Asia/Jakarta")?"selected":""}>${esc(z.replace(/_/g," "))}</option>`).join("")}</select><small class="note">Used for the order cutoff and the days customers can pick.</small></label></div>
-      <div class="grid2" style="margin-top:12px"><label class="af">Low stock warning at<div class="money-in"><input class="in" type="number" min="0" step="1" data-k="settings::lowStockAt" value="${s.lowStockAt}"><span style="padding-right:10px">cookies</span></div></label></div>
+      <div class="grid2" style="margin-top:12px"><label class="af">Low stock warning at<div class="money-in"><input class="in" type="number" min="0" step="1" data-k="settings::lowStockAt" value="${s.lowStockAt}"><span style="padding-right:10px">brownies</span></div></label></div>
       <h3 style="margin:18px 0 4px;font-size:15px">Check-your-details pop-up</h3><p class="sub" style="margin:0 0 8px">Shown in the middle of the screen when a customer taps Checkout, before the form opens.</p>
       <label class="chk"><input type="checkbox" data-k="settings::coWarnOn" ${s.coWarnOn!==false?"checked":""}> <b>Show this pop-up</b></label>
       <div class="grid2" style="margin-top:8px"><label class="af">Emoji<input class="in" data-k="settings::coWarnEmoji" value="${esc(s.coWarnEmoji)}" maxlength="8"></label><label class="af">Title<input class="in" data-k="settings::coWarnTitle" value="${esc(s.coWarnTitle)}" maxlength="60"></label></div>
@@ -3367,7 +3367,7 @@ function viewSettings(){
       <div class="grid2"><label class="af">Complaint window<div class="money-in"><input class="in" type="number" min="1" step="1" data-k="settings::complaintWindowH" value="${s.complaintWindowH}"><span style="padding-right:10px">hours</span></div></label></div>
     </section>
     <section class="panel">
-      <h2>Payment</h2><p class="sub">Shown to customers when they pay. Orders that aren't paid in time are cancelled automatically and their cookies go back into stock.</p>
+      <h2>Payment</h2><p class="sub">Shown to customers when they pay. Orders that aren't paid in time are cancelled automatically and their brownies go back into stock.</p>
       <div class="grid2" style="align-items:start"><label class="af">Payment window<div class="money-in"><input class="in" type="number" min="1" step="1" data-k="settings::payWindowH" value="${s.payWindowH}"><span style="padding-right:10px">hours</span></div><small class="note">The most time a customer gets to pay. It shrinks automatically when the order is due sooner (pickup or delivery time minus lead time).</small></label></div>
       <div class="grid2" style="margin-top:12px;align-items:start"><label class="af">Sameday payment time<div class="money-in"><input class="in" type="number" min="1" step="5" data-k="settings::samedayPayMin" value="${s.samedayPayMin}"><span style="padding-right:10px">minutes</span></div><small class="note">Sameday shipment orders must be paid within this time.</small></label>
         <label class="af">Shortest time to pay<div class="money-in"><input class="in" type="number" min="1" step="5" data-k="settings::minPayMin" value="${s.minPayMin}"><span style="padding-right:10px">minutes</span></div><small class="note">Time slots that leave less than this (after the lead time) are greyed out.</small></label></div>
@@ -3392,9 +3392,9 @@ function viewSettings(){
       <div class="phead"><div><h2>Order placed page</h2><p class="sub">The celebration customers see after placing an order. You can use {name}, {size}, {mode}, {when}, {hours}, {code} and {total} in the sentences.</p></div><button class="btn btn-blue btn-sm" type="button" data-thpreview>Preview</button></div>
       <div class="stack" style="gap:14px">
         <div class="af">Logo (shown instead of the check mark)<div class="colin" style="flex-wrap:wrap"><label class="ghost mqbtn">${th.logo?"Replace logo":"Upload Callebrownies logo"}<input type="file" accept="image/*" hidden data-thlogo></label>${th.logo?`<img class="lpthumb" style="max-height:44px;max-width:140px" src="${esc(th.logo)}" alt="Logo"><button class="danger" type="button" data-thlogorm>Remove</button>`:""}</div></div>
-        <div class="af">Falling cookie pictures (up to 8, a built-in cookie is used if you add none)<div class="thck">${th.cookies.map((c,i)=>`<span class="th"><img src="${esc(c)}" alt="Cookie ${i+1}"><button type="button" data-thckrm="${i}" aria-label="Remove cookie picture ${i+1}">×</button></span>`).join("")}${th.cookies.length<8?`<label class="ghost mqbtn">Add cookie pictures<input type="file" accept="image/*" multiple hidden data-thck></label>`:""}</div><p class="note" style="margin:0">PNG with a transparent background looks best.</p></div>
-        <div class="grid2"><label class="af" style="flex-direction:row;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink)"><span class="sw"><input type="checkbox" data-thc="fx" ${th.fx?"checked":""}><span></span></span> Falling cookies effect</label>
-        <label class="af">How many cookies fall<input class="in" type="range" min="6" max="60" step="2" data-thr="amount" value="${th.amount}"></label></div>
+        <div class="af">Falling brownie pictures (up to 8, a built-in brownie is used if you add none)<div class="thck">${th.cookies.map((c,i)=>`<span class="th"><img src="${esc(c)}" alt="Brownie ${i+1}"><button type="button" data-thckrm="${i}" aria-label="Remove brownie picture ${i+1}">×</button></span>`).join("")}${th.cookies.length<8?`<label class="ghost mqbtn">Add brownie pictures<input type="file" accept="image/*" multiple hidden data-thck></label>`:""}</div><p class="note" style="margin:0">PNG with a transparent background looks best.</p></div>
+        <div class="grid2"><label class="af" style="flex-direction:row;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink)"><span class="sw"><input type="checkbox" data-thc="fx" ${th.fx?"checked":""}><span></span></span> Falling brownies effect</label>
+        <label class="af">How many brownies fall<input class="in" type="range" min="6" max="60" step="2" data-thr="amount" value="${th.amount}"></label></div>
         <div class="grid2"><label class="af">Heading (new order)<input class="in" data-th="title" maxlength="40" value="${esc(th.title)}"></label><label class="af">Heading (order changed)<input class="in" data-th="titleUpd" maxlength="40" value="${esc(th.titleUpd)}"></label></div>
         <label class="af">Message<textarea class="in" rows="2" data-th="text" maxlength="240">${esc(th.text)}</textarea></label>
         <label class="af">Pay reminder line<textarea class="in" rows="2" data-th="urgent" maxlength="200">${esc(th.urgent)}</textarea></label>
@@ -3410,9 +3410,9 @@ function viewSettings(){
         <label class="af" style="flex-direction:row;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink)"><span class="sw"><input type="checkbox" data-ppc="on" ${pp.on?"checked":""}><span></span></span> Show this popup</label>
         <div class="grid2"><label class="af">Top emoji (leave empty for none)<input class="in" data-pp="emoji" maxlength="4" value="${esc(pp.emoji)}"></label>
         <div class="af">Picture (your logo or any image)<div class="colin" style="flex-wrap:wrap"><label class="ghost mqbtn">${pp.img?"Replace picture":"Upload picture"}<input type="file" accept="image/*" hidden data-ppimg></label>${pp.img?`<img class="lpthumb" style="max-height:44px;max-width:120px" src="${esc(pp.img)}" alt="Popup picture"><button class="danger" type="button" data-ppimgrm>Remove</button>`:""}</div></div></div>
-        <div class="af">Falling cookie pictures for this popup (up to 8; if empty it uses the Order placed page cookies)<div class="thck">${pp.cookies.map((c,i)=>`<span class="th"><img src="${esc(c)}" alt="Cookie ${i+1}"><button type="button" data-ppckrm="${i}" aria-label="Remove cookie picture ${i+1}">×</button></span>`).join("")}${pp.cookies.length<8?`<label class="ghost mqbtn">Add cookie pictures<input type="file" accept="image/*" multiple hidden data-ppck></label>`:""}</div></div>
-        <div class="grid2"><label class="af" style="flex-direction:row;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink)"><span class="sw"><input type="checkbox" data-ppc="fx" ${pp.fx?"checked":""}><span></span></span> Falling cookies effect</label>
-        <label class="af">How many cookies fall<input class="in" type="range" min="6" max="60" step="2" data-ppr="amount" value="${pp.amount}"></label></div>
+        <div class="af">Falling brownie pictures for this popup (up to 8; if empty it uses the Order placed page brownies)<div class="thck">${pp.cookies.map((c,i)=>`<span class="th"><img src="${esc(c)}" alt="Brownie ${i+1}"><button type="button" data-ppckrm="${i}" aria-label="Remove brownie picture ${i+1}">×</button></span>`).join("")}${pp.cookies.length<8?`<label class="ghost mqbtn">Add brownie pictures<input type="file" accept="image/*" multiple hidden data-ppck></label>`:""}</div></div>
+        <div class="grid2"><label class="af" style="flex-direction:row;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink)"><span class="sw"><input type="checkbox" data-ppc="fx" ${pp.fx?"checked":""}><span></span></span> Falling brownies effect</label>
+        <label class="af">How many brownies fall<input class="in" type="range" min="6" max="60" step="2" data-ppr="amount" value="${pp.amount}"></label></div>
         <label class="af">Heading<input class="in" data-pp="title" maxlength="60" value="${esc(pp.title)}"></label>
         <label class="af">Message<textarea class="in" rows="3" data-pp="text" maxlength="300">${esc(pp.text)}</textarea></label>
         <label class="af">Button<input class="in" data-pp="btn" maxlength="30" value="${esc(pp.btn)}"></label>
@@ -3583,7 +3583,7 @@ am.addEventListener("input",e=>{const el=e.target,P=DB.proofpop;
 am.addEventListener("change",async e=>{const el=e.target,P=DB.proofpop;
   if(el.dataset.ppc){P[el.dataset.ppc]=el.checked;saveDB();toast("Saved");return}
   if(el.dataset.ppimg!==undefined){const f=el.files[0];if(!f)return;try{const prev=P.img;P.img=await lpResize(f,400);if(!saveDB()){P.img=prev;toast("Not enough storage space. Try a smaller picture.")}else toast("Picture added")}catch(err){toast(err.message)}renderAdmin();return}
-  if(el.dataset.ppck!==undefined){const fs=[...el.files].slice(0,8-P.cookies.length);try{for(const f of fs){const d=await lpResize(f,160);P.cookies.push(d);if(!saveDB()){P.cookies.pop();toast("Not enough storage space. Remove a picture first.");break}}if(fs.length)toast("Cookie pictures added")}catch(err){toast(err.message)}renderAdmin()}
+  if(el.dataset.ppck!==undefined){const fs=[...el.files].slice(0,8-P.cookies.length);try{for(const f of fs){const d=await lpResize(f,160);P.cookies.push(d);if(!saveDB()){P.cookies.pop();toast("Not enough storage space. Remove a picture first.");break}}if(fs.length)toast("Brownie pictures added")}catch(err){toast(err.message)}renderAdmin()}
 });
 am.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
   if(d.pppreview!==undefined)ppShow(thSample(),true);
@@ -3601,7 +3601,7 @@ am.addEventListener("input",e=>{const el=e.target,T=DB.thanks;
 am.addEventListener("change",async e=>{const el=e.target,T=DB.thanks;
   if(el.dataset.thc){T[el.dataset.thc]=el.checked;saveDB();toast("Saved");return}
   if(el.dataset.thlogo!==undefined){const f=el.files[0];if(!f)return;try{const prev=T.logo;T.logo=await lpResize(f,300);if(!saveDB()){T.logo=prev;toast("Not enough storage space. Try a smaller logo.")}else toast("Logo added")}catch(err){toast(err.message)}renderAdmin();return}
-  if(el.dataset.thck!==undefined){const fs=[...el.files].slice(0,8-T.cookies.length);try{for(const f of fs){const d=await lpResize(f,160);T.cookies.push(d);if(!saveDB()){T.cookies.pop();toast("Not enough storage space. Remove a picture first.");break}}if(fs.length)toast("Cookie pictures added")}catch(err){toast(err.message)}renderAdmin()}
+  if(el.dataset.thck!==undefined){const fs=[...el.files].slice(0,8-T.cookies.length);try{for(const f of fs){const d=await lpResize(f,160);T.cookies.push(d);if(!saveDB()){T.cookies.pop();toast("Not enough storage space. Remove a picture first.");break}}if(fs.length)toast("Brownie pictures added")}catch(err){toast(err.message)}renderAdmin()}
 });
 am.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
   if(d.thpreview!==undefined){renderDone(thSample(),false,true)}
@@ -3651,7 +3651,7 @@ am.addEventListener("click",e=>{
   else if(d.pedit){openPEdit(d.pedit)}
   else if(d.pclear!==undefined){A.pq="";A.pcat="all";renderAdmin()}
   else if(d.sadd!==undefined){const n=Math.round(+$("#newN").value),p=+$("#newP").value,err=$("#sizeErr");
-    if(!(n>=1&&n<=24)){err.textContent="Box size must be between 1 and 24 cookies.";err.hidden=false;return}
+    if(!(n>=1&&n<=24)){err.textContent="Box size must be between 1 and 24 brownies.";err.hidden=false;return}
     if(DB.sizes.some(s=>s.n===n)){err.textContent=`There's already a box of ${n}.`;err.hidden=false;return}
     if(!(p>0)){err.textContent="Set a price above 0.";err.hidden=false;return}
     DB.sizes.push({n,price:p,active:true});saveDB();toast(`Box of ${n} added`);renderAdmin()}
@@ -3868,16 +3868,16 @@ am.addEventListener("click",e=>{
 /* --- landing page editor --- */
 const LP_DEFAULT_SVG=`<svg viewBox="0 0 30 24" aria-hidden="true"><path d="M3 21a12 12 0 0 1 24 0Z" fill="currentColor"/><circle cx="15" cy="5" r="2.6" fill="currentColor"/><rect x="1" y="20.5" width="28" height="3" rx="1.5" fill="currentColor"/></svg>`;
 function defaultPage(){return {name:"callebrownies",logo:"",brand:"#B73700",bg:"#ffffff",ink:"#2A1306",headFont:"display",bodyFont:"body",fonts:[],
-  hero:{eyebrow:"Baked fresh every morning",title:"Warm cookies, boxed your way.",lede:"Pick a box, fill it with the flavors you love, and choose when you want it. Pickup or local delivery.",btn1:"Build a box",btn2:"See the flavors",bg:"",color:"#ffffff",mediaType:"none",src:"",overlay:35,floats:true,cookies:["","","","","",""],media:[],carousel:true,carouselSec:5,shape:"dome"},
+  hero:{eyebrow:"Baked fresh every morning",title:"Warm brownies, boxed your way.",lede:"Pick a box, fill it with the flavors you love, and choose when you want it. Pickup or local delivery.",btn1:"Build a box",btn2:"See the flavors",bg:"",color:"#ffffff",mediaType:"none",src:"",overlay:35,floats:true,cookies:["","","","","",""],media:[],carousel:true,carouselSec:5,shape:"dome"},
   strip:{items:[{t:"Boxes of {sizes}",on:true},{t:"Order by {cutoff} for the next day",on:true},{t:"Closed {closed}",on:true}]},
   build:{title:"Build your box",intro:"Choose a size, fill every spot, then tell us when you want it. Each box is baked the morning it leaves the oven room."},
   blocks:[],
   visit:{title:"Come say hello",text:"Pickup is at the front counter. Give your name and we'll bring your box out.",bg:"",faqTitle:"Good to know"},
   faq:[{q:"When is the order cutoff?",a:"{cutoff} the day before. We bake every box fresh in the morning, so we need the evening to plan the bake."},
-       {q:"How long do the cookies stay fresh?",a:"They're best on the day you get them. Keep them in an airtight container for up to three days, and give them 5 minutes in a warm oven to bring them back."},
+       {q:"How long do the brownies stay fresh?",a:"They're best on the day you get them. Keep them in an airtight container for up to three days, and give them 5 minutes in a warm oven to bring them back."},
        {q:"Can I order for an event?",a:"Yes. For more than five boxes, message us at least three days ahead so we can set aside oven time."},
-       {q:"What about allergies?",a:"Every cookie contains wheat, dairy and egg, and our kitchen handles nuts. We can't promise any box is allergen free."}],
-  footer:{text:"Fresh cookie boxes, baked to order.",bg:"",color:"#ffffff",socials:[{id:"instagram",kind:"instagram",name:"Instagram",url:"",img:""},{id:"threads",kind:"threads",name:"Threads",url:"",img:""},{id:"whatsapp",kind:"whatsapp",name:"WhatsApp",url:"",img:""}]}}}
+       {q:"What about allergies?",a:"Every brownie contains wheat, dairy and egg, and our kitchen handles nuts. We can't promise any box is allergen free."}],
+  footer:{text:"Fresh brownie boxes, baked to order.",bg:"",color:"#ffffff",socials:[{id:"instagram",kind:"instagram",name:"Instagram",url:"",img:""},{id:"threads",kind:"threads",name:"Threads",url:"",img:""},{id:"whatsapp",kind:"whatsapp",name:"WhatsApp",url:"",img:""}]}}}
 /* social buttons in the footer (set in Landing page > Footer): a built-in icon or the owner's own picture, and a link */
 const SOC_KINDS=[["instagram","Instagram"],["threads","Threads"],["whatsapp","WhatsApp"],["tiktok","TikTok"],["facebook","Facebook"],["youtube","YouTube"],["x","X"],["custom","Other link"]];
 const SOC_SVG={
@@ -3971,7 +3971,7 @@ function renderLanding(){
   sv.style.setProperty("--blue",pg.brand);sv.style.setProperty("--ink",pg.ink);
   sv.style.setProperty("--display",lpFamily(pg.headFont,pg));sv.style.setProperty("--body",lpFamily(pg.bodyFont,pg));
   document.documentElement.style.setProperty("--pagebg",pg.bg);
-  const nm=pg.name||"callebrownies";document.title=`${nm} Cookie Boxes`;
+  const nm=pg.name||"callebrownies";document.title=`${nm} Brownie Boxes`;
   $("#brandTxt").textContent=nm;$("#ftBrand").textContent=nm;$(".top .logo").setAttribute("aria-label",`${nm} home`);
   const lg=safeMedia(pg.logo);const mark=lg?`<img src="${esc(lg)}" alt="">`:LP_DEFAULT_SVG;$("#logoMark").innerHTML=mark;$("#ftMark").innerHTML=mark;
   lpFavicon(pg);
@@ -4337,8 +4337,8 @@ function bakeSheetHTML(day){
   live.forEach(o=>{Object.entries(o.items).forEach(([id,n])=>{agg[id]=(agg[id]||0)+n;cookies+=n});bySize[o.size]=(bySize[o.size]||0)+1;o.mode==="delivery"?del++:pick++});
   const rows=Object.entries(agg).sort((a,b)=>b[1]-a[1]);
   return `<div class="bk"><h1>Bake sheet · ${esc(fmtDay(day))}</h1><p class="bk-sub">${esc(DB.page.name||"Callebrownies")} · printed ${esc(fmtDT(Date.now()))}</p>
-  <div class="bk-sum"><span>${cookies} cookies</span>${Object.entries(bySize).sort((a,b)=>a[0]-b[0]).map(([n,c])=>`<span>${c} × box of ${n}</span>`).join("")}<span>${pick} pickup</span><span>${del} delivery</span></div>
-  <h2>Cookies to bake</h2>
+  <div class="bk-sum"><span>${cookies} brownies</span>${Object.entries(bySize).sort((a,b)=>a[0]-b[0]).map(([n,c])=>`<span>${c} × box of ${n}</span>`).join("")}<span>${pick} pickup</span><span>${del} delivery</span></div>
+  <h2>Brownies to bake</h2>
   <table><thead><tr><th></th><th>Flavor</th><th style="text-align:right">Qty</th></tr></thead><tbody>${rows.map(([id,n])=>{const p=prod(id);return `<tr><td class="c">☐</td><td>${esc(p?p.name:"Removed flavor")}</td><td class="n">${n}</td></tr>`}).join("")||`<tr><td colspan="3">Nothing to bake.</td></tr>`}</tbody></table>
   <h2>Orders (${live.length})</h2>
   <table><thead><tr><th></th><th>Order</th><th>Time</th><th>Type</th><th>Box</th><th>Items</th></tr></thead><tbody>${live.map(o=>`<tr><td class="c">☐</td><td><b>${esc(o.code)}</b><br>${esc(o.customer.name)}${o.status==="review"?`<span class="bk-flag">CHECK PAYMENT</span>`:""}</td><td>${esc(o.time)}</td><td>${modeName(o)}</td><td>Box of ${o.size}${o.addons.length?`<br>+ ${o.addons.map(id=>{const a=DB.addons.find(x=>x.id===id);return esc(a?a.name:"Extra")}).join(", ")}`:""}</td><td>${Object.entries(o.items).map(([id,n])=>{const p=prod(id);return `${n} × ${esc(p?p.name:"Removed flavor")}`}).join("<br>")}${o.note?`<br><i>Note: ${esc(o.note)}</i>`:""}</td></tr>`).join("")||`<tr><td colspan="6">No orders.</td></tr>`}</tbody></table></div>`;
@@ -4865,7 +4865,7 @@ const SEC_GROUPS=[
     ["bsRatesIpM","Price checks per minute","",10],["bsRatesIpH","Price checks per hour","",60],["bsRatesIpD","Price checks per day","",40],
     ["bsGeoIpM","Map lookups per minute","",12],["bsGeoIpH","Map lookups per hour","",60],["bsGeoIpD","Map lookups per day","",30],
     ["bsAreasIpM","Area searches per minute","",40],["bsAreasIpD","Area searches per day","",200]]],
-  ["🧾 Orders","Stops fake orders that hold your cookie stock.",[
+  ["🧾 Orders","Stops fake orders that hold your brownie stock.",[
     ["orderIpH","Orders per visitor per hour","",10],["orderIpD","Orders per visitor per day","",30],
     ["phoneOpen","Unpaid orders per phone number","A new order waits until one is paid or cancelled",3],
     ["orderAll","New orders per minute, whole shop","",60]]],
@@ -5113,7 +5113,7 @@ function alEvents(){
   return ev.map(x=>({...x,key:x.type+"|"+x.id+"|"+x.at}));
 }
 function alAckAll(){alEvents().forEach(x=>AACK.add(x.key));alSaveAck();ALQ=ALQ.filter(x=>x.test);renderAlerts()}
-const AL_META={order:["🍪","New order placed"],proof:["🧾","Payment proof submitted"],complaint:["⚠️","New customer complaint"],courier:["🛵","Courier problem: book again"]};
+const AL_META={order:["🍫","New order placed"],proof:["🧾","Payment proof submitted"],complaint:["⚠️","New customer complaint"],courier:["🛵","Courier problem: book again"]};
 function alPush(x){
   if(ALQ.some(q=>q.key===x.key))return;ALQ.push(x);renderAlerts();alSound([x]);
   if(!DB.alerts.stay)setTimeout(()=>alDismiss(x.key),10000);

@@ -191,7 +191,7 @@ begin
     parts := parts || ('status ' || coalesce(nm_old, o.data ->> 'status') || ' → ' || coalesce(nm_new, d ->> 'status'));
   end if;
   if approved then parts := parts || 'payment approved'::text; end if;
-  if (o.data -> 'items') is distinct from (d -> 'items') then parts := parts || 'cookies changed'::text; end if;
+  if (o.data -> 'items') is distinct from (d -> 'items') then parts := parts || 'brownies changed'::text; end if;
   if (o.data ->> 'courier') is distinct from (d ->> 'courier') or (o.data ->> 'awb') is distinct from (d ->> 'awb') then
     parts := parts || ('courier ' || coalesce(d ->> 'courier', '') || ' ' || coalesce(d ->> 'awb', '')); end if;
   if (o.data #>> '{complaint,status}') is distinct from (d #>> '{complaint,status}') then parts := parts || ('complaint ' || coalesce(d #>> '{complaint,status}', '')); end if;

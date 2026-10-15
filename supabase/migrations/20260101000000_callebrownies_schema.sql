@@ -614,7 +614,7 @@ declare o public.orders; t bigint := public.now_ms(); pid text; r jsonb; stars i
 begin
   if not public.owns(p_id, p_token) then perform public.bad('We couldn''t find that order.'); end if;
   select * into o from public.orders where id = p_id for update;
-  if o.status <> 'completed' then perform public.bad('You can rate your cookies after the order is completed.'); end if;
+  if o.status <> 'completed' then perform public.bad('You can rate your brownies after the order is completed.'); end if;
   rated := coalesce(o.data -> 'rated', '{}'::jsonb);
   usr := left(coalesce(nullif(split_part(o.data #>> '{customer,name}', ' ', 1), ''), 'Customer'), 30);
   if jsonb_typeof(p_ratings) <> 'object' then perform public.bad('Tap the stars to rate at least one flavor.'); end if;
@@ -642,7 +642,7 @@ declare t bigint := public.now_ms(); u text := left(btrim(coalesce(p_user, '')),
 begin
   if length(u) < 1 then perform public.bad('Please add your name.'); end if;
   if p_stars is null or p_stars < 1 or p_stars > 5 then perform public.bad('Tap a star rating.'); end if;
-  if length(tx) < 3 then perform public.bad('Write a few words about the cookie.'); end if;
+  if length(tx) < 3 then perform public.bad('Write a few words about the brownie.'); end if;
   if not public.throttle_ok('review', 30, 600000) or not public.throttle_ok('review:' || left(coalesce(p_vid, ''), 40), 3, 86400000) then
     perform public.bad('Thanks! You''ve reached the review limit for today.'); end if;
   perform 1 from public.coll where coll = 'products' and id = p_pid and data ->> 'status' <> 'hidden' for update;
@@ -791,7 +791,7 @@ begin
     c := jsonb_set(c, '{updatedAt}', to_jsonb(t));
     d := jsonb_set(d, '{complaint}', c);
   end if;
-  -- stock follows status: an order holds cookies unless it is cancelled
+  -- stock follows status: an order holds brownies unless it is cancelled
   new_hold := coalesce((d ->> 'tracked')::boolean, true) and (d ->> 'status') <> 'cancelled';
   if coalesce((d ->> 'tracked')::boolean, true) then
     if old_hold then

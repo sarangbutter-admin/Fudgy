@@ -55,7 +55,7 @@ function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15
 function seedDB(){
   const now=Date.now(), H=3600e3;
   const db={v:1,
-    settings:{currency:"$",tz:"Asia/Jakarta",deliveryFee:5,deliveryKm:10,samedayOn:false,samedayLeadH:3,samedayCutoff:15,samedayFee:8,samedayPayMin:60,minPayMin:30,rejPayMin:120,payCdColor:"#C8102E",payCdSize:"L",payCdFx:true,pickupOn:true,pickupLeadH:24,schedOn:true,schedLeadH:24,cutoffHour:20,closedWeekdays:[1],lowStockAt:10,customOn:true,customMin:14,customStep:2,customMax:48,customPer:3.25,payWindowH:24,complaintWindowH:24,waCountry:"62",payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Cookies",
+    settings:{currency:"$",tz:"Asia/Jakarta",deliveryFee:5,deliveryKm:10,samedayOn:false,samedayLeadH:3,samedayCutoff:15,samedayFee:8,samedayPayMin:60,minPayMin:30,rejPayMin:120,payCdColor:"#C8102E",payCdSize:"L",payCdFx:true,pickupOn:true,pickupLeadH:24,schedOn:true,schedLeadH:24,cutoffHour:20,closedWeekdays:[1],lowStockAt:10,customOn:true,customMin:14,customStep:2,customMax:48,customPer:3.25,payWindowH:24,complaintWindowH:24,waCountry:"62",payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Brownies",
       times:["10 to 11am","12 to 1pm","3 to 4pm","5 to 6pm"],
       address:"12 Example Street, Your City. Look for the blue dome sign.",
       hours:[["Tue to Fri","10am to 6pm"],["Saturday","9am to 5pm"],["Sunday","10am to 3pm"],["Monday","Closed"]]},
@@ -74,7 +74,7 @@ function seedDB(){
     addons:[
       {id:"wrap",name:"Gift wrap",desc:"Ribbon, tissue and a sticker seal.",price:3,active:true},
       {id:"card",name:"Greeting card",desc:"We handwrite your gift note on a card.",price:2,active:true},
-      {id:"milk",name:"Fresh milk, 500 ml",desc:"Chilled, to go with the cookies.",price:4,active:true}
+      {id:"milk",name:"Fresh milk, 500 ml",desc:"Chilled, to go with the brownies.",price:4,active:true}
     ],
     sales:[
       {id:uid(),name:"Lunch rush",type:"percent",value:20,appliesTo:"all",start:now-15*60e3,end:now+105*60e3},
@@ -124,11 +124,11 @@ function defaultAnnouncer(){return {on:true,sticky:true,size:"M",cdColor:"#C8102
   giftsoon:{text:"Coming up: {name}, free gifts with {applies}.",label:"Starts in",bg:"#FFF7D6",ink:"#B73700",img:""},
   mq:{bg:"#B73700",ink:"#FFFFFF",font:"display",fontData:"",fontName:"",size:"M",speed:"medium",sepOn:true,sepImg:""},
   custom:{on:false,text:"Free delivery this weekend!",label:"Ends in",endsAt:"",bg:"#B73700",ink:"#FFFFFF",img:""}}}
-function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day cookies"],images:[],bg:"#B73700",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
+function defaultMarquee(){return {on:true,texts:["Baked fresh every morning","Build a box your way","Pickup or local delivery","Order by 8pm for next-day brownies"],images:[],bg:"#B73700",color:"#ffffff",font:"display",size:"M",speed:"medium",fontData:null,fontName:""}}
 function defaultThanks(){return {logo:"",cookies:[],fx:true,amount:28,title:"Order placed",titleUpd:"Order updated",
   text:"Thanks, {name}! Your box of {size} is set for {mode} on {when}.",
-  urgent:"Your cookies are waiting! Pay within {hours} to keep them.",
-  cdLabel:"Time left to pay",payBtn:"Pay now & secure my cookies 🍪",trackBtn:"Track my order",buildBtn:"Build another box",
+  urgent:"Your brownies are waiting! Pay within {hours} to keep them.",
+  cdLabel:"Time left to pay",payBtn:"Pay now & secure my brownies 🍫",trackBtn:"Track my order",buildBtn:"Build another box",
   bg:"#ffffff",accent:"#B73700",cdColor:"#C8102E"}}
 function defaultProofPop(){return {on:true,emoji:"🙏",img:"",cookies:[],fx:true,amount:36,
   title:"Thank you, {name}! ✅",
@@ -151,7 +151,7 @@ function migrate(db){
   if(db.settings&&db.settings.menuSort===undefined)db.settings.menuSort="popular";
   if(!Array.isArray(db.coupons))db.coupons=[{id:"cp1",code:"WELCOME10",desc:"10% off your box",type:"percent",value:10,minSpend:0,appliesTo:"all",startsAt:"",endsAt:"",maxUses:0,onePerPhone:true,stack:true,show:true,on:true}];
   db.alerts=deepFill(defaultAlerts(),db.alerts);
-  if(!Array.isArray(db.payMethods))db.payMethods=[{id:"pm1",name:"Bank transfer",details:(db.settings&&db.settings.payBank)||"Example Bank\nAccount 123 456 7890\nName: Callebrownies Cookies",img:"",on:true}];
+  if(!Array.isArray(db.payMethods))db.payMethods=[{id:"pm1",name:"Bank transfer",details:(db.settings&&db.settings.payBank)||"Example Bank\nAccount 123 456 7890\nName: Callebrownies Brownies",img:"",on:true}];
   db.proofpop=Object.assign(defaultProofPop(),db.proofpop||{});
   if(db.page&&db.page.strip&&db.page.strip.mode){const st=db.page.strip,d=defaultPage().strip.items;
     db.page.strip={items:st.mode==="off"?d.map(x=>({...x,on:false})):st.mode==="custom"?String(st.text||"").split("\n").map(x=>x.trim()).filter(Boolean).map(t=>({t,on:true})):d}}
@@ -160,7 +160,7 @@ function migrate(db){
   db.announcer=deepFill(defaultAnnouncer(),db.announcer);
   if(db.settings.complaintWindowH===undefined)db.settings.complaintWindowH=24;
   if(db.settings.waCountry===undefined)db.settings.waCountry="62";
-  if(db.settings.payWindowH===undefined)Object.assign(db.settings,{payWindowH:24,payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Cookies"});
+  if(db.settings.payWindowH===undefined)Object.assign(db.settings,{payWindowH:24,payBank:"Example Bank\nAccount 123 456 7890\nName: Callebrownies Brownies"});
   if(db.settings.lowStockAt===undefined)db.settings.lowStockAt=10;
   if(db.settings.customOn===undefined)Object.assign(db.settings,{customOn:true,customMin:14,customStep:2,customMax:48,customPer:3.25});
   if(db.settings.fabGest===undefined)Object.assign(db.settings,{fabGest:true,fabBgType:"color",fabBg2:"#FF9F43",fabRing:"",fabImgSize:84,fabSizePx:58,fabOpacity:100,fabImg:"",rbImg:"",rbImg2:""});
@@ -247,7 +247,7 @@ const bsHTML=(o,adm)=>{const b=o.bship;if(!b||!b.courier||o.mode!=="delivery")re
   const booked=!!b.biteshipId,st=b.status?(BS_ST[b.status]||b.status):"",nm=esc((b.courierName||b.courier)+" "+(b.serviceName||b.service)),dr=b.driver;
   const fail=adm&&b.nightHold&&!booked?`<div class="oc-alert appr" style="margin:0 0 8px">🌙 No driver before closing time. Searching again automatically tomorrow at ${fmtHour(b.resumeH??9)}. You can still book now yourself.<div style="margin-top:6px"><button class="ghost" type="button" data-bsact="nohold" data-oid="${o.id}">Don't search tomorrow</button></div></div>`
     :adm&&b.failed?`<div class="oc-alert cmp" style="margin:0 0 8px">🛵 ${esc(st||"Courier failed")}. Book again below${b.retries?" (already retried once)":""}${b.nightErr?`<br><small>Tomorrow's automatic search didn't start: ${esc(b.nightErr)}</small>`:""}</div>`:"";
-  const lines=!adm?`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${b.waybill?`<dt>Waybill</dt><dd>${esc(b.waybill)}</dd>`:""}`:`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${st?`<dt>Status</dt><dd><b>${esc(st)}</b>${b.statusAt?` <small class="note">${fmtAgo(b.statusAt)}</small>`:""}</dd>`:booked?"":`<dt>Status</dt><dd>${adm?"Not booked yet":"We'll call the courier when your cookies are ready"}</dd>`}
+  const lines=!adm?`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${b.waybill?`<dt>Waybill</dt><dd>${esc(b.waybill)}</dd>`:""}`:`<dt>Courier</dt><dd>${nm}${b.eta?` · ${esc(b.eta)}`:""}</dd>${st?`<dt>Status</dt><dd><b>${esc(st)}</b>${b.statusAt?` <small class="note">${fmtAgo(b.statusAt)}</small>`:""}</dd>`:booked?"":`<dt>Status</dt><dd>${adm?"Not booked yet":"We'll call the courier when your brownies are ready"}</dd>`}
     ${dr&&(dr.name||dr.plate)?`<dt>Driver</dt><dd>${esc(dr.name||"")}${dr.plate?` · ${esc(dr.plate)}`:""}${dr.phone?` · <a href="tel:${esc(dr.phone)}">${esc(dr.phone)}</a>`:""}</dd>`:""}
     ${b.waybill?`<dt>Waybill</dt><dd>${esc(b.waybill)}</dd>`:""}${(adm?o._clink||b.link:b.link)&&booked?`<dt>Tracking</dt><dd><a href="${esc(safeUrl(adm?o._clink||b.link:b.link))}" target="_blank" rel="noopener">${adm?"Track the courier live (team only)":"Track the courier live"}</a></dd>`:""}
     ${adm&&b.price!==undefined?`<dt>Price</dt><dd>${money(b.price)} quoted${b.bookedPrice!==undefined&&b.bookedAt?` · ${money(b.bookedPrice)} booked`:""}</dd>`:""}`;
@@ -298,7 +298,7 @@ const saleOffText = s => isFD(s)?"Free delivery":isGift(s)?"Free gifts":s.type==
 function giftAppliesText(s){const ps=[...new Set(s.rules.map(r=>+r.from===+r.to&&DB.sizes.some(z=>z.n===+r.from)?`box of ${r.from}`:`custom boxes of ${r.from} to ${r.to}`))];
   return ps.length>1?ps.slice(0,-1).join(", ")+" and "+ps[ps.length-1]:ps[0]}
 const saleAppliesText = s => isGift(s)&&giftHasRules(s)?giftAppliesText(s):s.appliesTo==="all"?"every box":`the box of ${s.appliesTo}`;
-/* --- cookie drawing --- */
+/* --- brownie drawing --- */
 let gid=0;
 function cookieSVG(f, seed){
   const r=rng(seed), id="g"+(gid++), N=30, pts=[];
@@ -538,13 +538,13 @@ function renderStore(){
    if(t.customOn){const on=validCustom(S.size),n=on?S.size:snapCustom(S.cv||t.customMin);S.cv=n;
     const base=basePrice(n),sale=bestSale(n),now=sale?r2(base-saleDiscount(sale,base)):base;
     cb.dataset.on=on;
-    cb.innerHTML=`<h4>Need a bigger box?</h4><p>Build your own from ${t.customMin} cookies, in steps of ${t.customStep}. ${money(t.customPer)} per cookie.</p>
-    <div class="crow"><div class="stepper" role="group" aria-label="Custom box size"><button type="button" data-cstep="-1" aria-label="Fewer cookies" ${n<=t.customMin?"disabled":""}>−</button><input id="cvIn" type="number" inputmode="numeric" min="${t.customMin}" max="${t.customMax}" step="${t.customStep}" value="${n}" aria-label="Number of cookies"><button type="button" data-cstep="1" aria-label="More cookies" ${n+t.customStep>t.customMax?"disabled":""}>+</button></div>
+    cb.innerHTML=`<h4>Need a bigger box?</h4><p>Build your own from ${t.customMin} brownies, in steps of ${t.customStep}. ${money(t.customPer)} per brownie.</p>
+    <div class="crow"><div class="stepper" role="group" aria-label="Custom box size"><button type="button" data-cstep="-1" aria-label="Fewer brownies" ${n<=t.customMin?"disabled":""}>−</button><input id="cvIn" type="number" inputmode="numeric" min="${t.customMin}" max="${t.customMax}" step="${t.customStep}" value="${n}" aria-label="Number of brownies"><button type="button" data-cstep="1" aria-label="More brownies" ${n+t.customStep>t.customMax?"disabled":""}>+</button></div>
     <span class="cprice num">${sale?`<s style="opacity:.6;font-weight:400">${money(base)}</s> `:""}${money(now)}</span>
-    <button class="btn btn-blue btn-sm cuse" type="button" data-cuse ${on?"disabled":""}>${on?"Selected":`Use box of ${n}`}</button></div>${giftPlan(n).length?`<div class="gifthint inl"><span class="ic" aria-hidden="true">🎁</span><span class="t">Free gift with ${n} cookies!</span><button class="gifthint-b" type="button" data-giftsee="${n}">See gifts ›</button></div>`:""}`}}
+    <button class="btn btn-blue btn-sm cuse" type="button" data-cuse ${on?"disabled":""}>${on?"Selected":`Use box of ${n}`}</button></div>${giftPlan(n).length?`<div class="gifthint inl"><span class="ic" aria-hidden="true">🎁</span><span class="t">Free gift with ${n} brownies!</span><button class="gifthint-b" type="button" data-giftsee="${n}">See gifts ›</button></div>`:""}`}}
   // sizes (with live sale prices)
   $("#sizes").innerHTML = activeSizes().map(s=>{const sale=bestSale(s.n),now=sale?r2(s.price-saleDiscount(sale,s.price)):s.price;
-    return `<button class="size" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>COOKIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
+    return `<button class="size" type="button" data-size="${s.n}" aria-pressed="${s.n===S.size}">${sale?`<span class="saletag">${sale.type==="percent"?"−"+sale.value+"%":"Sale"}</span>`:""}${giftPlan(s.n).length?`<span class="saletag gifttag${sale?" l":""}">🎁 Gift</span>`:""}<strong>${s.n}</strong><small>BROWNIES</small><span class="num">${sale?`<s>${money(s.price)}</s>`:""}${money(now)}</span></button>`}).join("");
   renderGiftHint();renderBarExtras();renderFab();
   document.querySelectorAll(".card").forEach(c=>{const st=c.querySelector(".stepper");if(!st)return;const n=countOf(c.dataset.id);st.querySelector("output").textContent=n;c.classList.toggle("has",n>0);
     st.querySelector('[data-act="dec"]').disabled=n===0;st.querySelector('[data-act="inc"]').disabled=full()||n>=stockLeft(prod(c.dataset.id))});
@@ -761,11 +761,11 @@ async function applyCoupon(code){
 $("#cpnForm").addEventListener("submit",e=>{e.preventDefault();applyCoupon($("#cpnIn").value)});
 $("#cpn").addEventListener("click",e=>{const u=e.target.closest("[data-cpnuse]");if(u){applyCoupon(u.dataset.cpnuse);return}
   if(e.target.closest("[data-cpnrm]")){S.coupon="";renderStore();cpMsg("Coupon removed.",true)}});
-// tap the cookie picture to add it
+// tap the brownie picture to add it
 $("#menuGrid").addEventListener("click",e=>{
   if(e.target.closest("button,a,.stepper"))return;
   const w=e.target.closest(".pwrap, h4");if(!w)return;const card=w.closest(".card");if(!card||card.classList.contains("out"))return;
-  const id=card.dataset.id;if(full()){toast(`Your box is full. Remove a cookie to add another.`);return}add(id,card)});
+  const id=card.dataset.id;if(full()){toast(`Your box is full. Remove a brownie to add another.`);return}add(id,card)});
 function add(id,card){
   if(full())return;
   if(countOf(id)>=stockLeft(prod(id))){toast(`That's all we have of ${prod(id).name} right now`);return}
@@ -912,8 +912,8 @@ $("#gdSheet").addEventListener("click",e=>{
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#gdSheet").hidden)closeGuard()});
 /* friendly pop-ups when a visitor gets close to a limit ("warn") or reaches it ("slow" = stop); look and wording set in the Security tab */
 const POP_DEF={
-  slow:{Title:"Slow down a little, friends!",Text:"Cookies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍪",Bg:"#FFF4D6",Ink:"#2A1306",BtnBg:"#B73700",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
-  warn:{Title:"Easy there, cookie lover!",Text:"You're going a little fast. Take a breath, cookies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#FFF4EC",Ink:"#2A1306",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
+  slow:{Title:"Slow down a little, friends!",Text:"Brownies are best eaten slowly… and so is this website. Please wait a moment and try again.",Btn:"OK, I'll slow down",Icon:"🍫",Bg:"#FFF4D6",Ink:"#2A1306",BtnBg:"#B73700",BtnInk:"#FFFFFF",Fx:"bounce",BtnFx:"shine"},
+  warn:{Title:"Easy there, brownie lover!",Text:"You're going a little fast. Take a breath, brownies taste better slowly.",Btn:"Got it",Icon:"🐢",Bg:"#FFF4EC",Ink:"#2A1306",BtnBg:"#0A7F5A",BtnInk:"#FFFFFF",Fx:"float",BtnFx:"pulse"}};
 // which part of the shop the limit belongs to (each can have its own message)
 const POP_GRP={place_order:"Orders",track_order:"Track",check_coupon:"Coupon",courier:"Courier",submit_proof:"Upload",submit_complaint:"Upload",submit_place:"Upload"};
 const SLOW_FX=[["bounce","Bounce"],["wiggle","Wiggle"],["float","Float up and down"],["pulse","Pulse"],["spin","Slow spin"],["none","Still"]],SLOW_BFX=[["shine","Shine sweep"],["pulse","Gentle pulse"],["wiggle","Wiggle"],["none","Still"]];
@@ -1355,7 +1355,7 @@ function rateNudge(){
   if(Date.now()-(RN_SEEN._last||0)<864e5)return;   // one reminder a day at most
   const o=mineOrders().find(o=>o.status==="completed"&&!(RN_SEEN[o.id]===-1||Date.now()-(RN_SEEN[o.id]||0)<864e5)&&Object.keys(o.items||{}).some(pid=>prod(pid)&&!(o.rated||{})[pid]));if(!o)return;
   const left=Object.keys(o.items).filter(pid=>prod(pid)&&!(o.rated||{})[pid]).map(pid=>prod(pid).name);
-  $("#rnPop").innerHTML=`<div class="rn-ic" aria-hidden="true">⭐</div><div class="rn-tx"><b>How were your cookies?</b><span>Your order ${esc(o.code)} was ${o.mode==="delivery"?"delivered":"picked up"}. Rate ${esc(listJoin(left.slice(0,3)).replace(" or "," and "))}${left.length>3?" and more":""}.</span></div><div class="rn-act"><button class="btn btn-blue btn-sm" type="button" data-rnrate="${o.id}">Rate now</button><button class="linkbtn sm" type="button" data-rnlater="${o.id}">Later</button></div>`;
+  $("#rnPop").innerHTML=`<div class="rn-ic" aria-hidden="true">⭐</div><div class="rn-tx"><b>How were your brownies?</b><span>Your order ${esc(o.code)} was ${o.mode==="delivery"?"delivered":"picked up"}. Rate ${esc(listJoin(left.slice(0,3)).replace(" or "," and "))}${left.length>3?" and more":""}.</span></div><div class="rn-act"><button class="btn btn-blue btn-sm" type="button" data-rnrate="${o.id}">Rate now</button><button class="linkbtn sm" type="button" data-rnlater="${o.id}">Later</button></div>`;
   $("#rnPop").hidden=false;
 }
 function rnDone(id,forGood){RN_SEEN[id]=forGood?-1:Date.now();RN_SEEN._last=Date.now();try{localStorage.setItem(RN_KEY,JSON.stringify(RN_SEEN))}catch(e){}$("#rnPop").hidden=true}
@@ -1375,12 +1375,12 @@ function renderBell(){
   if(!$("#bellPop").hidden)drawBell(list);
 }
 let BELLF="all";
-const ST_ICON={refunded:"💸",awaiting:"⏳",review:"🔎",new:"✅",baking:"🍪",ready:"🚚",completed:"🎉",cancelled:"❌"};
+const ST_ICON={refunded:"💸",awaiting:"⏳",review:"🔎",new:"✅",baking:"🍫",ready:"🚚",completed:"🎉",cancelled:"❌"};
 function drawBell(list){
   $("#bellTabs").innerHTML=[["all","All"],["orders","My orders"],["deals","News & deals"]].map(([k,l])=>`<button type="button" role="tab" data-belltab="${k}" aria-selected="${BELLF===k}">${l}</button>`).join("");
   const items=[];
   if(BELLF!=="deals")payDue().forEach(o=>{
-    items.push({at:Infinity,h:`<button class="bell-it bell-pay" type="button" data-bellgo="${o.id}"><span class="bell-ic" aria-hidden="true">⏰</span><span class="bell-tx"><small>Order #${esc(o.code)} · ${isRej(o)?"payment rejected":"waiting for payment"}</small><b>${isRej(o)?"Payment rejected – please send a new proof":"Pay now or you'll miss your cookies!"}</b>${isRej(o)&&o.rejected.reason?`<span class="bell-rej">Reason: ${esc(o.rejected.reason)}</span>`:""}<span class="bell-cdrow">Time left: <span class="cd" data-exp="${o.expiresAt}">${fmtLeft(o.expiresAt-Date.now())}</span></span></span><span class="bell-ch" aria-hidden="true">›</span></button>`})});
+    items.push({at:Infinity,h:`<button class="bell-it bell-pay" type="button" data-bellgo="${o.id}"><span class="bell-ic" aria-hidden="true">⏰</span><span class="bell-tx"><small>Order #${esc(o.code)} · ${isRej(o)?"payment rejected":"waiting for payment"}</small><b>${isRej(o)?"Payment rejected – please send a new proof":"Pay now or you'll miss your brownies!"}</b>${isRej(o)&&o.rejected.reason?`<span class="bell-rej">Reason: ${esc(o.rejected.reason)}</span>`:""}<span class="bell-cdrow">Time left: <span class="cd" data-exp="${o.expiresAt}">${fmtLeft(o.expiresAt-Date.now())}</span></span></span><span class="bell-ch" aria-hidden="true">›</span></button>`})});
   if(BELLF!=="deals")refundList().forEach(o=>{
     items.push({at:o.refund.at,h:`<button class="bell-it${o.refund.at>SEENV?" new":""}" type="button" data-bellgo="${o.id}"><span class="bell-ic" aria-hidden="true">💸</span><span class="bell-tx"><small>Order #${esc(o.code)} · ${fmtAgo(o.refund.at)}</small><b>${o.refund.full?"Your order was refunded":"Part of your order was refunded"}: ${money(o.refund.amount)}</b><span>${o.refund.note?esc(o.refund.note)+" · ":""}It can take a few days to show in your account.</span></span><span class="bell-ch" aria-hidden="true">›</span></button>`})});
   if(BELLF!=="deals")list.forEach(x=>{const st=x.m.status,o=x.o,lab=x.m.courier?"Courier update":st==="complaint"?"Complaint update":st?stLabel(st,o.mode):"Update";
@@ -1447,12 +1447,12 @@ function courierStep(o,b){
   const dl=bsDriverLine(b),lk=bsLiveLink(b),both=[dl,lk].filter(Boolean).join("<br>");
   if(o.status==="ready"||o.status==="completed")return {label:"Picked up by the courier",sub:both};
   if(b.biteshipId){
-    if(b.status==="allocated"||b.status==="picking_up")return {label:b.status==="picking_up"?"Driver on the way to pick up":"Driver found",sub:both||"Your driver is coming to pick up your cookies."};
+    if(b.status==="allocated"||b.status==="picking_up")return {label:b.status==="picking_up"?"Driver on the way to pick up":"Driver found",sub:both||"Your driver is coming to pick up your brownies."};
     return {label:"Searching for a driver…",srch:1,sub:["We're finding a courier for your order.",lk].filter(Boolean).join("<br>")};
   }
   if(b.nightHold)return {label:"Searching again tomorrow",srch:1,sub:`No driver was free today. We'll look for a courier again tomorrow from ${fmtHour(b.resumeH??9)}.`};
   if(b.failed)return {label:"Searching for a driver…",srch:1,sub:`<span class="trk-rej">No driver yet. We're arranging another courier.</span>`};
-  return {label:"Courier pickup",sub:"We'll call the courier when your cookies are ready."};
+  return {label:"Courier pickup",sub:"We'll call the courier when your brownies are ready."};
 }
 function moSteps(o){
   if(o.bship&&o.bship.biteshipId&&o.mode==="delivery"&&!o.courier)o.courier=(o.bship.courierName||o.bship.courier)+" "+(o.bship.serviceName||o.bship.service);
@@ -1489,7 +1489,7 @@ function ratingHTML(o){
     return done?`<div class="rrow"><b>${esc(p.name)}</b><span class="stars" role="img" aria-label="You rated ${done} out of 5">${starStr(done)}</span></div>`
     :`<div class="rrow"><b>${esc(p.name)}</b><div class="rstars" role="group" aria-label="Rate ${esc(p.name)}">${[1,2,3,4,5].map(n=>`<button type="button" data-rstar="${pid}" data-n="${n}" aria-label="${n} star${n>1?"s":""}">★</button>`).join("")}</div><input class="in" data-rcomment="${pid}" maxlength="200" placeholder="Say something about it (optional)" aria-label="Comment on ${esc(p.name)}"></div>`}).join("");
   const left=ids.some(pid=>prod(pid)&&!rated[pid]);
-  return `<div class="dsec"><h4>Rate your cookies</h4>${rows}${left?`<p class="err" id="rtErr" hidden></p><button class="btn btn-blue btn-sm" type="button" data-rsubmit style="margin-top:8px">Send ratings</button>`:`<p class="hint" style="margin:8px 0 0">Thanks for rating!</p>`}</div>`;
+  return `<div class="dsec"><h4>Rate your brownies</h4>${rows}${left?`<p class="err" id="rtErr" hidden></p><button class="btn btn-blue btn-sm" type="button" data-rsubmit style="margin-top:8px">Send ratings</button>`:`<p class="hint" style="margin:8px 0 0">Thanks for rating!</p>`}</div>`;
 }
 function complaintHTML(o){
   if(o.status!=="ready"&&o.status!=="completed")return "";
@@ -1510,7 +1510,7 @@ function complaintHTML(o){
       <label class="chk"><input type="radio" name="cpScope" value="order" checked> Whole order</label>
       <label class="chk"><input type="radio" name="cpScope" value="items"> Specific flavors</label>
       <div id="cpItems" hidden style="padding-left:26px;display:grid;gap:6px">${Object.keys(o.items).map(pid=>{const p=prod(pid);return p?`<label class="chk"><input type="checkbox" name="cpItem" value="${pid}"> ${o.items[pid]} × ${esc(p.name)}</label>`:""}).join("")}</div></div>
-    <div class="field"><label for="cpText">Tell us what happened</label><textarea id="cpText" rows="4" maxlength="600" placeholder="e.g. 3 cookies were crushed when I opened the box"></textarea></div>
+    <div class="field"><label for="cpText">Tell us what happened</label><textarea id="cpText" rows="4" maxlength="600" placeholder="e.g. 3 brownies were crushed when I opened the box"></textarea></div>
     <div class="field"><label for="cpPhotos">Photos (optional, up to 3)</label><input id="cpPhotos" type="file" accept="image/*" multiple></div>
     <label class="chk"><input type="checkbox" id="cpVideo"> I have an uncut unboxing video and can send it if asked.</label>
     <p class="err" id="cpErr" hidden></p>
@@ -1524,7 +1524,7 @@ function renderMO(){
     card.innerHTML=`<div class="sheet-top"><h3>My orders</h3><button class="x" type="button" data-moclose aria-label="Close">✕</button></div>
     ${list.length?`<div class="mo-list">${list.map(x=>`<button class="mo-card" type="button" data-moopen="${x.id}"><div class="mo-row"><span class="mo-code">${esc(x.code)}</span><span class="mo-chip st-${isRej(x)?"rejected":x.status}">${cusLabel(x)}</span></div>
       <div class="mo-row"><span>Box of ${x.size} · ${money(x.total)}${x.refund?` · <b style="color:#0a7a3b">${refundTxt(x)} ${money(x.refund.amount)}</b>`:""}</span><span class="mo-sub">${fmtDay(x.day)}, ${esc(x.time)}</span></div>
-      ${x.status==="completed"&&x.complaint?`<div class="mo-sub">Complaint: ${CP_STATUS[x.complaint.status]}</div>`:cwinOpen(x)?`<div class="mo-sub">Complaint window: <span class="cd" data-cexp="${cwinEnd(x)}">${fmtLeft(cwinEnd(x)-Date.now())}</span></div>`:""}${x.status==="completed"&&Object.keys(x.items).some(id=>prod(id)&&!(x.rated||{})[id])?`<div class="mo-sub">Tap to rate your cookies</div>`:""}
+      ${x.status==="completed"&&x.complaint?`<div class="mo-sub">Complaint: ${CP_STATUS[x.complaint.status]}</div>`:cwinOpen(x)?`<div class="mo-sub">Complaint window: <span class="cd" data-cexp="${cwinEnd(x)}">${fmtLeft(cwinEnd(x)-Date.now())}</span></div>`:""}${x.status==="completed"&&Object.keys(x.items).some(id=>prod(id)&&!(x.rated||{})[id])?`<div class="mo-sub">Tap to rate your brownies</div>`:""}
       ${x.status==="awaiting"?`<div class="mo-sub">Pay within <span class="cd" data-exp="${x.expiresAt}">${fmtLeft(x.expiresAt-Date.now())}</span></div>`:""}</button>`).join("")}</div>`:`<p class="hint">No orders yet in this browser. Build a box and it will show up here.</p>`}
     <details class="mo-find" ${list.length?"":"open"}><summary>Find an order</summary>
       <form class="form" id="moFind" novalidate style="margin-top:12px"><div class="row2"><div class="field"><label for="moCode">Order code</label><input id="moCode" placeholder="DD-ABCD" autocapitalize="characters"></div><div class="field"><label for="moMail">WhatsApp number used</label><input id="moMail" type="tel" inputmode="numeric" maxlength="24" placeholder="Numbers only"></div></div>
@@ -1698,7 +1698,7 @@ function msgText(o,st){
     new:`Hi ${nm}, your payment for order ${o.code} is confirmed. Thank you! Your box is set for ${o.mode==="delivery"?"delivery":"pickup"} on ${when}.`,
     baking:`Hi ${nm}, your order ${o.code} is being baked now.`,
     ready:o.mode==="delivery"?`Hi ${nm}, your order ${o.code} is out for delivery.${o.courier||o.awb?` ${o.courier?"Courier: "+o.courier+". ":""}${o.awb?"Airway bill: "+o.awb+".":""}`:""} Please keep your phone close.`:`Hi ${nm}, your order ${o.code} is ready for pickup. Address: ${DB.settings.address}`,
-    completed:o.mode==="delivery"?`Hi ${nm}, your order ${o.code} was delivered. Enjoy! Please keep your unboxing video, rate your cookies, and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`:`Hi ${nm}, thanks for picking up order ${o.code}. Enjoy! You can rate your cookies in My orders and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`,
+    completed:o.mode==="delivery"?`Hi ${nm}, your order ${o.code} was delivered. Enjoy! Please keep your unboxing video, rate your brownies, and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`:`Hi ${nm}, thanks for picking up order ${o.code}. Enjoy! You can rate your brownies in My orders and tell us within ${DB.settings.complaintWindowH} hours if anything is wrong.`,
     refunded:`Hi ${nm}, your order ${o.code} was refunded${o.refund?": "+money(o.refund.amount):""}.${o.refund&&o.refund.note?" "+o.refund.note:""} It can take a few days to show in your account.`,
     cancelled:`Hi ${nm}, your order ${o.code} was cancelled.${o.cancelReason?" "+o.cancelReason:""} Contact us if you have questions.`
   };
@@ -1746,16 +1746,16 @@ function mqBuild(el){
 function mqFit(){document.querySelectorAll(".marq").forEach(el=>{if(el._m&&!el.hidden)mqBuild(el);else if(el._ai&&!el.hidden)anMqBuild(el)})}
 const LP_DEFAULT_SVG=`<svg viewBox="0 0 30 24" aria-hidden="true"><path d="M3 21a12 12 0 0 1 24 0Z" fill="currentColor"/><circle cx="15" cy="5" r="2.6" fill="currentColor"/><rect x="1" y="20.5" width="28" height="3" rx="1.5" fill="currentColor"/></svg>`;
 function defaultPage(){return {name:"callebrownies",logo:"",brand:"#B73700",bg:"#ffffff",ink:"#2A1306",headFont:"display",bodyFont:"body",fonts:[],
-  hero:{eyebrow:"Baked fresh every morning",title:"Warm cookies, boxed your way.",lede:"Pick a box, fill it with the flavors you love, and choose when you want it. Pickup or local delivery.",btn1:"Build a box",btn2:"See the flavors",bg:"",color:"#ffffff",mediaType:"none",src:"",overlay:35,floats:true,cookies:["","","","","",""],media:[],carousel:true,carouselSec:5,shape:"dome"},
+  hero:{eyebrow:"Baked fresh every morning",title:"Warm brownies, boxed your way.",lede:"Pick a box, fill it with the flavors you love, and choose when you want it. Pickup or local delivery.",btn1:"Build a box",btn2:"See the flavors",bg:"",color:"#ffffff",mediaType:"none",src:"",overlay:35,floats:true,cookies:["","","","","",""],media:[],carousel:true,carouselSec:5,shape:"dome"},
   strip:{items:[{t:"Boxes of {sizes}",on:true},{t:"Order by {cutoff} for the next day",on:true},{t:"Closed {closed}",on:true}]},
   build:{title:"Build your box",intro:"Choose a size, fill every spot, then tell us when you want it. Each box is baked the morning it leaves the oven room."},
   blocks:[],
   visit:{title:"Come say hello",text:"Pickup is at the front counter. Give your name and we'll bring your box out.",bg:"",faqTitle:"Good to know"},
   faq:[{q:"When is the order cutoff?",a:"{cutoff} the day before. We bake every box fresh in the morning, so we need the evening to plan the bake."},
-       {q:"How long do the cookies stay fresh?",a:"They're best on the day you get them. Keep them in an airtight container for up to three days, and give them 5 minutes in a warm oven to bring them back."},
+       {q:"How long do the brownies stay fresh?",a:"They're best on the day you get them. Keep them in an airtight container for up to three days, and give them 5 minutes in a warm oven to bring them back."},
        {q:"Can I order for an event?",a:"Yes. For more than five boxes, message us at least three days ahead so we can set aside oven time."},
-       {q:"What about allergies?",a:"Every cookie contains wheat, dairy and egg, and our kitchen handles nuts. We can't promise any box is allergen free."}],
-  footer:{text:"Fresh cookie boxes, baked to order.",bg:"",color:"#ffffff",socials:[{id:"instagram",kind:"instagram",name:"Instagram",url:"",img:""},{id:"threads",kind:"threads",name:"Threads",url:"",img:""},{id:"whatsapp",kind:"whatsapp",name:"WhatsApp",url:"",img:""}]}}}
+       {q:"What about allergies?",a:"Every brownie contains wheat, dairy and egg, and our kitchen handles nuts. We can't promise any box is allergen free."}],
+  footer:{text:"Fresh brownie boxes, baked to order.",bg:"",color:"#ffffff",socials:[{id:"instagram",kind:"instagram",name:"Instagram",url:"",img:""},{id:"threads",kind:"threads",name:"Threads",url:"",img:""},{id:"whatsapp",kind:"whatsapp",name:"WhatsApp",url:"",img:""}]}}}
 const SOC_KINDS=[["instagram","Instagram"],["threads","Threads"],["whatsapp","WhatsApp"],["tiktok","TikTok"],["facebook","Facebook"],["youtube","YouTube"],["x","X"],["custom","Other link"]];
 const SOC_SVG={
   instagram:'<rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.2" cy="6.8" r="1.2" fill="currentColor"/>',
@@ -1846,7 +1846,7 @@ function renderLanding(){
   sv.style.setProperty("--blue",pg.brand);sv.style.setProperty("--ink",pg.ink);
   sv.style.setProperty("--display",lpFamily(pg.headFont,pg));sv.style.setProperty("--body",lpFamily(pg.bodyFont,pg));
   document.documentElement.style.setProperty("--pagebg",pg.bg);
-  const nm=pg.name||"callebrownies";document.title=`${nm} Cookie Boxes`;
+  const nm=pg.name||"callebrownies";document.title=`${nm} Brownie Boxes`;
   $("#brandTxt").textContent=nm;$("#ftBrand").textContent=nm;$(".top .logo").setAttribute("aria-label",`${nm} home`);
   const lg=safeMedia(pg.logo);const mark=lg?`<img src="${esc(lg)}" alt="">`:LP_DEFAULT_SVG;$("#logoMark").innerHTML=mark;$("#ftMark").innerHTML=mark;
   lpFavicon(pg);

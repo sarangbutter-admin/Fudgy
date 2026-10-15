@@ -98,7 +98,7 @@ p{margin:0}
 .hero-strip{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 22px;margin-top:18px;color:var(--muted);font-size:14px}
 .hero-strip span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);margin-right:8px;vertical-align:middle}
 
-/* Plate + cookie */
+/* Plate + brownie */
 .plate{display:grid;place-items:center;border-radius:50%;aspect-ratio:1;width:100%;container-type:inline-size}
 .plate svg{width:var(--ck,84%);height:var(--ck,84%);display:block;filter:drop-shadow(0 4px 6px rgba(40,14,0,.18))}
 .plate .ph{width:var(--ck,84%);height:var(--ck,84%);display:block;border-radius:50%;object-fit:cover;box-shadow:0 4px 10px rgba(40,14,0,.22);user-select:none;-webkit-user-drag:none}
@@ -334,7 +334,7 @@ textarea:focus,.field input:focus,.field select:focus{border-color:var(--blue);o
 .slot.pop{animation:pop .5s cubic-bezier(.3,1.7,.5,1) both;animation-delay:var(--pd,0ms)}
 @keyframes pop{0%{transform:scale(0) rotate(-120deg)}100%{transform:scale(1) rotate(0)}}
 
-/* Lively cookies */
+/* Lively brownies */
 .card .plate .ck,.slot.filled .plate .ck{animation:idle 4.2s ease-in-out infinite;animation-delay:calc(var(--i,0) * -.65s)}
 .card.out .plate .ck{animation:none}
 @keyframes idle{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(5deg) translateY(-3px)}}

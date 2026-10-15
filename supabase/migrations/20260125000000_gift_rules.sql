@@ -28,7 +28,7 @@ begin
   end loop;
 end $$;
 
--- the gifts a box of p_n cookies earns for this order. Specific rules give the ticked gifts, random rules pick
+-- the gifts a box of p_n brownies earns for this order. Specific rules give the ticked gifts, random rules pick
 -- (limit) of the ticked gifts in an order only the server can work out, so refreshing or changing things can't reroll.
 create or replace function public.draw_gifts(p_id text, p_n int, p_at bigint) returns jsonb
 language plpgsql security definer set search_path = public as $$

@@ -1,8 +1,8 @@
-# Callebrownies: cookie box shop
+# Callebrownies: brownie box shop
 
-A ready-to-deploy ordering website for a cookie shop.
+A ready-to-deploy ordering website for a brownie shop.
 
-* **Customers** build a box, order (pickup or delivery), pay by bank transfer / e-wallet and upload proof, track the order, edit or cancel it until it is paid, report a problem, rate the cookies and leave reviews.
+* **Customers** build a box, order (pickup or delivery), pay by bank transfer / e-wallet and upload proof, track the order, edit or cancel it until it is paid, report a problem, rate the brownies and leave reviews.
 * **The owner** (at `/#admin`) accepts payments, moves orders through every status, prints labels and bake sheets, edits flavors, stock, prices, flash sales, coupons, boxes, extras, banners and every page of the site, and gets a sound + popup when a new order, payment proof or complaint arrives.
 
 No build step. No frameworks. The site is plain files in `site/`, the backend is Supabase (Postgres + Auth + Storage), the host is Netlify.
@@ -96,7 +96,7 @@ First things to do in the admin:
 
 ### 6. Optional
 
-* **Cancel unpaid orders on the dot**: unpaid orders are cancelled (and their cookies put back in stock) whenever anyone opens the shop or the admin, which in practice is within seconds. For a guarantee even when nobody is online: **Database → Extensions → enable `pg_cron`**, then run  
+* **Cancel unpaid orders on the dot**: unpaid orders are cancelled (and their brownies put back in stock) whenever anyone opens the shop or the admin, which in practice is within seconds. For a guarantee even when nobody is online: **Database → Extensions → enable `pg_cron`**, then run  
   `select cron.schedule('callebrownies-sweep', '* * * * *', $$select public.sweep_orders()$$);`
 * **Backups**: Supabase keeps daily backups on paid plans. On the free plan, export your data now and then (**Database → Backups**, or `pg_dump`).
 
@@ -112,7 +112,7 @@ First things to do in the admin:
 | Leaking unpromoted coupon codes | Customers only receive coupons the owner marked "show to customers". Other codes are checked one at a time by the server (rate-limited). |
 | Fake payment proofs / photos with scripts | Only real JPG/PNG/WebP data under 1 MB is accepted. Pictures are stored apart from the order and shown only to the order's customer and the owner. |
 | Script injection (XSS) | Everything is escaped before display, and the Content-Security-Policy in `netlify.toml` allows scripts from this site only (no inline scripts), so injected code can't run anyway. |
-| Spam / bots | Per-minute limits on orders, tracking attempts, reviews, proofs and complaints; max 3 unpaid orders per phone number; a cap on total open unpaid orders so cookies can't be locked up by a bot (`maxOpenOrders` in settings, default 150). |
+| Spam / bots | Per-minute limits on orders, tracking attempts, reviews, proofs and complaints; max 3 unpaid orders per phone number; a cap on total open unpaid orders so brownies can't be locked up by a bot (`maxOpenOrders` in settings, default 150). |
 | Clickjacking, mixed content, sniffing | `X-Frame-Options`, `frame-ancestors`, HSTS, `nosniff`, strict referrer policy (all in `netlify.toml`). |
 
 ## Privacy notes
