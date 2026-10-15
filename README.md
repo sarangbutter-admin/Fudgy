@@ -75,7 +75,7 @@ git push -u origin main
 2. Set **Base directory** to `admin-site`, build command empty, publish directory `.`. It reads `admin-site/netlify.toml`.
 3. Give it a name that isn't obvious and don't link to it anywhere public.
 
-Both sites skip builds of `main` and only build other branches (see "Previews without spending credits"). In Supabase go to **Authentication → URL Configuration** and set **Site URL** to the shop address. Add the team address under **Redirect URLs**.
+Both sites build **only the `dev` branch**. `main` and every other branch are never built (see "Previews without spending credits"). In each Netlify site keep the production branch as `main` and under **Branch deploys** choose "Let me add individual branches" and add `dev`. In Supabase go to **Authentication → URL Configuration** and set **Site URL** to the shop address. Add the team address under **Redirect URLs**.
 
 ### 5. First sign-in
 

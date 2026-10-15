@@ -142,11 +142,11 @@ wr('admin-site/404.html','<!doctype html><html lang="en"><head><meta charset="ut
 [build]
   publish = "."
   command = ""
-  # Cost control (exit 0 = skip): never build "main"; skip pushes that didn't change admin-site/.
-  ignore = "test \\"$BRANCH\\" = \\"main\\" || ( test -n \\"$CACHED_COMMIT_REF\\" && test \\"$CACHED_COMMIT_REF\\" != \\"$COMMIT_REF\\" && git diff --quiet \\"$CACHED_COMMIT_REF\\" \\"$COMMIT_REF\\" -- . )"
+  # Cost control (exit 0 = skip): ONLY the "dev" branch is built (main needs the owner's approval); skip pushes that didn't change admin-site/.
+  ignore = "test \\"$BRANCH\\" != \\"dev\\" || ( test -n \\"$CACHED_COMMIT_REF\\" && test \\"$CACHED_COMMIT_REF\\" != \\"$COMMIT_REF\\" && git diff --quiet \\"$CACHED_COMMIT_REF\\" \\"$COMMIT_REF\\" -- . )"
 
 
-# Production deploys cost credits, so they are never built automatically. Use branch deploys (free).
+# Production deploys cost credits, so they are never built automatically. Only the "dev" branch deploy (free) builds.
 [context.production]
   ignore = "exit 0"
 

@@ -4,13 +4,14 @@
   publish = "site"
   command = ""
   # Cost control (exit 0 = skip the build):
-  #  - never build the "main" branch automatically
+  #  - ONLY the "dev" branch is ever built. main and every other branch are skipped.
+#    (Building main needs the owner's approval: change this rule only when they say so.)
   #  - skip when a push didn't change the shop files (e.g. only the admin site changed)
-  ignore = "test \"$BRANCH\" = \"main\" || ( test -n \"$CACHED_COMMIT_REF\" && test \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" && git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- site netlify.toml )"
+  ignore = "test \"$BRANCH\" != \"dev\" || ( test -n \"$CACHED_COMMIT_REF\" && test \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" && git diff --quiet \"$CACHED_COMMIT_REF\" \"$COMMIT_REF\" -- site netlify.toml )"
 
 # Pull-request previews are off unless you turn them on in Netlify.
 # Production deploys cost credits (15 each), so they are NEVER built automatically,
-# whatever branch is set as production. Only free branch deploys (e.g. "dev") build.
+# whatever branch is set as production. Only the free "dev" branch deploy builds.
 [context.production]
   ignore = "exit 0"
 
