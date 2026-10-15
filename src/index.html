@@ -54,6 +54,7 @@
       <h2 id="buildTitle">Build your box</h2>
       <p id="buildIntro">Choose a size, fill every spot, then tell us when you want it. Each box is baked the morning it leaves the oven room.</p>
       <div class="steps" role="tablist">
+        <button class="step" id="tab0" type="button" hidden><i>1</i>Base</button>
         <button class="step" id="tab1" type="button" aria-current="step"><i>1</i>Your box</button>
         <button class="step" id="tab2" type="button"><i>2</i>When</button>
       </div>
@@ -61,6 +62,13 @@
 
     <div class="build-grid">
       <div class="build-main">
+        <div id="step0" hidden>
+          <div class="block">
+            <h3 class="q">Choose your brownies base</h3>
+            <div class="extras bases" id="bases"></div>
+          </div>
+        </div>
+
         <div id="step1">
           <div class="block">
             <h3 class="q">How many brownies?</h3>

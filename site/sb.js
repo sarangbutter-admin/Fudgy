@@ -17,7 +17,7 @@
   /* ================= visitors ================= */
   function blankDB() {
     var seed = seedDB();
-    return migrate({ v: 1, settings: seed.settings, sizes: [], products: [], addons: [], sales: [], orders: [], categories: [], coupons: [], broadcasts: [], payMethods: [] });
+    return migrate({ v: 1, settings: seed.settings, bases: [], sizes: [], products: [], addons: [], sales: [], orders: [], categories: [], coupons: [], broadcasts: [], payMethods: [] });
   }
   H.initDB = function () { DB = blankDB(); };
 
@@ -28,7 +28,7 @@
     var raw = {
       v: 1,
       settings: Object.assign({}, seedDB().settings, d.settings || {}),
-      sizes: res.sizes || [], products: res.products || [], addons: res.addons || [], sales: res.sales || [],
+      bases: res.bases || [], sizes: res.sizes || [], products: res.products || [], addons: res.addons || [], sales: res.sales || [],
       categories: res.categories || [], broadcasts: res.broadcasts || [],
       coupons: (res.coupons || []).map(function (c) { return Object.assign({}, c, { startsAt: "", endsAt: "", maxUses: 0 }); }),
       payMethods: Array.isArray(d.payMethods) ? d.payMethods : [],
@@ -40,7 +40,7 @@
     DB.orders = keep;
     H.skew = (res.now || Date.now()) - Date.now();
   }
-  function shopChanged(res) { var s = J([res.docs, res.sizes, res.products, res.addons, res.sales, res.categories, res.broadcasts, res.coupons, res.slotUse]); var ch = s !== shopSig; shopSig = s; return ch; }
+  function shopChanged(res) { var s = J([res.docs, res.bases, res.sizes, res.products, res.addons, res.sales, res.categories, res.broadcasts, res.coupons, res.slotUse]); var ch = s !== shopSig; shopSig = s; return ch; }
 
   function banner(msg, retry) {
     var el = $q("#sbLoading");

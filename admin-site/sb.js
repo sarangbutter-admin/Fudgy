@@ -18,7 +18,7 @@
   /* ================= visitors ================= */
   function blankDB() {
     var seed = seedDB();
-    return migrate({ v: 1, settings: seed.settings, sizes: [], products: [], addons: [], sales: [], orders: [], categories: [], coupons: [], broadcasts: [], payMethods: [] });
+    return migrate({ v: 1, settings: seed.settings, bases: [], sizes: [], products: [], addons: [], sales: [], orders: [], categories: [], coupons: [], broadcasts: [], payMethods: [] });
   }
   H.initDB = function () { DB = blankDB(); };
 
@@ -29,7 +29,7 @@
     var raw = {
       v: 1,
       settings: Object.assign({}, seedDB().settings, d.settings || {}),
-      sizes: res.sizes || [], products: res.products || [], addons: res.addons || [], sales: res.sales || [],
+      bases: res.bases || [], sizes: res.sizes || [], products: res.products || [], addons: res.addons || [], sales: res.sales || [],
       categories: res.categories || [], broadcasts: res.broadcasts || [],
       coupons: (res.coupons || []).map(function (c) { return Object.assign({}, c, { startsAt: "", endsAt: "", maxUses: 0 }); }),
       payMethods: Array.isArray(d.payMethods) ? d.payMethods : [],
@@ -41,7 +41,7 @@
     DB.orders = keep;
     H.skew = (res.now || Date.now()) - Date.now();
   }
-  function shopChanged(res) { var s = J([res.docs, res.sizes, res.products, res.addons, res.sales, res.categories, res.broadcasts, res.coupons, res.slotUse]); var ch = s !== shopSig; shopSig = s; return ch; }
+  function shopChanged(res) { var s = J([res.docs, res.bases, res.sizes, res.products, res.addons, res.sales, res.categories, res.broadcasts, res.coupons, res.slotUse]); var ch = s !== shopSig; shopSig = s; return ch; }
 
   function banner(msg, retry) {
     var el = $q("#sbLoading");
@@ -169,7 +169,7 @@
 
   /* ================= owner: sign-in ================= */
   var DOCS = ["settings", "page", "marquee", "announcer", "thanks", "proofpop", "payMethods", "alerts", "label", "badges"];
-  var COLLS = { sizes: function (o) { return String(o.n); }, categories: function (o) { return o.id; }, addons: function (o) { return o.id; }, sales: function (o) { return o.id; }, coupons: function (o) { return o.id; }, broadcasts: function (o) { return o.id; } };
+  var COLLS = { bases: function (o) { return o.id; }, sizes: function (o) { return String(o.n); }, categories: function (o) { return o.id; }, addons: function (o) { return o.id; }, sales: function (o) { return o.id; }, coupons: function (o) { return o.id; }, broadcasts: function (o) { return o.id; } };
   var OFIELDS = ["status", "expiresAt", "cancelReason", "paidAt", "completedAt", "labelAt", "courier", "awb", "rejected", "items", "total", "surcharge", "notify"];
 
   function loginUI(msg) {
@@ -256,7 +256,7 @@
     var docs = r.docs || {}, colls = r.colls || {};
     var rows = function (c) { return (colls[c] || []).map(function (x) { return x.data; }); };
     var seed = seedDB();
-    var raw = { v: 1, settings: Object.assign({}, seed.settings, docs.settings || {}), sizes: rows("sizes"), products: rows("products"), addons: rows("addons"), sales: rows("sales"),
+    var raw = { v: 1, settings: Object.assign({}, seed.settings, docs.settings || {}), bases: rows("bases"), sizes: rows("sizes"), products: rows("products"), addons: rows("addons"), sales: rows("sales"),
       categories: rows("categories"), coupons: rows("coupons"), broadcasts: rows("broadcasts"), orders: r.orders || [],
       payMethods: Array.isArray(docs.payMethods) ? docs.payMethods : undefined, proofpop: docs.proofpop, page: docs.page, marquee: docs.marquee, announcer: docs.announcer,
       thanks: docs.thanks, alerts: docs.alerts, label: docs.label, badges: docs.badges };
@@ -285,7 +285,7 @@
       SINCE = (r.now || Date.now()) - 3000;
       H.admin = true; H.loaded = true;
       snapAll();
-      if (fresh) { SN = { docs: {}, rows: { sizes: {}, categories: {}, addons: {}, sales: {}, coupons: {}, broadcasts: {} }, prods: {}, orders: {} }; }
+      if (fresh) { SN = { docs: {}, rows: { bases: {}, sizes: {}, categories: {}, addons: {}, sales: {}, coupons: {}, broadcasts: {} }, prods: {}, orders: {} }; }
       try { if (!localStorage.getItem("callebrownies-aadmin-v1")) { ABOOT = Date.now(); localStorage.setItem(ABOOT_KEY, String(ABOOT)); localStorage.setItem("callebrownies-aadmin-v1", "1"); } } catch (e) {}
       var el = $q("#adLogin"); if (el) el.remove();
       ["#syncSt", "#signOut"].forEach(function (s) { var e = $q(s); if (e) e.hidden = false; });

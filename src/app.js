@@ -62,6 +62,7 @@ function seedDB(){
       address:"12 Example Street, Your City. Look for the blue dome sign.",
       hours:[["Tue to Fri","10am to 6pm"],["Saturday","9am to 5pm"],["Sunday","10am to 3pm"],["Monday","Closed"]]},
     sizes:[{n:4,price:16,active:true},{n:6,price:22,active:true},{n:12,price:40,active:true}],
+    bases:defaultBases(),
     products:[
       {id:"bb",art:"bb",name:"Brown butter chip",desc:"Nutty brown butter dough, dark chocolate chunks, sea salt.",surcharge:0,status:"available"},
       {id:"dc",art:"dc",name:"Double cocoa",desc:"Dark cocoa dough packed with milk and white chocolate.",surcharge:0,status:"available"},
@@ -141,7 +142,9 @@ function defaultAlerts(){return {on:true,sound:true,vol:70,repeat:false,stay:tru
   ev:{order:{on:true,snd:"register"},proof:{on:true,snd:"chime"},complaint:{on:true,snd:"alarm"},courier:{on:true,snd:"alarm"}}}}
 function defaultLabel(){return {logo:"",qr:"",qrCaption:"",notes:"",warnOn:true,warn1:"UNBOXING WITH UNCUT VIDEO!",warn2:"CONTACT US IF SEAL BROKEN"}}
 const SLOT_PRESETS=Array.from({length:23},(_,h)=>String(h).padStart(2,"0")+" to "+String(h+1).padStart(2,"0"));
+function defaultBases(){return [{id:"semisweet",name:"Semisweet",desc:"",price:0,active:true},{id:"bittersweet",name:"Bittersweet",desc:"",price:0,active:true}]}
 function migrate(db){
+  if(!Array.isArray(db.bases))db.bases=defaultBases();
   if(db.settings){const D={samedayOn:false,samedayLeadH:3,samedayCutoff:15,samedayFee:8,samedayPayMin:60,minPayMin:30,rejPayMin:120,payCdColor:"#C8102E",payCdSize:"L",payCdFx:true,pickupOn:true,pickupLeadH:24,schedOn:true,schedLeadH:24,samedayMsg:"Sorry Sameday closed Today.\nyour order will be send tomorrow.",samedayOk:"OK",samedayGo:"Continue with Sameday anyway",schedMaxDays:7,courierNoteOn:true,courierNote:"We need at least 3 hours of lead time. Once we have requested a courier, any delay or failed delivery is beyond our responsibility.",coWarnOn:true,coWarnEmoji:"⚠️",coWarnTitle:"Wait! Check your details",coWarnText:"Please make sure your name, WhatsApp number and address are correct before you place your order. We use them to send you updates and deliver your box.",coWarnOk:"Yes, my details are correct",coWarnBack:"Go back"};for(const k in D)if(db.settings[k]===undefined)db.settings[k]=D[k];
     if(!Array.isArray(db.settings.slots)){const hs=(db.settings.times||[]).map(slotStartMin).filter(m=>m!==null).map(m=>Math.floor(m/60));if(!hs.length)hs.push(10);db.settings.slots=SLOT_PRESETS.map((t,h)=>({t,on:true,limit:0})).filter((x,h)=>hs.includes(h))}
     db.settings.times=db.settings.slots.filter(x=>x.on).map(x=>x.t)}
@@ -290,6 +293,7 @@ function quote(c,db=DB,{at=Date.now(),withDelivery=true}={}){
   const base=basePrice(c.size,db);
   const sale=at?bestSale(c.size,at,db):null,discount=sale?saleDiscount(sale,base):0;
   const surcharge=r2(c.box.reduce((a,id)=>a+(prod(id,db)?.surcharge||0),0));
+  const bt=(db.bases||[]).find(b=>b.active&&b.id===c.batter),batterFee=bt?r2((+bt.price||0)*c.size):0;
   const addons=r2((c.addons||[]).reduce((a,id)=>{const x=db.addons.find(y=>y.id===id&&y.active);return a+(x?x.price:0)},0));
   const cp=c.coupon?couponCheck(c.coupon,c,db,{base,saleDisc:discount,phone:c.phone,excl:c.editId}):null;
   const couponDisc=cp&&cp.ok?cp.discount:0;
@@ -297,7 +301,7 @@ function quote(c,db=DB,{at=Date.now(),withDelivery=true}={}){
   const shipQ=withDelivery?bsShip(c,at||Date.now(),db):null,noFee=!!fdSale||!!(cp&&cp.ok&&cp.freeDel);
   const feePending=withDelivery&&c.mode==="delivery"&&!noFee&&!shipQ&&bsPending(c,db);
   const fee=withDelivery&&c.mode==="delivery"&&!noFee?(shipQ?+shipQ.price:feePending?0:(c.speed==="sameday"?(db.settings.samedayFee??db.settings.deliveryFee):db.settings.deliveryFee)):0;
-  return {ship:shipQ,feePending,base,sale,fdSale,discount,surcharge,addons,fee,coupon:cp&&cp.ok?cp.coupon:null,couponDisc,couponErr:cp&&!cp.ok?cp.err:"",total:r2(base-discount-couponDisc+surcharge+addons+fee)};
+  return {ship:shipQ,feePending,base,sale,fdSale,discount,surcharge,batter:bt||null,batterFee,addons,fee,coupon:cp&&cp.ok?cp.coupon:null,couponDisc,couponErr:cp&&!cp.ok?cp.err:"",total:r2(base-discount-couponDisc+surcharge+batterFee+addons+fee)};
 }
 const saleOffText = s => isFD(s)?"Free delivery":isGift(s)?"Free gifts":s.type==="percent"?`${s.value}% off`:`${money(s.value)} off`;
 function giftAppliesText(s){const ps=[...new Set(s.rules.map(r=>+r.from===+r.to&&DB.sizes.some(z=>z.n===+r.from)?`box of ${r.from}`:`custom boxes of ${r.from} to ${r.to}`))];
@@ -359,12 +363,15 @@ function crumbColors(p){
 
 /* ================= SHOP ================= */
 loadDB();
-const fresh = () => ({size:6, box:[], step:1, mode:"pickup", speed:"scheduled", day:null, time:null, note:"", addons:[], coupon:"", ship:null, bsSkip:false, dnote:"", dphoto:""});
+const fresh = () => ({batter:null, size:6, box:[], step:1, mode:"pickup", speed:"scheduled", day:null, time:null, note:"", addons:[], coupon:"", ship:null, bsSkip:false, dnote:"", dphoto:""});
 let S = fresh(), hadCart=false;
-try{const s=JSON.parse(localStorage.getItem(CART_KEY)||"null");if(s&&Array.isArray(s.box)){S={...S,...s,step:s.step===2?2:1};hadCart=true;
+try{const s=JSON.parse(localStorage.getItem(CART_KEY)||"null");if(s&&Array.isArray(s.box)){S={...S,...s,step:s.step===2?2:s.step===0?0:1};hadCart=true;
   }}catch(e){}
-const saveCart = () => {try{localStorage.setItem(CART_KEY,JSON.stringify({size:S.size,box:S.box,mode:S.mode,speed:S.speed,note:S.note,addons:S.addons,editId:S.editId||null,day:S.day,time:S.time,step:S.step,coupon:S.coupon||""}))}catch(e){}};
+const saveCart = () => {try{localStorage.setItem(CART_KEY,JSON.stringify({batter:S.batter||null,size:S.size,box:S.box,mode:S.mode,speed:S.speed,note:S.note,addons:S.addons,editId:S.editId||null,day:S.day,time:S.time,step:S.step,coupon:S.coupon||""}))}catch(e){}};
 const activeSizes = () => DB.sizes.filter(s=>s.active).sort((a,b)=>a.n-b.n);
+const activeBases = () => (DB.bases||[]).filter(b=>b.active);
+const baseOk = () => !activeBases().length||activeBases().some(b=>b.id===S.batter);
+const baseName = o => o&&o.batter&&o.batter.name?o.batter.name:"";
 const heldOwn = id => {if(!S.editId||view!=="store")return 0;const o=DB.orders.find(x=>x.id===S.editId);return o&&o.holds&&o.status==="awaiting"?(o.items[id]||0):0};
 const stockLeft = p => p&&p.track?Math.max(0,p.stock+heldOwn(p.id)):Infinity;
 const isOut = p => !p||p.status==="soldout"||stockLeft(p)<=0;
@@ -380,7 +387,8 @@ function sanitizeCart(){
   S.box=S.box.filter(id=>{const p=prod(id);if(!p||p.status!=="available")return false;used[id]=(used[id]||0)+1;return used[id]<=stockLeft(p)}).slice(0,S.size);
   S.addons=(S.addons||[]).filter(id=>DB.addons.find(a=>a.id===id&&a.active));
   if(S.editId){const eo=DB.orders.find(x=>x.id===S.editId);if(!eo||eo.status!=="awaiting")S.editId=null}
-  if(!full())S.step=1;
+  if(!activeBases().some(b=>b.id===S.batter))S.batter=null;
+  if(!baseOk())S.step=0;else if(!full()&&S.step===2)S.step=1;
 }
 const full = () => S.box.length===S.size && S.size>0;
 const countOf = id => S.box.filter(x=>x===id).length;
@@ -527,6 +535,7 @@ function renderStoreStatic(){
   renderLanding();
   $("#hours").innerHTML = set.hours.map(h=>`<dt>${esc(h[0])}</dt><dd>${esc(h[1])}</dd>`).join("");
   $("#addr").textContent = set.address;
+  $("#bases").innerHTML=activeBases().map(b=>`<button class="extra" type="button" data-batter="${esc(b.id)}" aria-pressed="false"><span class="tick">✓</span><span><b>${esc(b.name)}</b>${b.desc?`<small>${esc(b.desc)}</small>`:""}</span>${+b.price>0?`<span class="pr">+${money(b.price)} each</span>`:""}</button>`).join("");
   const act=DB.addons.filter(a=>a.active);
   $("#extrasBlock").hidden=!act.length;
   $("#extras").innerHTML=act.map(a=>`<button class="extra" type="button" data-addon="${a.id}" aria-pressed="false"><span class="tick">✓</span><span><b>${esc(a.name)}</b><small>${esc(a.desc)}</small></span><span class="pr">+${money(a.price)}</span></button>`).join("");
@@ -535,6 +544,7 @@ function renderStoreStatic(){
 
 function ctaState(){
   const left=S.size-S.box.length;
+  if(S.step===0) return S.batter&&baseOk()?{label:"Next: build your box",dis:false,go:"step1"}:{label:"Choose your base",dis:false,go:"base"};
   if(S.step===1) return left>0?{label:`Pick ${left} more`,dis:false,go:"pick"}:{label:"Choose a day",dis:false,go:"step2"};
   if(!S.day||!S.time) return {label:"Pick a day and time",dis:false,go:"when"};
   if(bsPending(S))return {label:`Checkout (${money(total())})`,dis:false,go:"needcourier"};
@@ -559,11 +569,17 @@ function renderStore(){
   document.querySelectorAll(".card").forEach(c=>{const st=c.querySelector(".stepper");if(!st)return;const n=countOf(c.dataset.id);st.querySelector("output").textContent=n;c.classList.toggle("has",n>0);
     st.querySelector('[data-act="dec"]').disabled=n===0;st.querySelector('[data-act="inc"]').disabled=full()||n>=stockLeft(prod(c.dataset.id))});
   $("#fillRest").disabled=full();
-  $("#step1").hidden=S.step!==1; $("#step2").hidden=S.step!==2;
+  if(!baseOk())S.step=0;
+  {const hb=activeBases().length>0;$("#tab0").hidden=!hb;
+   $("#tab0").querySelector("i").textContent="1";$("#tab1").querySelector("i").textContent=hb?"2":"1";$("#tab2").querySelector("i").textContent=hb?"3":"2";
+   $("#tab0").setAttribute("aria-current",S.step===0?"step":"false");$("#tab0").classList.toggle("done",S.step>0&&baseOk());
+   $("#tab1").disabled=!baseOk();
+   document.querySelectorAll("[data-batter]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.batter===S.batter))}
+  $("#step0").hidden=S.step!==0; $("#step1").hidden=S.step!==1; $("#step2").hidden=S.step!==2;
   $("#tab1").setAttribute("aria-current",S.step===1?"step":"false");
   $("#tab2").setAttribute("aria-current",S.step===2?"step":"false");
   $("#tab1").classList.toggle("done",S.step===2&&full());
-  $("#tab2").disabled=!full();
+  $("#tab2").disabled=!full()||!baseOk();
   document.querySelectorAll("[data-opt]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.opt===optOf(S)));
   {const k=optOf(S),st=DB.settings;const fdp=k!=="pickup"?freeDelSale(S.size):null;$("#modeHint").textContent=(fdp?`🚚 Free delivery promo is on: ${fdp.name}. `:"")+(k==="sameday"?`Sameday shipment adds ${money(st.samedayFee??st.deliveryFee)}. Order before ${fmtHour(st.samedayCutoff)} and we ship about ${fmtLead(optLead("sameday"))} after your payment is confirmed. We deliver within ${st.deliveryKm} km of the shop.`:k==="scheduled"?`Scheduled delivery adds ${money(st.deliveryFee)}. Pick a day and time. We deliver within ${st.deliveryKm} km of the shop.`:"Free pickup at the front counter. Pick a day and time.");}
   document.querySelectorAll(".day").forEach(b=>b.setAttribute("aria-pressed",b.dataset.day===S.day));
@@ -579,6 +595,7 @@ function renderStore(){
   $("#bpCount").textContent=`${S.box.length} of ${S.size}`;
   $("#pillCount").textContent=`${S.box.length}/${S.size}`;
   let L=`<div><dt>Box of ${S.size}</dt><dd>${money(q.base)}</dd></div>`;
+  if(q.batter)L+=`<div><dt>${esc(q.batter.name)} base</dt><dd>${q.batterFee>0?"+"+money(q.batterFee):"Included"}</dd></div>`;
   if(q.sale)L+=`<div class="saleln"><dt>${esc(q.sale.name)} (${saleOffText(q.sale)})</dt><dd>−${money(q.discount)}</dd></div>`;
   giftLines(S.size).forEach(t=>{L+=`<div class="saleln giftln"><dt>${esc(t)}</dt><dd>FREE</dd></div>`});
   if(q.coupon&&q.couponDisc>0)L+=`<div class="saleln"><dt>Coupon ${esc(q.coupon.code)}</dt><dd>−${money(q.couponDisc)}</dd></div>`;
@@ -597,11 +614,11 @@ function renderStore(){
   for(const b of [$("#panelCta"),$("#barCta")]){b.textContent=c.label;b.disabled=c.dis;b.dataset.go=c.go||"";b.classList.toggle("ready",!c.dis&&c.go!=="when"&&c.go!=="needcourier");b.classList.toggle("pickmore",c.go==="pick")}
   if(c.go!=="needcourier"){const m=$("#ctaMsg");if(m)m.hidden=true}
   $("#clearBtn").disabled=!S.box.length;
-  $("#randBtn").disabled=!availProducts().length;
+  $("#randBtn").disabled=!availProducts().length||!baseOk();
   $("#randLabel").textContent=full()?"Shuffle box":"Random fill";
   pop.clear();
   $("#barTotal").textContent=money(total());
-  $("#barSub").textContent=S.step===1?`${S.box.length} of ${S.size} picked`:`Box of ${S.size}`;
+  $("#barSub").textContent=S.step===0?(baseOk()&&S.batter?`${(activeBases().find(b=>b.id===S.batter)||{}).name} base`:"Choose your base"):S.step===1?`${S.box.length} of ${S.size} picked`:`Box of ${S.size}`;
   updateFlash();
   saveCart();
 }
@@ -802,6 +819,7 @@ function fillBox(base){
 }
 function fillRest(){if(!pickable().length){toast("Every flavor is out of stock right now");return}fillBox(0);renderStore();if(full())celebrate()}
 function randomFill(){
+  if(!baseOk()){cta("base");return}
   if(!availProducts().length){toast("Every flavor is out of stock right now");return}let base=0;
   if(full()){S.box.forEach((_,i)=>ghostOut(i));S.box=[];S.shuf=0;base=180}
   fillBox(base);
@@ -965,9 +983,10 @@ function scrollToEl(el){
     window.scrollTo({top:Math.max(0,y),behavior:"instant"})};
   go();requestAnimationFrame(go);setTimeout(go,120);setTimeout(go,400);
 }
-function goStep(n){if(n===2&&!full())return;S.step=n;renderStore();
+function goStep(n){if(n>=1&&!baseOk())n=0;if(n===2&&!full())return;S.step=n;renderStore();
   if(document.activeElement)document.activeElement.blur();
   scrollToEl($(n===2?"#step2":"#build"))}
+function setBatter(id){if(!activeBases().some(b=>b.id===id))return;S.batter=id;goStep(1)}
 // point at a field without opening the phone keyboard; the customer taps it when ready
 function nudge(el){if(!el)return;try{el.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})}catch(e){}el.classList.remove("nudge");void el.offsetWidth;el.classList.add("nudge");setTimeout(()=>el.classList.remove("nudge"),1600)}
 // a friendly "check your details" pop-up before the checkout form (wording set in Shop settings)
@@ -982,6 +1001,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeCoWarn()});
 function cta(go){if(go==="pick"){if(document.activeElement)document.activeElement.blur();scrollToEl($("#menuGrid"));return}
   if(go==="when"){if(document.activeElement)document.activeElement.blur();const sd=$("#dayBlock").hidden;scrollToEl($(!sd&&!S.day?"#dayBlock":!sd&&S.day&&!$("#timeBlock").hidden?"#timeBlock":"#step2"));return}
   if(go==="needcourier"){bsNudge();return}
+  if(go==="base"){if(document.activeElement)document.activeElement.blur();scrollToEl($("#step0"));toast("Choose your brownies base first");return}
+  if(go==="step1"){goStep(1);return}
   if(go==="step2")goStep(2);else if(go==="checkout")openCoWarn()}
 /* courier choice in the box panel (delivery + Biteship on): a pop-up that reuses the checkout courier box */
 function bsNudge(){
@@ -1126,6 +1147,7 @@ $("#bsOpts").addEventListener("click",e=>{
 function renderCoSummary(){
   const q=quote(S),counts=countItems(S.box);
   $("#summary").innerHTML=`<div><span>Box of ${S.size}</span><span class="num">${money(q.base)}</span></div>`+
+    (q.batter?`<div class="m"><span>${esc(q.batter.name)} base</span><span>${q.batterFee>0?"+"+money(q.batterFee):""}</span></div>`:"")+
     Object.entries(counts).map(([id,n])=>{const p=prod(id);return `<div class="m"><span>${n} × ${esc(p.name)}</span><span>${p.surcharge>0?"+"+money(p.surcharge*n):""}</span></div>`}).join("")+
     (q.sale?`<div class="sl"><span>${esc(q.sale.name)} (${saleOffText(q.sale)})</span><span class="num">−${money(q.discount)}</span></div>`:"")+
     giftLines(S.size).map(t=>`<div class="sl"><span>${esc(t)}</span><span class="num">Free</span></div>`).join("")+
@@ -1206,6 +1228,8 @@ $("#fillRest").addEventListener("click",fillRest);
 $("#randBtn").addEventListener("click",()=>guardBox("shuf",randomFill));
 $("#barRand").addEventListener("click",()=>guardBox("shuf",()=>{randomFill();if(DB.settings.rbScroll!==false)setTimeout(showMyBox,260)}));
 $("#clearBtn").addEventListener("click",()=>guardBox("clear",clearBox));
+$("#tab0").addEventListener("click",()=>goStep(0));
+$("#bases").addEventListener("click",e=>{const b=e.target.closest("[data-batter]");if(b)setBatter(b.dataset.batter)});
 $("#tab1").addEventListener("click",()=>goStep(1));
 $("#tab2").addEventListener("click",()=>goStep(2));
 $("#backBtn").addEventListener("click",()=>goStep(1));
@@ -1250,12 +1274,13 @@ $("#coForm").addEventListener("submit",e=>{
   const notify=(document.querySelector('input[name="coNotify"]:checked')||{value:"both"}).value;
   const cust={name:$("#coName").value.trim(),email:$("#coEmail").value.trim(),phone:$("#coPhone").value.trim(),
     address:del?$("#coAddr").value.trim():""};
-  const fields={notify,size:S.size,items:countItems(S.box),mode:S.mode,speed:S.mode==="pickup"?"pickup":S.speed,day:S.day,time:S.time,note:S.note,addons:[...S.addons],sale:q.sale?`${q.sale.name} (${saleOffText(q.sale)})`:"",
+  if(!baseOk()){closeSheet();goStep(0);toast("Choose your brownies base first");return}
+  const fields={notify,batter:q.batter?{id:q.batter.id,name:q.batter.name}:null,batterFee:q.batterFee,size:S.size,items:countItems(S.box),mode:S.mode,speed:S.mode==="pickup"?"pickup":S.speed,day:S.day,time:S.time,note:S.note,addons:[...S.addons],sale:q.sale?`${q.sale.name} (${saleOffText(q.sale)})`:"",
     base:q.base,discount:q.discount,coupon:q.coupon?q.coupon.code:"",couponDisc:q.couponDisc,surcharge:q.surcharge,addonsTotal:q.addons,fee:q.fee,total:q.total,customer:cust,gifts:ed&&ed.size===S.size&&ed.gifts?ed.gifts:[],giftsAt:ed&&ed.size===S.size&&ed.gifts?ed.giftsAt:undefined,...(S.mode==="delivery"&&(S.dnote||S.dphoto)?{place:{note:String(S.dnote||"").slice(0,200),photo:!!S.dphoto,img:S.dphoto||"",at:Date.now()}}:{})};
   if(SBH.on){
     const btn=f.querySelector("button[type=submit]");if(btn)btn.disabled=true;
     const pNote=S.mode==="delivery"&&placeOn("dnoteOn")?String(S.dnote||"").trim():"",pImg=S.mode==="delivery"&&placeOn("dphotoOn")?S.dphoto:"";
-    SBH.place({notify,sdLate:S.mode!=="pickup"&&S.speed==="sameday"&&!samedayOpen()?true:undefined,shuffled:!!S.shuf,size:S.size,items:fields.items,mode:S.mode,speed:S.speed,day:S.day,time:S.time,note:S.note,addons:[...S.addons],coupon:fields.coupon,expectTotal:q.total,customer:cust,ship:q.ship||undefined},ed).then(o=>{
+    SBH.place({notify,sdLate:S.mode!=="pickup"&&S.speed==="sameday"&&!samedayOpen()?true:undefined,shuffled:!!S.shuf,batter:S.batter||undefined,size:S.size,items:fields.items,mode:S.mode,speed:S.speed,day:S.day,time:S.time,note:S.note,addons:[...S.addons],coupon:fields.coupon,expectTotal:q.total,customer:cust,ship:q.ship||undefined},ed).then(o=>{
       if(pNote||pImg)SBH.placeInfo(o.id,pNote,pImg).catch(err=>toast("Order placed, but the driver note or photo didn't save: "+err.message));
       addMine(o.id);S.editId=null;saveCart();renderDone(o,!!ed);
       S=fresh();$("#coForm").reset();saveCart();sanitizeCart();renderStoreStatic();renderStore();renderEditBar();renderBag();
@@ -1541,7 +1566,7 @@ function renderMO(){
     MO.id=null;
     card.innerHTML=`<div class="sheet-top"><h3>My orders</h3><button class="x" type="button" data-moclose aria-label="Close">✕</button></div>
     ${list.length?`<div class="mo-list">${list.map(x=>`<button class="mo-card" type="button" data-moopen="${x.id}"><div class="mo-row"><span class="mo-code">${esc(x.code)}</span><span class="mo-chip st-${isRej(x)?"rejected":x.status}">${cusLabel(x)}</span></div>
-      <div class="mo-row"><span>Box of ${x.size} · ${money(x.total)}${x.refund?` · <b style="color:#0a7a3b">${refundTxt(x)} ${money(x.refund.amount)}</b>`:""}</span><span class="mo-sub">${fmtDay(x.day)}, ${esc(x.time)}</span></div>
+      <div class="mo-row"><span>Box of ${x.size}${baseName(x)?` · ${esc(baseName(x))}`:""} · ${money(x.total)}${x.refund?` · <b style="color:#0a7a3b">${refundTxt(x)} ${money(x.refund.amount)}</b>`:""}</span><span class="mo-sub">${fmtDay(x.day)}, ${esc(x.time)}</span></div>
       ${x.status==="completed"&&x.complaint?`<div class="mo-sub">Complaint: ${CP_STATUS[x.complaint.status]}</div>`:cwinOpen(x)?`<div class="mo-sub">Complaint window: <span class="cd" data-cexp="${cwinEnd(x)}">${fmtLeft(cwinEnd(x)-Date.now())}</span></div>`:""}${x.status==="completed"&&Object.keys(x.items).some(id=>prod(id)&&!(x.rated||{})[id])?`<div class="mo-sub">Tap to rate your brownies</div>`:""}
       ${x.status==="awaiting"?`<div class="mo-sub">Pay within <span class="cd" data-exp="${x.expiresAt}">${fmtLeft(x.expiresAt-Date.now())}</span></div>`:""}</button>`).join("")}</div>`:`<p class="hint">No orders yet in this browser. Build a box and it will show up here.</p>`}
     <details class="mo-find" ${list.length?"":"open"}><summary>Find an order</summary>
@@ -1588,8 +1613,8 @@ function renderEditBar(){
 }
 function startEdit(id){
   const o=DB.orders.find(x=>x.id===id);if(!o||o.status!=="awaiting"){toast("This order can't be edited any more");return}
-  S.editId=id;S.size=o.size;S.box=Object.entries(o.items).flatMap(([pid,n])=>Array(n).fill(pid));S.mode=o.mode;S.speed=o.speed==="sameday"?"sameday":"scheduled";S.note=o.note||"";S.addons=[...o.addons];S.coupon=o.coupon||"";
-  S.day=dayOptions().some(d=>ymd(d)===o.day)?o.day:null;S.time=S.day?o.time:null;S.step=1;fixWhen();
+  S.editId=id;S.batter=o.batter&&o.batter.id||null;S.size=o.size;S.box=Object.entries(o.items).flatMap(([pid,n])=>Array(n).fill(pid));S.mode=o.mode;S.speed=o.speed==="sameday"?"sameday":"scheduled";S.note=o.note||"";S.addons=[...o.addons];S.coupon=o.coupon||"";
+  S.day=dayOptions().some(d=>ymd(d)===o.day)?o.day:null;S.time=S.day?o.time:null;S.step=baseOk()?1:0;fixWhen();
   closeMO();sanitizeCart();renderStoreStatic();renderStore();renderEditBar();saveCart();scrollToEl($("#build"));toast(`Editing ${o.code}`);
 }
 $("#moBtn").addEventListener("click",()=>openMO(null));
@@ -2285,11 +2310,12 @@ function openOrder(id){
     <div class="dsec"><h4>Shipping label</h4>${o.mode==="delivery"?`<div class="grid2"><label class="af">Courier<input class="in" data-ship="courier" maxlength="30" value="${esc(o.courier||"")}" placeholder="e.g. JNE"></label><label class="af">Airway bill / tracking no.<input class="in" data-ship="awb" maxlength="40" value="${esc(o.awb||"")}" placeholder="e.g. JP1234567890"></label></div>`:`<p class="hint" style="margin:0 0 8px">Pickup order: the label shows the pickup time.</p>`}<button class="btn btn-blue btn-sm" type="button" data-printone="${o.id}" style="margin-top:10px">Print label</button></div>
     <div class="dsec"><h4>Customer</h4><dl class="dl"><dt>Name</dt><dd>${esc(o.customer.name)}</dd><dt>WhatsApp</dt><dd>${esc(o.customer.phone)}</dd><dt>Email</dt><dd>${esc(o.customer.email)}</dd>${o.customer.address?`<dt>Address</dt><dd>${esc(o.customer.address)}</dd>`:""}</dl></div>
     <div class="dsec"><h4>When</h4><dl class="dl"><dt>${modeName(o)}</dt><dd>${esc(whenTxt(o))}</dd>${o.note?`<dt>Note</dt><dd>${esc(o.note)}</dd>`:""}</dl></div>
-    <div class="dsec"><h4>Box of ${o.size}</h4><div class="ditems">${Object.entries(o.items).map(([id,n])=>{const p=prod(id);return `<div>${miniPlate(p)}<span>${n} × ${esc(p?p.name:"Removed flavor")}</span><span class="num">${p&&p.surcharge>0?"+"+money(p.surcharge*n):""}</span></div>`}).join("")}</div></div>
+    <div class="dsec"><h4>Box of ${o.size}${baseName(o)?` · ${esc(baseName(o))} base`:""}</h4><div class="ditems">${Object.entries(o.items).map(([id,n])=>{const p=prod(id);return `<div>${miniPlate(p)}<span>${n} × ${esc(p?p.name:"Removed flavor")}</span><span class="num">${p&&p.surcharge>0?"+"+money(p.surcharge*n):""}</span></div>`}).join("")}</div></div>
     ${placeHTML(o)}
     ${giftsHTML(o)}
     <div class="dsec"><h4>Payment</h4><div class="summary" style="margin:0">
       <div><span>Box of ${o.size}</span><span class="num">${money(o.base)}</span></div>
+      ${baseName(o)?`<div><span>${esc(baseName(o))} base</span><span class="num">${o.batterFee>0?"+"+money(o.batterFee):"Included"}</span></div>`:""}
       ${o.discount>0?`<div class="sl"><span>${esc(o.sale||"Flash sale")}</span><span class="num">−${money(o.discount)}</span></div>`:""}
       ${o.couponDisc>0?`<div class="sl"><span>Coupon ${esc(o.coupon)}</span><span class="num">−${money(o.couponDisc)}</span></div>`:""}
       ${o.surcharge>0?`<div><span>Premium flavors</span><span class="num">+${money(o.surcharge)}</span></div>`:""}
@@ -2377,7 +2403,7 @@ function orderCard(o){
     ${o.complaint&&(o.complaint.status==="open"||o.complaint.status==="review")?`<div class="oc-alert cmp">ORDER COMPLAINED - need your attention</div>`:""}
     ${o.proof&&!isRej(o)?`<div><button class="oc-b" type="button" data-oproof="${o.id}">View payment proof</button></div>`:""}
     <div class="oc-info"><span class="mode" style="margin:0">${modeName(o)}</span> ${esc(whenTxt(o))}<br>${esc(c.phone)} · ${esc(c.email)}${del&&c.address?`<br>${esc(c.address)}`:""}${o.note?`<br><i>Note: ${esc(o.note)}</i>`:""}</div>
-    <div class="oc-items"><div class="note" style="margin:0">Box of ${o.size} · placed ${fmtAgo(o.createdAt)}</div>${items}${addons}</div>
+    <div class="oc-items"><div class="note" style="margin:0">Box of ${o.size}${baseName(o)?` · <b>${esc(baseName(o))}</b>`:""} · placed ${fmtAgo(o.createdAt)}</div>${items}${addons}</div>
     ${payLine?`<div class="oc-info">${payLine}</div>`:""}
     ${o.cancelReason?`<div class="oc-info">Cancel reason: ${esc(o.cancelReason)}</div>`:""}
     <div class="oc-sts" role="group" aria-label="Order status">${keys.map(k=>{const why=stepWhy(o,k);return `<button class="oc-b${why&&o.status!==k?" off":""}${k==="awaiting"&&isRej(o)?" oc-rejb":""}${k==="review"&&o.status==="review"?" oc-chk":""}" type="button" data-ostatus="${o.id}:${k}" aria-pressed="${o.status===k}" ${why&&o.status!==k?`aria-disabled="true" title="${esc(why)}"`:""}>${k==="new"?"✓ ":""}${k==="awaiting"&&isRej(o)?"✕ Rejected":k==="new"&&o.status==="review"&&!own&&!o.payReq?"Confirm payment (owner approves)":stLabel(k,o.mode)}</button>${k==="baking"&&bsReqShow(o)?`<button class="oc-b oc-req${bsReqOk(o)?"":" off"}" type="button" data-bsreq="${o.id}" ${bsReqOk(o)?"":'aria-disabled="true" title="Move the order to Baking first"'}>🛵 ${o.bship.failed||o.bship.cancelledAt?"Book courier again":"Request courier pickup"}</button>`:""}`}).join("")}</div>
@@ -3101,8 +3127,19 @@ $("#modal").addEventListener("change",async e=>{if(A.modal!=="pbg"||!BG)return;c
 
 /* --- Boxes & extras --- */
 function viewBoxes(){
-  return head("Boxes & extras","Set box sizes and prices, and the paid extras customers can add at checkout.")+MOCK+`
+  return head("Boxes & extras","Set brownie bases, box sizes and prices, and the paid extras customers can add at checkout.")+MOCK+`
   <div class="stack">
+    <section class="panel">
+      <div class="phead"><div><h2>Brownie bases</h2><p class="sub">Step 1 in the shop: customers choose a base before they build their box. Turn a base off to hide it without deleting it. If every base is off, the step is skipped.</p></div><button class="btn btn-blue btn-sm" type="button" data-badd>+ Add base</button></div>
+      ${(DB.bases||[]).length?`<div class="tablewrap"><table class="t" style="min-width:620px"><thead><tr><th>Name</th><th>Description</th><th>Extra per brownie</th><th>Available</th><th></th></tr></thead><tbody>
+      ${DB.bases.map(b=>`<tr>
+        <td><input class="in" data-k="bases:${b.id}:name" maxlength="40" value="${esc(b.name)}" aria-label="Base name"></td>
+        <td><input class="in" data-k="bases:${b.id}:desc" maxlength="120" value="${esc(b.desc||"")}" placeholder="Optional" aria-label="Base description"></td>
+        <td style="width:150px"><div class="money-in"><span>+${DB.settings.currency}</span><input class="in" type="number" min="0" step="0.05" data-k="bases:${b.id}:price" value="${+b.price||0}" aria-label="Extra price per brownie"></div></td>
+        <td><label class="sw"><input type="checkbox" data-k="bases:${b.id}:active" ${b.active?"checked":""} aria-label="${esc(b.name)} available"><span></span></label></td>
+        <td class="r">${ROLE()==="owner"?`<button class="danger" type="button" data-bdel="${b.id}">Delete</button>`:""}</td></tr>`).join("")}
+      </tbody></table></div><p class="note" style="margin-top:8px">Extra per brownie: 0 means the base is included in the box price. Example: +${money(0.5)} on a box of 6 adds ${money(3)}.</p>`:`<div class="empty">No bases. The shop skips this step.</div>`}
+    </section>
     <section class="panel">
       <h2>Box sizes</h2><p class="sub">Turn a size off to hide it from the shop without deleting it.</p>
       <div class="tablewrap"><table class="t" style="min-width:460px"><thead><tr><th>Brownies</th><th>Price</th><th>On sale now</th><th>Available</th><th></th></tr></thead><tbody>
@@ -3656,6 +3693,8 @@ am.addEventListener("click",e=>{
     if(!(p>0)){err.textContent="Set a price above 0.";err.hidden=false;return}
     DB.sizes.push({n,price:p,active:true});saveDB();toast(`Box of ${n} added`);renderAdmin()}
   else if(d.sdel){delConfirm("this box size",()=>{if(DB.sizes.length<=1){toast("Keep at least one box size");return}needOwner("delete a box size").then(()=>{DB.sizes=DB.sizes.filter(s=>String(s.n)!==d.sdel);saveDB();toast("Size deleted");renderAdmin()}).catch(()=>{})})}
+  else if(d.badd!==undefined){DB.bases=DB.bases||[];DB.bases.push({id:uid(),name:"New base",desc:"",price:0,active:false});saveDB();toast("Base added, turned off");renderAdmin()}
+  else if(d.bdel){delConfirm("this base",()=>needOwner("delete a brownie base").then(()=>{DB.bases=DB.bases.filter(b=>b.id!==d.bdel);saveDB();toast("Base deleted");renderAdmin()}).catch(()=>{}))}
   else if(d.aadd!==undefined){DB.addons.push({id:uid(),name:"New extra",desc:"",price:1,active:false});saveDB();toast("Extra added, turned off");renderAdmin()}
   else if(d.adel){delConfirm("this extra",()=>needOwner("delete an extra").then(()=>{DB.addons=DB.addons.filter(a=>a.id!==d.adel);saveDB();toast("Extra deleted");renderAdmin()}).catch(()=>{}))}
   else if(d.cwprev!==undefined){openCwPreview()}
@@ -4280,7 +4319,7 @@ function labelHTML(o,L){
     <div class="lbl-from"><small>FROM</small>${esc(DB.page.name||"Callebrownies")}<br>${esc(DB.settings.address)}</div>
     <div class="lbl-box lbl-to"><small>${del?"Ship to":"Pickup"}</small><div class="nm">${esc(o.customer.name)}</div><div class="ph">${esc(o.customer.phone)}</div>${del&&o.customer.address?`<div class="ad">${esc(o.customer.address)}</div>`:""}<div class="wh">${del?"DELIVER":"PICK UP"}: ${esc(fmtDay(o.day))} · ${esc(o.time)}</div></div>
     ${del?`<div class="lbl-box lbl-awb"><small>Courier: ${esc(o.courier||"—")} · Airway bill</small><div class="no">${esc(o.awb||"")}</div></div>`:""}
-    <div class="lbl-box lbl-items"><small>Items</small><ul><li><b>Box of ${o.size}</b></li>${items}${ad}</ul></div>
+    <div class="lbl-box lbl-items"><small>Items</small><ul><li><b>Box of ${o.size}${baseName(o)?` · ${esc(baseName(o))}`:""}</b></li>${items}${ad}</ul></div>
     ${o.gifts&&o.gifts.length?`<div class="lbl-box lbl-gift"><small>🎁 Free gift: pack it!</small><ul>${o.gifts.map(g=>`<li>${esc(g.name)}</li>`).join("")}</ul></div>`:""}
     ${notes?`<div class="lbl-note">${esc(notes)}</div>`:""}
     ${L.warnOn&&(L.warn1||L.warn2)?`<div class="lbl-warn">${esc(L.warn1||"")}${L.warn2?`<span>${esc(L.warn2)}</span>`:""}</div>`:""}
@@ -4333,15 +4372,16 @@ const BK_CSS=`.bk{font-family:Arial,Helvetica,sans-serif;color:#000;font-size:12
 .bk tr{break-inside:avoid}`;
 function bakeSheetHTML(day){
   const live=DB.orders.filter(o=>o.status!=="cancelled"&&o.status!=="awaiting"&&o.status!=="completed"&&o.day===day).sort((a,b)=>DB.settings.times.indexOf(a.time)-DB.settings.times.indexOf(b.time)||a.createdAt-b.createdAt);
-  const agg={};let cookies=0;const bySize={};let pick=0,del=0;
-  live.forEach(o=>{Object.entries(o.items).forEach(([id,n])=>{agg[id]=(agg[id]||0)+n;cookies+=n});bySize[o.size]=(bySize[o.size]||0)+1;o.mode==="delivery"?del++:pick++});
-  const rows=Object.entries(agg).sort((a,b)=>b[1]-a[1]);
+  const agg={};let cookies=0;const bySize={},byBase={};let pick=0,del=0;
+  const hasB=live.some(o=>baseName(o)),SEP="\u0000";
+  live.forEach(o=>{const bn=baseName(o);Object.entries(o.items).forEach(([id,n])=>{const k=hasB?(bn||"—")+SEP+id:id;agg[k]=(agg[k]||0)+n;cookies+=n;if(hasB)byBase[bn||"—"]=(byBase[bn||"—"]||0)+n});bySize[o.size]=(bySize[o.size]||0)+1;o.mode==="delivery"?del++:pick++});
+  const rows=Object.entries(agg).sort((a,b)=>hasB&&a[0].split(SEP)[0]!==b[0].split(SEP)[0]?a[0].localeCompare(b[0]):b[1]-a[1]);
   return `<div class="bk"><h1>Bake sheet · ${esc(fmtDay(day))}</h1><p class="bk-sub">${esc(DB.page.name||"Callebrownies")} · printed ${esc(fmtDT(Date.now()))}</p>
-  <div class="bk-sum"><span>${cookies} brownies</span>${Object.entries(bySize).sort((a,b)=>a[0]-b[0]).map(([n,c])=>`<span>${c} × box of ${n}</span>`).join("")}<span>${pick} pickup</span><span>${del} delivery</span></div>
+  <div class="bk-sum"><span>${cookies} brownies</span>${Object.entries(byBase).map(([b,n])=>`<span>${n} ${esc(b)}</span>`).join("")}${Object.entries(bySize).sort((a,b)=>a[0]-b[0]).map(([n,c])=>`<span>${c} × box of ${n}</span>`).join("")}<span>${pick} pickup</span><span>${del} delivery</span></div>
   <h2>Brownies to bake</h2>
-  <table><thead><tr><th></th><th>Flavor</th><th style="text-align:right">Qty</th></tr></thead><tbody>${rows.map(([id,n])=>{const p=prod(id);return `<tr><td class="c">☐</td><td>${esc(p?p.name:"Removed flavor")}</td><td class="n">${n}</td></tr>`}).join("")||`<tr><td colspan="3">Nothing to bake.</td></tr>`}</tbody></table>
+  <table><thead><tr><th></th>${hasB?"<th>Base</th>":""}<th>Flavor</th><th style="text-align:right">Qty</th></tr></thead><tbody>${rows.map(([k,n])=>{const [b,id]=hasB?k.split(SEP):["",k],p=prod(id);return `<tr><td class="c">☐</td>${hasB?`<td><b>${esc(b)}</b></td>`:""}<td>${esc(p?p.name:"Removed flavor")}</td><td class="n">${n}</td></tr>`}).join("")||`<tr><td colspan="${hasB?4:3}">Nothing to bake.</td></tr>`}</tbody></table>
   <h2>Orders (${live.length})</h2>
-  <table><thead><tr><th></th><th>Order</th><th>Time</th><th>Type</th><th>Box</th><th>Items</th></tr></thead><tbody>${live.map(o=>`<tr><td class="c">☐</td><td><b>${esc(o.code)}</b><br>${esc(o.customer.name)}${o.status==="review"?`<span class="bk-flag">CHECK PAYMENT</span>`:""}</td><td>${esc(o.time)}</td><td>${modeName(o)}</td><td>Box of ${o.size}${o.addons.length?`<br>+ ${o.addons.map(id=>{const a=DB.addons.find(x=>x.id===id);return esc(a?a.name:"Extra")}).join(", ")}`:""}</td><td>${Object.entries(o.items).map(([id,n])=>{const p=prod(id);return `${n} × ${esc(p?p.name:"Removed flavor")}`}).join("<br>")}${o.note?`<br><i>Note: ${esc(o.note)}</i>`:""}</td></tr>`).join("")||`<tr><td colspan="6">No orders.</td></tr>`}</tbody></table></div>`;
+  <table><thead><tr><th></th><th>Order</th><th>Time</th><th>Type</th><th>Box</th><th>Items</th></tr></thead><tbody>${live.map(o=>`<tr><td class="c">☐</td><td><b>${esc(o.code)}</b><br>${esc(o.customer.name)}${o.status==="review"?`<span class="bk-flag">CHECK PAYMENT</span>`:""}</td><td>${esc(o.time)}</td><td>${modeName(o)}</td><td>Box of ${o.size}${baseName(o)?`<br><b>${esc(baseName(o))}</b>`:""}${o.addons.length?`<br>+ ${o.addons.map(id=>{const a=DB.addons.find(x=>x.id===id);return esc(a?a.name:"Extra")}).join(", ")}`:""}</td><td>${Object.entries(o.items).map(([id,n])=>{const p=prod(id);return `${n} × ${esc(p?p.name:"Removed flavor")}`}).join("<br>")}${o.note?`<br><i>Note: ${esc(o.note)}</i>`:""}</td></tr>`).join("")||`<tr><td colspan="6">No orders.</td></tr>`}</tbody></table></div>`;
 }
 function printBake(day){
   if(!day){toast("No orders to bake yet");return}
@@ -5046,7 +5086,7 @@ function needOwner(what){
 }
 window.needOwner=needOwner;
 // price fields ask for the owner password before they change
-const PRICE_K=/^(products:[^:]+:surcharge|sizes:[^:]+:price|addons:[^:]+:price|settings::deliveryFee|settings::samedayFee|settings::customPer)$/;
+const PRICE_K=/^(products:[^:]+:surcharge|sizes:[^:]+:price|addons:[^:]+:price|bases:[^:]+:price|settings::deliveryFee|settings::samedayFee|settings::customPer)$/;
 am.addEventListener("change",e=>{const el=e.target;if(!el.dataset||!el.dataset.k||!PRICE_K.test(el.dataset.k)||!SBH.on||SUDO_UNTIL>Date.now()+15000)return;
   const [coll,id,field]=el.dataset.k.split(":"),item=coll==="settings"?DB.settings:coll==="sizes"?DB.sizes.find(x=>String(x.n)===id):DB[coll].find(x=>x.id===id);
   if(!item)return;const old=item[field],nv=el.value;if(String(old)===String(Math.max(0,parseFloat(nv)||0)))return;
