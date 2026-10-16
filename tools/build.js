@@ -131,6 +131,7 @@ fs.copyFileSync(R('src/styles.css'),R('admin-site/styles.css'));
   wr('site/styles.css',o);
 }
 for(const f of ['404.html','robots.txt']){fs.copyFileSync(R('src/'+f),R('site/'+f))}
+for(const d of ['site','admin-site']){fs.mkdirSync(R(d+'/img'),{recursive:true});for(const f of fs.readdirSync(R('src/img')))fs.copyFileSync(R('src/img/'+f),R(d+'/img/'+f))}
 wr('site/config.js',rd('src/config.js').replace(/,\n  \/\/ team site only[^\n]*\n  shopUrl:[^\n]*\n/,'\n'));
 fs.copyFileSync(R('src/config.js'),R('admin-site/config.js'));
 wr('admin-site/robots.txt','User-agent: *\nDisallow: /\n');

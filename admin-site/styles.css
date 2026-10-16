@@ -1313,3 +1313,10 @@ body.pcd-fx .bell-pay{animation:pcdGlow 1.6s ease-in-out infinite}
 .medthumb{width:40px;height:40px;border-radius:10px;object-fit:cover;flex:none;border:1px solid var(--line)}
 .medthumb.ico{width:28px;height:28px;border-radius:6px;object-fit:contain;margin:0 6px}
 .medthumb.none{background:repeating-linear-gradient(45deg,var(--ice),var(--ice) 4px,var(--white) 4px,var(--white) 8px)}
+/* the box is a brownie slab: picked flavors drop onto its top */
+.slots{background:#4a2410 url(img/brownie-slab.jpg) center/cover no-repeat;border-radius:18px;padding:16px;box-shadow:0 12px 26px rgba(40,14,2,.35),inset 0 0 0 1px rgba(255,255,255,.08),inset 0 -14px 22px rgba(30,10,0,.28)}
+.slots .slot{border:2px dashed rgba(255,236,220,.7);background:rgba(38,14,2,.22)}
+.slots .slot.filled{border:0;background:transparent;filter:drop-shadow(0 7px 6px rgba(25,8,0,.45))}
+.slots .slot.pop{animation:dropIn .7s cubic-bezier(.22,.9,.32,1.2) both;animation-delay:var(--pd,0ms)}
+@keyframes dropIn{0%{transform:translateY(-170%) scale(1.18) rotate(-30deg);opacity:0}55%{opacity:1;transform:translateY(7%) scale(.94,1.04) rotate(5deg)}72%{transform:translateY(-7%) scale(1.03,.97) rotate(-2deg)}88%{transform:translateY(2%) scale(.99,1.01)}100%{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.slots .slot.pop{animation:none}}
